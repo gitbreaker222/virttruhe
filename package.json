@@ -1,0 +1,9 @@
+{
+  "name": "VIRTTRUHE",
+  "version": "0.0.0",
+  "homepage": "virttruhe.tumblr.com",
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/h5bp/html5-boilerplate/blob/master/LICENSE.txt"
+  }
+}
