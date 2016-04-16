@@ -59,7 +59,6 @@ gulp.task('delete:js', function() {
   return del.sync('app/js');
 });
 
-//FIXME compiled js should not be deleted if error in source
 gulp.task('compile_coffee', function(){
   gulp.src('src_app/modules/**/*.coffee')
     .pipe(coffee({bare: true}).on('error', gutil.log))
