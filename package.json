@@ -1,6 +1,7 @@
 {
   "name": "VIRTTRUHE",
   "version": "0.0.0",
+  "description": "Experimental game to explore the border between physical and virtual space. A playground for augmented reality (or maybe augmented virtuality)",
   "homepage": "virttruhe.tumblr.com",
   "license": {
     "type": "MIT",
