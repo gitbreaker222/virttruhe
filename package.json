@@ -11,7 +11,9 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
+    "del": "^2.2.0",
     "gulp": "^3.9.1",
+    "gulp-jade": "^1.1.0",
     "jade": "^1.11.0"
   }
 }

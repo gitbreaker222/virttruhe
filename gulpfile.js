@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var packageJson = require('./package.json');
+var del = require('del');
 var jade = require('gulp-jade');
 
 //convert jade files to html
