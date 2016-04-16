@@ -20,7 +20,11 @@ gulp.task('compile_jade', ['delete:index.html'], function() {
     .pipe(gulp.dest('./app/'))
 });
 
-gulp.task('compile_copy_sass', function(){
+gulp.task('delete:main.css', function() {
+  return del.sync('app/style/main.css');
+});
+
+gulp.task('compile_copy_sass', ['delete:main.css'], function(){
   gulp.src('src_app/style/main.sass')
     .pipe(sass())
     .pipe(gulp.dest('app/style'))
@@ -28,4 +32,5 @@ gulp.task('compile_copy_sass', function(){
 
 gulp.task('watch', function(){
   gulp.watch('./src_app/**/*.jade', ['compile_jade']);
+
 });
