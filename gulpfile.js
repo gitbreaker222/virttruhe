@@ -32,5 +32,5 @@ gulp.task('compile_copy_sass', ['delete:main.css'], function(){
 
 gulp.task('watch', function(){
   gulp.watch('./src_app/**/*.jade', ['compile_jade']);
-
+  gulp.watch('./src_app/**/*.sass', ['compile_copy_sass']);
 });
