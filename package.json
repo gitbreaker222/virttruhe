@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "description": "Experimental game to explore the border between physical and virtual space. A playground for augmented reality (or maybe augmented virtuality)",
   "homepage": "virttruhe.tumblr.com",
+  "author": "Ruben La Biunda",
   "license": {
     "type": "MIT",
     "url": "https://opensource.org/licenses/MIT"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "gulp": "^3.9.1",
     "jade": "^1.11.0"
   }
