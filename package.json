@@ -2,12 +2,13 @@
   "name": "VIRTTRUHE",
   "version": "0.0.0",
   "description": "Experimental game to explore the border between physical and virtual space. A playground for augmented reality (or maybe augmented virtuality)",
-  "homepage": "virttruhe.tumblr.com",
+  "homepage": "http://virttruhe.tumblr.com",
   "author": "Ruben La Biunda",
-  "license": {
-    "type": "MIT",
-    "url": "https://opensource.org/licenses/MIT"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gitbreaker222/virttruhe.git"
   },
+  "license": "MIT",
   "dependencies": {},
   "devDependencies": {
     "gulp": "^3.9.1",
