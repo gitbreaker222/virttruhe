@@ -19,4 +19,7 @@ gulp.task('compile_jade', ['delete:index.html'], function() {
     .pipe(gulp.dest('./app/'))
 });
 
-//if jade files change, trigger convert task
+
+gulp.task('watch', function(){
+  gulp.watch('./src_app/**/*.jade', ['compile_jade']);
+});
