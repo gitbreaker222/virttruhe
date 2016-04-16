@@ -1,0 +1,14 @@
+id,name ,image,icon,stackable,use
+manual,Manual,data/img/items/manual.png,data/img/items/small/manual.png,false,read
+short_summary,Short Summary,data/img/items/01.png,data/img/items/small/01.png,false,read
+sector,Sector,data/img/items/02.png,data/img/items/small/02.png,false,read
+detailed_description,Detailed description,data/img/items/03.png,data/img/items/small/03.png,false,read
+aim,Aim,data/img/items/04.png,data/img/items/small/04.png,false,read
+target_group,Target group,data/img/items/05.png,data/img/items/small/05.png,false,read
+what_is_new,What is new,data/img/items/06.png,data/img/items/small/06.png,false,read
+benefits_danube_region,Benefits for Danube region,data/img/items/07.png,data/img/items/small/07.png,false,read
+technology,Technology,data/img/items/08.png,data/img/items/small/08.png,false,read
+user_friendliness,User friendliness,data/img/items/09.png,data/img/items/small/09.png,false,read
+next_steps,Next steps,data/img/items/10.png,data/img/items/small/10.png,false,read
+business_plan,Business plan,data/img/items/11.png,data/img/items/small/11.png,false,read
+background_and_contact,Background and contact info,data/img/items/12.png,data/img/items/small/12.png,false,read
