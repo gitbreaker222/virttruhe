@@ -6,10 +6,12 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var runSequence = require('run-sequence');
-var packageJson = require('./package.json');
 var del = require('del');
+var concat = require('gulp-concat');
 var jade = require('gulp-jade');
 var sass = require('gulp-sass');
+
+var packageJson = require('./package.json');
 
 /**********************
  *
@@ -55,6 +57,12 @@ gulp.task('delete:js', function() {
   return del.sync('app/js');
 });
 
+gulp.task('concat_scripts', ['delete:js'], function() {
+  return gulp.src('./src_app/modules/**/*.js')
+    .pipe(concat('main.js'))
+    .pipe(gulp.dest('./app/js/'));
+});
+
 
 /**********************
  *
@@ -64,7 +72,7 @@ gulp.task('delete:js', function() {
 gulp.task('watch', function(){
   gulp.watch('./src_app/**/*.jade', ['compile_jade']);
   gulp.watch('./src_app/**/*.sass', ['compile_sass']);
-  gulp.watch('./src_app/modules/**/*.js', ['']);
+  gulp.watch('./src_app/modules/**/*.js', ['concat_scripts']);
 });
 
 /**********************
@@ -75,7 +83,8 @@ gulp.task('watch', function(){
 gulp.task('default', function(callback){
   runSequence([
     'compile_jade',
-    'compile_sass'
+    'compile_sass',
+    'concat_scripts'
     ],
     'watch',
     callback
