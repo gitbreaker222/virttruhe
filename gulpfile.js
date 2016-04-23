@@ -10,8 +10,6 @@ var packageJson = require('./package.json');
 var del = require('del');
 var jade = require('gulp-jade');
 var sass = require('gulp-sass');
-var coffee = require('gulp-coffee');
-var coffeeStream = coffee({bare: true});
 
 /**********************
  *
@@ -53,17 +51,10 @@ gulp.task('compile_sass', ['delete:main.css'], function(){
  * SCRIPT
  * * * * *
  **********************/
-coffeeStream.on('error', function(err) {});
-
 gulp.task('delete:js', function() {
   return del.sync('app/js');
 });
 
-gulp.task('compile_coffee', function(){
-  gulp.src('src_app/modules/**/*.coffee')
-    .pipe(coffee({bare: true}).on('error', gutil.log))
-    .pipe(gulp.dest('app/js'))
-});
 
 /**********************
  *
@@ -73,7 +64,7 @@ gulp.task('compile_coffee', function(){
 gulp.task('watch', function(){
   gulp.watch('./src_app/**/*.jade', ['compile_jade']);
   gulp.watch('./src_app/**/*.sass', ['compile_sass']);
-  gulp.watch('./src_app/modules/**/*.coffee', ['compile_coffee']);
+  gulp.watch('./src_app/modules/**/*.js', ['']);
 });
 
 /**********************
@@ -84,8 +75,7 @@ gulp.task('watch', function(){
 gulp.task('default', function(callback){
   runSequence([
     'compile_jade',
-    'compile_sass',
-    'compile_coffee'
+    'compile_sass'
     ],
     'watch',
     callback
