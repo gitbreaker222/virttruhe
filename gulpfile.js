@@ -84,6 +84,7 @@ gulp.task('concat_scripts', ['delete:js'], function() {
 gulp.task('watch', function(){
   gulp.watch('./src_app/**/*.jade', ['compile_jade']);
   gulp.watch('./src_app/**/*.sass', ['compile_sass']);
+  gulp.watch('src_app/**/*.tag', ['compile_riot_tags']);
   gulp.watch('./src_app/modules/{**/*.js, *.js}', ['concat_scripts']);
 });
 
@@ -96,6 +97,7 @@ gulp.task('default', function(callback){
   runSequence([
     'compile_jade',
     'compile_sass',
+    'compile_riot_tags',
     'concat_scripts'
     ],
     'watch',
