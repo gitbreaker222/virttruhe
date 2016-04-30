@@ -8,6 +8,7 @@ var gutil = require('gulp-util');
 var runSequence = require('run-sequence');
 var del = require('del');
 var concat = require('gulp-concat');
+var riot = require('gulp-riot');
 var jade = require('gulp-jade');
 var sass = require('gulp-sass');
 
@@ -50,6 +51,17 @@ gulp.task('compile_sass', ['delete:main.css'], function(){
 
 /**********************
  *
+ * RIOT TAGS
+ * * * * *
+ **********************/
+gulp.task('compile_riot_tags', function(){
+  gulp.src('src_app/**/*.tag')
+    .pipe(riot())
+    .pipe(gulp.dest('src_app'))
+});
+
+/**********************
+ *
  * SCRIPT
  * * * * *
  **********************/
@@ -72,7 +84,7 @@ gulp.task('concat_scripts', ['delete:js'], function() {
 gulp.task('watch', function(){
   gulp.watch('./src_app/**/*.jade', ['compile_jade']);
   gulp.watch('./src_app/**/*.sass', ['compile_sass']);
-  gulp.watch('./src_app/modules/**/*.js', ['concat_scripts']);
+  gulp.watch('./src_app/modules/{**/*.js, *.js}', ['concat_scripts']);
 });
 
 /**********************
