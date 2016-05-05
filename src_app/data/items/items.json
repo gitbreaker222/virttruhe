@@ -112,7 +112,7 @@
   {
     "id":"intro",
     "name":"Introduction",
-    "image":"memory_card",
+    "image":"memory_card.png",
     "description":"Short and long description about VIRTTRUHE",
     "stackable":"false",
     "action":"listen",
