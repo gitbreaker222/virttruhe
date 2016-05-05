@@ -1,9 +1,3 @@
-/*app.Items = Backbone.Collection.extend({
-  url: '/items.json',
-  init: function () {
-    console.log("hallo");
-  }
-});*/
 
 var itemsData = [
   {
@@ -119,7 +113,7 @@ var itemsData = [
   {
     "id":"intro",
     "name":"Introduction",
-    "image":"memory_card",
+    "image":"memory_card.png",
     "description":"Short and long description about VIRTTRUHE",
     "stackable":"false",
     "action":"listen",
