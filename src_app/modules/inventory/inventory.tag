@@ -1,25 +1,33 @@
 <inventory>
   <ul class="items">
-    <li each={items}>
-      <img src="{getImageSource(this)}"
-           onclick={ select }>
+    <li each={items}
+        class={selected:isSelected(this)}>
+      <img src={getImageSource(this)}
+           onclick={select}>
     </li>
   </ul>
 
 
   <script>
-    this.items = itemsData;
+    var scope = this;
+    scope.items = app.getItems();
+    scope.selected = null;
 
-    this.getImageSource = function (item) {
+    scope.isSelected = function(item){
+      return item.id === scope.selected;
+    };
+
+    scope.getImageSource = function (item) {
       if (item.image) {
         return 'data/items/img/small/' + item.image;
       }
-
       return 'data/items/img/small/' + item.id + '.jpg';
     };
 
-    this.select = function () {
-      console.log("select " + this.name);
+    scope.select = function () {
+      console.log('previous selected: ', scope.selected);
+      scope.selected = this.id;
+      console.log('new selected: ', scope.selected);
     }
 
   </script>
