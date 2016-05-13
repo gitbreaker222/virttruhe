@@ -12,7 +12,7 @@ As long as there is no installer script, you need to:
  - run the the build task (2)
  - run the index.html from the new app folder (3)
 
- ### 1 installing dependecies
+ ### 1: installing dependecies
 
  I think this can be done from project directory via terminal with:
  ```
@@ -34,7 +34,7 @@ As long as there is no installer script, you need to:
    }
  ```
 
- ### 2 run the build task
+ ### 2: run the build task
 
  Run ```gulp``` in the terminal to trigger the _gulp default_ task. An IDE like Webstorm shows these tasks usually on the left. You can also run the _default_ task from there.
 
