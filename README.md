@@ -40,7 +40,7 @@ As long as there is no installer script, you need to:
 
   A new folder **app** will be created with all compiled files from **src_app**.
 
- ### 3 run index.html
+ ### 3: run index.html
 
  In the new folder its best to use an IDE to lauch the _index.html_, so it runs in a webserver.
 
