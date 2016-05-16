@@ -42,6 +42,29 @@ riot.tag2('info-bar', '<header> this is a header from riot.js <input type="text"
             this.inputHearts.value = "";
         }
 });
+riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul>', '', '', function(opts) {
+    var scope = this;
+    scope.items = app.getItems();
+    scope.selected = null;
+
+    scope.isSelected = function(item){
+      return item.id === scope.selected;
+    };
+
+    scope.getImageSource = function (item) {
+      if (item.image) {
+        return 'data/items/small/' + item.image;
+      }
+      return 'data/items/small/' + item.id + '.jpg';
+    };
+
+    scope.select = function () {
+      console.log('previous selected: ', scope.selected);
+      scope.selected = this.id;
+      console.log('new selected: ', scope.selected);
+    }
+
+});
 
 app.getItems = function(){
   return [
@@ -298,28 +321,5 @@ app.getItems = function(){
   ];
 }
 
-riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul>', '', '', function(opts) {
-    var scope = this;
-    scope.items = app.getItems();
-    scope.selected = null;
-
-    scope.isSelected = function(item){
-      return item.id === scope.selected;
-    };
-
-    scope.getImageSource = function (item) {
-      if (item.image) {
-        return 'data/items/small/' + item.image;
-      }
-      return 'data/items/small/' + item.id + '.jpg';
-    };
-
-    scope.select = function () {
-      console.log('previous selected: ', scope.selected);
-      scope.selected = this.id;
-      console.log('new selected: ', scope.selected);
-    }
-
-});
 riot.tag2('scanner', '<h1>work in progress...</h1>', '', '', function(opts) {
 });
