@@ -16,7 +16,7 @@ As long as there is no installer script, you need to:
 
  I think this can be done from project directory via terminal with:
  ```
- npm install --dev
+ npm install (something to be found out)
  ```
  It should create a folder _node_modules_ with the packages listed in _package.json_. At the time of writing:
  ```json
