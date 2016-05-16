@@ -78,6 +78,23 @@ gulp.task('concat_scripts', ['delete:js'], function() {
 
 /**********************
  *
+ * COPY DATA (ASSETS)
+ * * * * *
+ **********************/
+gulp.task('delete:data', function() {
+  return del.sync('app/data');
+});
+
+var items = './src_app/data/items/img/**/*.*';
+
+gulp.task('copy_data', ['delete:data'], function() {
+  return gulp.src(items)
+    .pipe(gulp.dest('./app/data/items'));
+});
+
+
+/**********************
+ *
  * WATCH
  * * * * *
  **********************/
@@ -88,6 +105,7 @@ gulp.task('watch', function(){
   gulp.watch('./src_app/modules/{**/*.js, *.js}', ['concat_scripts']);
 });
 
+
 /**********************
  *
  * DEFAULT / INIT
@@ -95,12 +113,14 @@ gulp.task('watch', function(){
  **********************/
 gulp.task('default', function(callback){
   runSequence([
-    'compile_jade',
-    'compile_sass',
-    'compile_riot_tags',
-    'concat_scripts'
+      'compile_jade',
+      'compile_sass',
+      'compile_riot_tags',
+      'concat_scripts',
+      'copy_data'
     ],
     'watch',
     callback
   )
 });
+

@@ -1,3 +1,48 @@
+'use strict';
+
+var app = {};
+
+window.onload = function(){
+  //Routes
+  riot.route.stop(); //clear all route callbacks
+  riot.route.start();
+
+  var routes = {
+    inventory: function(action, id) {},
+    scanner: function(action, id) {}
+  };
+
+  riot.route(function(collection, id, action) {
+    console.log('1 ', collection, id, action);
+  });
+
+  riot.route('/inventory', function(name) {
+    console.log('2 ', 'The inventory. ', name)
+  });
+  
+  riot.route('/scanner', function(name) {
+    console.log('3 ', 'The scanner. ', name)
+  });
+
+  riot.mount('info-bar');
+  riot.mount('inventory');
+};
+riot.tag2('demo', '<form onsubmit="{updateLabel}"> <input type="text" name="inputText"> <button type="submit">Do it!</button> <input type="submit" hidden> </form> <h3>--> {this.text}</h3>', '', '', function(opts) {
+        this.updateLabel = function (){
+            console.log(this);
+            this.text = this.inputText.value;
+        }
+});
+riot.tag2('info-bar', '<header> this is a header from riot.js <input type="text" placeholder="hello" name="inputHearts" onchange="{updateLabel}"> <a href="#scanner">scanner</a> <span class="hearts">hearts: {this.hearts}</span> </header>', '', '', function(opts) {
+
+        this.hearts = this.opts.hearts;
+
+        this.updateLabel = function (){
+            this.hearts = this.inputHearts.value;
+            this.inputHearts.value = "";
+        }
+});
+
 app.getItems = function(){
   return [
     {
@@ -252,3 +297,29 @@ app.getItems = function(){
     }
   ];
 }
+
+riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul>', '', '', function(opts) {
+    var scope = this;
+    scope.items = app.getItems();
+    scope.selected = null;
+
+    scope.isSelected = function(item){
+      return item.id === scope.selected;
+    };
+
+    scope.getImageSource = function (item) {
+      if (item.image) {
+        return 'data/items/small/' + item.image;
+      }
+      return 'data/items/small/' + item.id + '.jpg';
+    };
+
+    scope.select = function () {
+      console.log('previous selected: ', scope.selected);
+      scope.selected = this.id;
+      console.log('new selected: ', scope.selected);
+    }
+
+});
+riot.tag2('scanner', '<h1>work in progress...</h1>', '', '', function(opts) {
+});
