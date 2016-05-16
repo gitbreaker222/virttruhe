@@ -5,44 +5,34 @@
 
 This repository is in sequel to the old ["VIRTTRUHE HTML5 App"](https://github.com/gitbreaker222/virttruhe_html5_app), to give it a clean start and making it more scalable.
 
-## Getting started
+## Starting the app
 
-As long as there is no installer script, you need to:
+[Click here to view the online demo](https://rawgit.com/gitbreaker222/virttruhe/master/app/index.html).
+
+To run it locally and as long as there is no distributed app or extra run script, you just open the file `app/index.html` in your browser.
+
+## Contributing: Getting started
+
  - install the dependencies for the build task (1)
  - run the the build task (2)
- - run the index.html from the new app folder (3)
+ - run the app (3)
 
  ### 1: installing dependecies
 
  I think this can be done from project directory via terminal with:
  ```
- npm install (something to be found out)
+ npm install --only=dev
  ```
- It should create a folder _node_modules_ with the packages listed in _package.json_. At the time of writing:
- ```json
- "devDependencies": {
-     "coffee-script": "^1.10.0",
-     "del": "^2.2.0",
-     "gulp": "^3.9.1",
-     "gulp-coffee": "^2.3.2",
-     "gulp-jade": "^1.1.0",
-     "gulp-sass": "^2.2.0",
-     "gulp-util": "^3.0.7",
-     "jade": "^1.11.0",
-     "run-sequence": "^1.1.5",
-     "sass": "^0.5.0"
-   }
- ```
+ It should create a folder _node_modules_ with the packages listed in _package.json_.
 
  ### 2: run the build task
 
  Run ```gulp``` in the terminal to trigger the _gulp default_ task. An IDE like Webstorm shows these tasks usually on the left. You can also run the _default_ task from there.
 
-  A new folder **app** will be created with all compiled files from **src_app**.
+  The folder **app** will be created/overridden with all compiled files from **src_app**.
 
- ### 3: run index.html
-
- In the new folder its best to use an IDE to lauch the _index.html_, so it runs in a webserver.
+ ### 3: run the app
+ run `app/index.html` in your browser. Preferrably with a webserver - an IDE like AptanaStudio or WebStorm can do that, if you don't want to setup a webserver manually.
 
  ## License
 
