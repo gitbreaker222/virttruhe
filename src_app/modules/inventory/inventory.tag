@@ -1,9 +1,9 @@
 <inventory>
   <ul class="items">
     <li each={items}
-        class={selected:isSelected(this)}>
-      <img src={getImageSource(this)}
-           onclick={select}>
+        class={selected:isSelected(this)}
+        onclick={select}>
+      <img src={getImageSource(this)}>
     </li>
   </ul>
 
@@ -19,9 +19,9 @@
 
     scope.getImageSource = function (item) {
       if (item.image) {
-        return 'data/items/img/small/' + item.image;
+        return 'data/items/small/' + item.image;
       }
-      return 'data/items/img/small/' + item.id + '.jpg';
+      return 'data/items/small/' + item.id + '.jpg';
     };
 
     scope.select = function () {
