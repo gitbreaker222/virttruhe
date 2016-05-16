@@ -1,0 +1,23 @@
+.hide {
+  display: none; }
+
+header {
+  height: 1em;
+  width: 100%;
+  background-color: #222;
+  color: #ccc; }
+  header .hearts {
+    float: right; }
+
+inventory li {
+  margin: 0.5em;
+  width: 10em;
+  height: 10em;
+  float: left;
+  background-color: #34b989;
+  list-style: none; }
+  inventory li img {
+    width: 100%; }
+
+inventory .selected {
+  box-shadow: 0px 0px 2em blue; }
