@@ -13,19 +13,25 @@ To run it locally and as long as there is no distributed app or extra run script
 
 ## Contributing: Getting started
 
- - install the dependencies for the build task (1)
+ - install the development dependencies (1)
  - run the the build task (2)
  - run the app (3)
 
  ### 1: installing dependecies
 
- I think this can be done from project directory via terminal with:
+ First please make sure you have [git](https://git-scm.com) for version commits installed and [nodeJS](https://nodejs.org/en/), to run "serverside javascrip" programs on your machine. They are used for the build tasks.
+
+ When you have this, you can use your favourite [git client](https://git-scm.com/downloads/guis) to _clone_ from `https://github.com/gitbreaker222/virttruhe.git` into your development folder. A folder _virttruhe_ will be created.
+
+ Next you install the development dependencies into this folder. Therefor you need to open a terminal window and enter the enter the nodeJS command:
  ```
  npm install --only=dev
  ```
- It should create a folder _node_modules_ with the packages listed in _package.json_.
+ It automatically downloads all packages listed in the file _package.json_ into a new folder _node_modules_.
 
  ### 2: run the build task
+
+ NodeJS has now installed the task runner _gulp_ from the _node package manager (npm)_ for you.
 
  Run ```gulp``` in the terminal to trigger the _gulp default_ task. An IDE like Webstorm shows these tasks usually on the left. You can also run the _default_ task from there.
 
@@ -33,6 +39,10 @@ To run it locally and as long as there is no distributed app or extra run script
 
  ### 3: run the app
  run `app/index.html` in your browser. Preferrably with a webserver - an IDE like AptanaStudio or WebStorm can do that, if you don't want to setup a webserver manually.
+
+ Congratulation! You are now familiar with the technology to work on modern web applications :) 🍻
+
+ (more information follows....)
 
  ## License
 
