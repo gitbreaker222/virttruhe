@@ -7,7 +7,8 @@
             name="inputHearts"
             onchange="{ updateLabel }">
 
-    <a href="#scanner">scanner</a>
+    <a href="#/scanner">scanner</a>
+    <a href="#/inventory">inventory</a>
 
     <span class="hearts">hearts: { this.hearts }</span>
   </header>
