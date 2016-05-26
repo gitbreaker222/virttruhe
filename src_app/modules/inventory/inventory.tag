@@ -10,6 +10,7 @@
 
   <script>
     var scope = this;
+
     scope.items = app.getItems();
     scope.selected = null;
 
