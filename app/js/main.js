@@ -1,49 +1,67 @@
+/*
+  APP.JS
+ */
 'use strict';
 
 var app = {};
 
 window.onload = function(){
-  //Routes
-  riot.route.stop(); //clear all route callbacks
-  riot.route.start();
-
-  var routes = {
-    inventory: function(action, id) {},
-    scanner: function(action, id) {}
-  };
-
-  riot.route(function(collection, id, action) {
-    console.log('1 ', collection, id, action);
-  });
-
-  riot.route('/inventory', function(name) {
-    console.log('2 ', 'The inventory. ', name)
-  });
-  
-  riot.route('/scanner', function(name) {
-    console.log('3 ', 'The scanner. ', name)
-  });
-
   riot.mount('info-bar');
-  riot.mount('inventory');
+  riot.route.start(true);
 };
+/*
+ APP.JS END
+ */
+
+/*
+  ROUTES.JS
+ */
+riot.route.stop(); //clear all route callbacks
+
+app.currentPage = null;
+
+var goTo = function(page){
+  if (app.currentPage) {
+    app.currentPage.unmount(true);
+  }
+  app.currentPage = riot.mount(page)[0];
+};
+
+riot.route(function() {
+  console.info("this page is not defined");
+});
+
+riot.route('/inventory', function(){
+  console.log('The inventory. ');
+  goTo('inventory');
+});
+
+riot.route('/scanner', function() {
+  console.log('The scanner');
+  goTo('scanner');
+});
+/*
+ ROUTES.JS END
+ */
+
 riot.tag2('demo', '<form onsubmit="{updateLabel}"> <input type="text" name="inputText"> <button type="submit">Do it!</button> <input type="submit" hidden> </form> <h3>--> {this.text}</h3>', '', '', function(opts) {
         this.updateLabel = function (){
             console.log(this);
             this.text = this.inputText.value;
         }
 });
-riot.tag2('info-bar', '<header> this is a header from riot.js <input type="text" placeholder="hello" name="inputHearts" onchange="{updateLabel}"> <a href="#scanner">scanner</a> <span class="hearts">hearts: {this.hearts}</span> </header>', '', '', function(opts) {
+riot.tag2('info-bar', '<header> this is a header from riot.js <input type="text" placeholder="hello" name="inputHearts" onchange="{updateLabel}"> <a href="#/scanner">scanner</a> <a href="#/inventory">inventory</a> <span class="hearts">hearts: {this.hearts}</span> </header>', '', '', function(opts) {
 
-        this.hearts = this.opts.hearts;
+      this.hearts = this.opts.hearts;
 
-        this.updateLabel = function (){
-            this.hearts = this.inputHearts.value;
-            this.inputHearts.value = "";
-        }
+      this.updateLabel = function (){
+        this.hearts = this.inputHearts.value;
+        this.inputHearts.value = "";
+      };
 });
 riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul>', '', '', function(opts) {
     var scope = this;
+
     scope.items = app.getItems();
     scope.selected = null;
 
@@ -64,6 +82,8 @@ riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:i
       console.log('new selected: ', scope.selected);
     }
 
+});
+riot.tag2('scanner', '<h1>work in progress...</h1>', '', '', function(opts) {
 });
 
 app.getItems = function(){
@@ -319,7 +339,4 @@ app.getItems = function(){
       "set":"crime"
     }
   ];
-}
-
-riot.tag2('scanner', '<h1>work in progress...</h1>', '', '', function(opts) {
-});
+};
