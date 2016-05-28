@@ -88,7 +88,7 @@ gulp.task('delete:data', function() {
 var data = {
   img :   './src_app/img/**/*.*',
   audio : './src_app/audio/**/*.*',
-  items : './src_app/data/**/*.jpg'
+  items : './src_app/data/items/**/*.{jpg,png}'
 };
 
 gulp.task('copy_data', ['delete:data'], function() {
