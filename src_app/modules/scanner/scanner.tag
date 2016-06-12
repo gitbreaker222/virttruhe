@@ -1,19 +1,15 @@
 <scanner>
 
-  <h1>has webcam? --> { hasWebcam + '' }#</h1>
-
   <video id="cameraOutput"
-         autoplay="true">
-
-
+         autoplay="">
   </video>
 
   <hr>
   <input type="file" accept="image">
 
-
   <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png"
     id="img">
+
 
 
   <script>
@@ -26,10 +22,24 @@
     var updateScope = function(){
       scope.hasWebcam = mediaSupportInfo.hasWebcam;
       scope.update();
+      playVideo(scope.cameraOutput);
     };
 
-    mediaSupportInfo.checkDeviceSupport(updateScope);
 
+    var videoError = function(e){
+      console.log(e);
+    };
+
+    var playVideo = function(video){
+      //should work on localhost only, as long as no https
+      navigator.getUserMedia({ "video": true }, function(stream){
+        video.src = window.URL.createObjectURL(stream);
+        video.play();
+      }, videoError)
+    };
+
+
+    mediaSupportInfo.checkDeviceSupport(updateScope);
 
 
 
