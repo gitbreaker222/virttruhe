@@ -4,6 +4,7 @@
 'use strict';
 
 var app = {};
+app.services = {};
 
 window.onload = function(){
   riot.mount('info-bar');

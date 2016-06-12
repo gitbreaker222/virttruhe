@@ -44,6 +44,47 @@ To run it locally and as long as there is no distributed app or extra run script
 
  (more information follows....)
 
+ ## App Architechture
+ ```
+ virttruhe/
+ ├── app/ ( built app for preview, completely created by gulp )
+ │    ├── data/
+ │    │    └── ( audio, img, json )
+ │    ├── js/
+ │    |    └── main.js ( concatenated scripts )
+ │    ├── style/
+ │    │    └── main.css ( compiled & concatenated sass files )
+ │    └── index.html ( compiled index.jade )
+ |
+ ├── concept/
+ │    └── ( sketches, notes, designs, etc... )
+ |
+ ├── src_app/ ( development directory )
+ │    ├── audio/
+ │    │    └── ( audio files )
+ │    ├── data/
+ │    │    └── ( json and similar data )
+ │    ├── img/
+ │    │    └── ( image files )
+ │    ├── modules/
+ │    │    ├── sample_module/
+ │    │    │  ( └ ─ sample-module.js ) ( gulp creates compiled tag here )
+ │    │    │    └── sample-module.tag ( riot.js tag, template + logic )
+ │    │    ├── app.js ( root script file )
+ │    │    └── routes.js
+ │    ├── style/
+ │    │    ├── _sample-module.sass
+ │    │    └── main.sass
+ │    ├── favicon.ico
+ │    └── index.jade
+ |
+ ├── ( some config files )
+ ├── gulpfile.js ( config for the build tasks )
+ ├── package.json ( metadata for the app )
+ └── README.md ( this description file )
+ ```
+
+
  ## License
 
  ### MIT License

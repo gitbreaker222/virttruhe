@@ -85,10 +85,18 @@ gulp.task('delete:data', function() {
   return del.sync('app/data');
 });
 
-var items = './src_app/data/items/img/**/*.*';
+var data = {
+  img :   './src_app/img/**/*.*',
+  audio : './src_app/audio/**/*.*',
+  items : './src_app/data/items/**/*.{jpg,png}'
+};
 
 gulp.task('copy_data', ['delete:data'], function() {
-  return gulp.src(items)
+  gulp.src(data.img)
+    .pipe(gulp.dest('./app/data/img'));
+  gulp.src(data.audio)
+    .pipe(gulp.dest('./app/data/audio'));
+  gulp.src(data.items)
     .pipe(gulp.dest('./app/data/items'));
 });
 
