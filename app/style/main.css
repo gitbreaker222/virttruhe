@@ -387,4 +387,5 @@ inventory .selected {
   box-shadow: 0px 0px 2em blue; }
 
 video {
-  background-color: #666; }
+  background-color: #666;
+  width: 100%; }
