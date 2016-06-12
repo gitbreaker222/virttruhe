@@ -1,5 +1,7 @@
 <scanner>
 
+  <h1>has webcam? --> { hasWebcam + '' }#</h1>
+
   <video id="cameraOutput"
          autoplay="true">
 
@@ -15,16 +17,18 @@
 
 
   <script>
-    var checkDeviceSupport = app.services.mediaDevicesService.checkDeviceSupport;
-    var qr = new QCodeDecoder();
+    var mediaSupportInfo = app.services.mediaDevicesService,
+        qr = new QCodeDecoder();
 
     var scope = this;
+    scope.hasWebcam = mediaSupportInfo.hasWebcam;
 
-    checkDeviceSupport(info);
+    var updateScope = function(){
+      scope.hasWebcam = mediaSupportInfo.hasWebcam;
+      scope.update();
+    };
 
-    function info() {
-      console.log(app.services.mediaDevicesService)
-    }
+    mediaSupportInfo.checkDeviceSupport(updateScope);
 
 
 
