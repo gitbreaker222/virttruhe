@@ -3,25 +3,25 @@
     this is a header from riot.js
 
     <input  type="text"
-            placeholder="hello"
-            name="inputHearts"
+            placeholder="update marbles value"
+            name="inputMarbles"
             onchange="{ updateLabel }">
 
     <a href="#/scanner">scanner</a>
     <a href="#/inventory">inventory</a>
 
-    <span class="hearts">hearts: { this.hearts }</span>
+    <span class="marbles">marbles: { this.marbles }</span>
   </header>
 
 
 
     <script>
       // tag properties have data binding, so transfer the  attribute to it
-      this.hearts = this.opts.hearts;
+      this.marbles = this.opts.marbles;
 
       this.updateLabel = function (){
-        this.hearts = this.inputHearts.value;
-        this.inputHearts.value = "";
+        this.marbles = this.inputMarbles.value;
+        this.inputMarbles.value = "";
       };
     </script>
 </info-bar>

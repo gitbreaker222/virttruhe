@@ -1,7 +1,13 @@
 @import normalize
+ul
+  padding: 0
+
 /*   --------========          ========-------- */
 /* --------======== CUSTOM STYLE ========-------- */
 /*   --------========          ========-------- */
+
+body
+  background-color: #222
 
 a
   background-color: white
@@ -9,18 +15,17 @@ a
 .hide
   display: none
 
+/* LAYOUT */
+#container
+  display: flex
+  flex-direction: column
+  justify-content: center
+
 .page
-  clear: both
-
-header
-  height: 1em
-  width: 100%
-  background-color: #222
-  color: #ccc
-
-  .hearts
-    float: right
+  display: flex
+  justify-content: center
 
 
+@import header
 @import inventory
 @import scanner

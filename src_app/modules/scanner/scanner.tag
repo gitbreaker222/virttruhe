@@ -1,8 +1,12 @@
 <scanner>
 
   <video id="cameraOutput"
-         autoplay="">
+         autoplay>
   </video>
+
+  <button onclick="{stopVideo}">
+    Stop video
+  </button>
 
   <hr>
   <input type="file" accept="image">
@@ -13,50 +17,64 @@
 
 
   <script>
-    var mediaSupportInfo = app.services.mediaDevicesService,
+    var scope = this,
+        mediaSupportInfo = app.services.mediaDevicesService,
+        cameraStream,
         qr = new QCodeDecoder();
 
-    var scope = this;
-    scope.hasWebcam = mediaSupportInfo.hasWebcam;
+    scope.stopVideo = function(){
+      _stopVideo(scope.cameraOutput)
+    };
 
-    var updateScope = function(){
-      scope.hasWebcam = mediaSupportInfo.hasWebcam;
+    var updateScopeStartScan = function(){
       scope.update();
       playVideo(scope.cameraOutput);
+      //decodeFromVideo(scope.cameraOutput)
     };
 
+    mediaSupportInfo.checkDeviceSupport(updateScopeStartScan);
 
-    var videoError = function(e){
-      console.log(e);
-    };
+
 
     var playVideo = function(video){
-      //should work on localhost only, as long as no https
       navigator.getUserMedia({ "video": true }, function(stream){
+        cameraStream = stream;
         video.src = window.URL.createObjectURL(stream);
         video.play();
       }, videoError)
     };
 
+    var _stopVideo = function(video){
+      video.pause();
+      video.src = null;
+      cameraStream.getVideoTracks()[0].stop()
+    };
 
-    mediaSupportInfo.checkDeviceSupport(updateScope);
+    var videoError = function(e){
+      console.info('webcam may already be in use');
+      alert(e);
+    };
 
 
 
-    /*
-    qr.decodeFromCamera(cameraStream, function (error) {
-      if (error) return; //throw error;
+    var decodeFromVideo = function (video){
+      qr.decodeFromCamera(video, function (error, result) {
+        if (error) {
+          return console.log(error);
+        }
+        _stopVideo(video);
+        alert(result);
+      }, true);
+    };
 
+/*
+    qr.decodeFromImage(img, function (error, result) {
+      if (error) {
+        console.log(error);
+        return;
+      }
       alert(result);
-
     }, true);
-
-
-    qr.decodeFromImage(img, function (err, result) {
-      if (err) return;
-
-      alert(result);
-    }, true);
-    */
+*/
   </script>
 </scanner>

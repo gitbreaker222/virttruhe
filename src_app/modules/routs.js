@@ -16,15 +16,18 @@ riot.route(function() {
   console.info("this page is not defined");
 });
 
+riot.route('/', function(){
+  riot.route('/inventory');
+});
+
 riot.route('/inventory', function(){
-  console.log('The inventory. ');
   goTo('inventory');
 });
 
 riot.route('/scanner', function() {
-  console.log('The scanner');
   goTo('scanner');
 });
+
 /*
  ROUTES.JS END
  */

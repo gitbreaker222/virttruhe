@@ -21,13 +21,13 @@ html.no-js(lang="en")
 
     body
     #container
-        info-bar(hearts="7")
+        info-bar(marbles="7")
 
-        #inventory.page
-            inventory.content
+        .page
+            inventory
 
-        #scanner.page
-            scanner.content
+        .page
+            scanner
 
         //#pause.page
         //    pause.content
@@ -38,8 +38,10 @@ html.no-js(lang="en")
 
 
     //SCRIPTS
+    script(src="../bower_components/webrtc-adapter/adapter.js")
     script(src="../bower_components/riot/riot.min.js")
     script(src="../lib/qr-decoder.js")
+
     script(src="js/main.js")
 
 

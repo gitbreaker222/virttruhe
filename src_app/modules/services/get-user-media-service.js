@@ -1,14 +1,13 @@
 /*
  GET-USER-MEDIA-SERVICE.JS
  */
-function initGetUserMediaService(){
-  navigator.getUserMedia = navigator.getUserMedia || 
-    navigator.webkitGetUserMedia || 
-    navigator.mozGetUserMedia || //omit? 
-    navigator.msGetUserMedia || 
-    navigator.oGetUserMedia; //omit?
-}
-initGetUserMediaService();
+
+(function() {
+  if(!navigator.webkitGetUserMedia && !navigator.msGetUserMedia){
+    //expect firefox
+    //navigator.getUserMedia = navigator.mediaDevices.getUserMedia;
+  }
+})();
 
 /*
  END GET-USER-MEDIA-SERVICE.JS
