@@ -356,7 +356,7 @@ riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <button onclic
     var updateScopeStartScan = function(){
       scope.update();
       playVideo(scope.cameraOutput);
-
+      decodeFromVideo(scope.cameraOutput)
     };
 
     mediaSupportInfo.checkDeviceSupport(updateScopeStartScan);
