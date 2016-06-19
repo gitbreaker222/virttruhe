@@ -5,7 +5,7 @@
 
 app.services.mediaDevicesService = {};
 
-function initMediaDevicesService (){
+(function(){
   var scope = app.services.mediaDevicesService;
 
   if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
@@ -124,8 +124,7 @@ function initMediaDevicesService (){
       }
     });
   }
-}
-initMediaDevicesService();
+})();
 
 /*
  MEDIA-DEVICES-SERVICE.JS END
