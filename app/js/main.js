@@ -32,15 +32,18 @@ riot.route(function() {
   console.info("this page is not defined");
 });
 
+riot.route('/', function(){
+  riot.route('/inventory');
+});
+
 riot.route('/inventory', function(){
-  console.log('The inventory. ');
   goTo('inventory');
 });
 
 riot.route('/scanner', function() {
-  console.log('The scanner');
   goTo('scanner');
 });
+
 /*
  ROUTES.JS END
  */
@@ -51,13 +54,13 @@ riot.tag2('demo', '<form onsubmit="{updateLabel}"> <input type="text" name="inpu
             this.text = this.inputText.value;
         }
 });
-riot.tag2('info-bar', '<header> this is a header from riot.js <input type="text" placeholder="hello" name="inputHearts" onchange="{updateLabel}"> <a href="#/scanner">scanner</a> <a href="#/inventory">inventory</a> <span class="hearts">hearts: {this.hearts}</span> </header>', '', '', function(opts) {
+riot.tag2('info-bar', '<header> this is a header from riot.js <input type="text" placeholder="update marbles value" name="inputMarbles" onchange="{updateLabel}"> <a href="#/scanner">scanner</a> <a href="#/inventory">inventory</a> <span class="marbles">marbles: {this.marbles}</span> </header>', '', '', function(opts) {
 
-      this.hearts = this.opts.hearts;
+      this.marbles = this.opts.marbles;
 
       this.updateLabel = function (){
-        this.hearts = this.inputHearts.value;
-        this.inputHearts.value = "";
+        this.marbles = this.inputMarbles.value;
+        this.inputMarbles.value = "";
       };
 });
 riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul>', '', '', function(opts) {
@@ -340,45 +343,64 @@ app.getItems = function(){
   ];
 };
 
-riot.tag2('scanner', '<video id="cameraOutput" autoplay=""> </video> <hr> <input type="file" accept="image"> <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png" id="img">', '', '', function(opts) {
-    var mediaSupportInfo = app.services.mediaDevicesService,
+riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <button onclick="{stopVideo}"> Stop video </button> <hr> <input type="file" accept="image"> <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png" id="img">', '', '', function(opts) {
+    var scope = this,
+        mediaSupportInfo = app.services.mediaDevicesService,
+        cameraStream,
         qr = new QCodeDecoder();
 
-    var scope = this;
-    scope.hasWebcam = mediaSupportInfo.hasWebcam;
+    scope.stopVideo = function(){
+      _stopVideo(scope.cameraOutput)
+    };
 
-    var updateScope = function(){
-      scope.hasWebcam = mediaSupportInfo.hasWebcam;
+    var updateScopeStartScan = function(){
       scope.update();
       playVideo(scope.cameraOutput);
+
     };
 
-    var videoError = function(e){
-      console.log(e);
-    };
+    mediaSupportInfo.checkDeviceSupport(updateScopeStartScan);
 
     var playVideo = function(video){
-
       navigator.getUserMedia({ "video": true }, function(stream){
+        cameraStream = stream;
         video.src = window.URL.createObjectURL(stream);
         video.play();
       }, videoError)
     };
 
-    mediaSupportInfo.checkDeviceSupport(updateScope);
+    var _stopVideo = function(video){
+      video.pause();
+      video.src = null;
+      cameraStream.getVideoTracks()[0].stop()
+    };
+
+    var videoError = function(e){
+      console.info('webcam may already be in use');
+      alert(e);
+    };
+
+    var decodeFromVideo = function (video){
+      qr.decodeFromCamera(video, function (error, result) {
+        if (error) {
+          return console.log(error);
+        }
+        _stopVideo(video);
+        alert(result);
+      }, true);
+    };
 
 });
 /*
  GET-USER-MEDIA-SERVICE.JS
  */
-function initGetUserMediaService(){
-  navigator.getUserMedia = navigator.getUserMedia || 
-    navigator.webkitGetUserMedia || 
-    navigator.mozGetUserMedia || //omit? 
-    navigator.msGetUserMedia || 
-    navigator.oGetUserMedia; //omit?
-}
-initGetUserMediaService();
+
+(function() {
+  if(!navigator.webkitGetUserMedia && !navigator.msGetUserMedia){
+    //expect firefox
+    //navigator.getUserMedia = navigator.mediaDevices.getUserMedia;
+  }
+})();
 
 /*
  END GET-USER-MEDIA-SERVICE.JS
@@ -392,7 +414,7 @@ initGetUserMediaService();
 
 app.services.mediaDevicesService = {};
 
-function initMediaDevicesService (){
+(function(){
   var scope = app.services.mediaDevicesService;
 
   if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
@@ -511,8 +533,7 @@ function initMediaDevicesService (){
       }
     });
   }
-}
-initMediaDevicesService();
+})();
 
 /*
  MEDIA-DEVICES-SERVICE.JS END

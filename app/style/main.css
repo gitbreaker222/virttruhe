@@ -353,39 +353,58 @@ td,
 th {
   padding: 0; }
 
+ul {
+  padding: 0; }
+
 /*   --------========          ========-------- */
 /* --------======== CUSTOM STYLE ========-------- */
 /*   --------========          ========-------- */
+body {
+  background-color: #222; }
+
 a {
   background-color: white; }
 
 .hide {
   display: none; }
 
+/* LAYOUT */
+#container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; }
+
 .page {
-  clear: both; }
+  display: flex;
+  justify-content: center; }
 
 header {
-  height: 1em;
-  width: 100%;
-  background-color: #222;
-  color: #ccc; }
-  header .hearts {
+  min-height: 1em;
+  padding: 0 1em;
+  background-color: #f5f5f5;
+  color: #222; }
+  header .marbles {
     float: right; }
 
+inventory ul {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap; }
+
 inventory li {
-  margin: 0.5em;
-  width: 10em;
-  height: 10em;
-  float: left;
+  margin: 0.5rem;
+  width: 10rem;
+  height: 10rem;
   background-color: #34b989;
   list-style: none; }
   inventory li img {
     width: 100%; }
 
 inventory .selected {
-  box-shadow: 0px 0px 2em blue; }
+  box-shadow: 0px 0px 2rem blue; }
 
 video {
   background-color: #666;
-  width: 100%; }
+  width: 100%;
+  max-width: 44rem;
+  border: solid black 1rem; }
