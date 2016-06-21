@@ -28,34 +28,19 @@
 
     var updateScopeStartScan = function(){
       scope.update();
-      playVideo(scope.cameraOutput);
-      //decodeFromVideo(scope.cameraOutput)
-    };
-
-    mediaSupportInfo.checkDeviceSupport(updateScopeStartScan);
-
-
-
-    var playVideo = function(video){
-      navigator.getUserMedia({ "video": true }, function(stream){
-        cameraStream = stream;
-        video.src = window.URL.createObjectURL(stream);
-        video.play();
-      }, videoError)
+      decodeFromVideo(scope.cameraOutput)
     };
 
     var _stopVideo = function(video){
       video.pause();
       video.src = null;
-      cameraStream.getVideoTracks()[0].stop()
+      qr.stop();
     };
 
     var videoError = function(e){
       console.info('webcam may already be in use');
       alert(e);
     };
-
-
 
     var decodeFromVideo = function (video){
       qr.decodeFromCamera(video, function (error, result) {
@@ -66,7 +51,6 @@
         alert(result);
       }, true);
     };
-
 /*
     qr.decodeFromImage(img, function (error, result) {
       if (error) {
@@ -76,5 +60,8 @@
       alert(result);
     }, true);
 */
+
+
+    mediaSupportInfo.checkDeviceSupport(updateScopeStartScan);
   </script>
 </scanner>
