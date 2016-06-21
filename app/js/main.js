@@ -355,24 +355,13 @@ riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <button onclic
 
     var updateScopeStartScan = function(){
       scope.update();
-      playVideo(scope.cameraOutput);
       decodeFromVideo(scope.cameraOutput)
-    };
-
-    mediaSupportInfo.checkDeviceSupport(updateScopeStartScan);
-
-    var playVideo = function(video){
-      navigator.getUserMedia({ "video": true }, function(stream){
-        cameraStream = stream;
-        video.src = window.URL.createObjectURL(stream);
-        video.play();
-      }, videoError)
     };
 
     var _stopVideo = function(video){
       video.pause();
       video.src = null;
-      cameraStream.getVideoTracks()[0].stop()
+      qr.stop();
     };
 
     var videoError = function(e){
@@ -390,23 +379,8 @@ riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <button onclic
       }, true);
     };
 
+    mediaSupportInfo.checkDeviceSupport(updateScopeStartScan);
 });
-/*
- GET-USER-MEDIA-SERVICE.JS
- */
-
-(function() {
-  if(!navigator.webkitGetUserMedia && !navigator.msGetUserMedia){
-    //expect firefox
-    //navigator.getUserMedia = navigator.mediaDevices.getUserMedia;
-  }
-})();
-
-/*
- END GET-USER-MEDIA-SERVICE.JS
- */
-
-
 /*
  MEDIA-DEVICES-SERVICE.JS
  */
