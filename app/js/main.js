@@ -8,6 +8,7 @@ app.services = {};
 
 window.onload = function(){
   riot.mount('info-bar');
+  riot.mount('context-action-bar');
   riot.route.start(true);
 };
 /*
@@ -53,6 +54,8 @@ riot.tag2('demo', '<form onsubmit="{updateLabel}"> <input type="text" name="inpu
             console.log(this);
             this.text = this.inputText.value;
         }
+});
+riot.tag2('context-action-bar', '<button class="main-button"> <img src="./data/img/qr-code.svg"> <label> scan </label> </button> <button class="secondary"> <img src="./data/img/info.svg"> <label> info </label> </button> <button class="secondary"> <img src="./data/img/use.svg"> <label> use </label> </button> <div class="main-button-space"></div> <button class="secondary"> <img src="./data/img/share.svg"> <label> share </label> </button> <button class="secondary"> <img src="./data/img/delete.svg"> <label> delete </label> </button>', '', '', function(opts) {
 });
 riot.tag2('info-bar', '<header> this is a header from riot.js <input type="text" placeholder="update marbles value" name="inputMarbles" onchange="{updateLabel}"> <a href="#/scanner">scanner</a> <a href="#/inventory">inventory</a> <span class="marbles">marbles: {this.marbles}</span> </header>', '', '', function(opts) {
 

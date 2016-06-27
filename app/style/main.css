@@ -378,6 +378,7 @@ a {
   display: flex;
   justify-content: center; }
 
+/* MODULES / IMPORTS */
 header {
   min-height: 1em;
   padding: 0 1em;
@@ -385,6 +386,38 @@ header {
   color: #222; }
   header .marbles {
     float: right; }
+
+context-action-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background-color: #ddd; }
+  context-action-bar button {
+    background: none;
+    border: none; }
+  context-action-bar button:focus {
+    border: none; }
+  context-action-bar img {
+    width: 3rem; }
+  context-action-bar label {
+    display: block;
+    text-align: center; }
+  context-action-bar .main-button {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%); }
+    context-action-bar .main-button img {
+      padding: 0.4rem;
+      border: solid 0.35rem #222;
+      border-radius: 100%;
+      background-color: #ddd; }
+  context-action-bar .secondary {
+    flex-grow: 1; }
+  context-action-bar .main-button-space {
+    flex-grow: 2; }
 
 inventory ul {
   display: flex;
