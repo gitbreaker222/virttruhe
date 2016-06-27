@@ -1,8 +1,20 @@
 context-action-bar
+  $background-color: #222
+  $primary-color: #ddd
+
   position: fixed
   bottom: 0
   width: 100%
-  background-color: #ddd
+  display: flex
+  justify-content: space-around
+  background-color: $primary-color
+
+  button
+    background: none
+    border: none
+
+  button:focus
+    border: none
 
   img
     width: 3rem
@@ -14,15 +26,18 @@ context-action-bar
   .main-button
     position: absolute
     left: 50%
+    bottom: 0
     transform: translateX(-50%)
 
     img
-      border: solid 0.2em #222
+      padding: 0.4rem
+      border: solid 0.35rem $background-color
       border-radius: 100%
+      background-color: $primary-color
 
   .secondary
-    display: flex
-    justify-content: space-between
+    flex-grow: 1
 
-  .secondary:nth-child(3)
-    float: right
+  .main-button-space
+    flex-grow: 2
+
