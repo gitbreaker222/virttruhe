@@ -13,11 +13,12 @@ var goTo = function(page){
 };
 
 riot.route(function() {
-  console.info("this page is not defined");
+  console.info("this page is not defined. Redirect to Inventory");
+  riot.route('/inventory', 'Inventory');
 });
 
 riot.route('/', function(){
-  riot.route('/inventory');
+  riot.route('/inventory', 'Inventory');
 });
 
 riot.route('/inventory', function(){
