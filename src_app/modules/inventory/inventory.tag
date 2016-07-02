@@ -7,6 +7,8 @@
     </li>
   </ul>
 
+  <context-action-bar></context-action-bar>
+
 
   <script>
     var scope = this;
