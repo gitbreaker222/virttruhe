@@ -1,10 +1,13 @@
 <context-action-bar>
-  <button class="main-button">
+  <button class="main-button"
+          onclick="{goTo}"
+          name="scan">
     <img src="./data/img/qr-code.svg">
     <label>
       scan
     </label>
   </button>
+
 
   <button class="secondary">
     <img src="./data/img/info.svg">
@@ -18,9 +21,7 @@
       use
     </label>
   </button>
-
   <div class="main-button-space"></div>
-
   <button class="secondary">
     <img src="./data/img/share.svg">
     <label>
@@ -36,6 +37,14 @@
 
 
   <script>
+    this.goTo = function (event) {
+      var state = event.currentTarget.name;
+
+      switch (state){
+        case 'scan':
+          riot.route('/scanner');
+      }
+    }
 
   </script>
 </context-action-bar>
