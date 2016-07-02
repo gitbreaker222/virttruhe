@@ -30,11 +30,12 @@ var goTo = function(page){
 };
 
 riot.route(function() {
-  console.info("this page is not defined");
+  console.info("this page is not defined. Redirect to Inventory");
+  riot.route('/inventory', 'Inventory');
 });
 
 riot.route('/', function(){
-  riot.route('/inventory');
+  riot.route('/inventory', 'Inventory');
 });
 
 riot.route('/inventory', function(){
@@ -55,7 +56,16 @@ riot.tag2('demo', '<form onsubmit="{updateLabel}"> <input type="text" name="inpu
             this.text = this.inputText.value;
         }
 });
-riot.tag2('context-action-bar', '<button class="main-button"> <img src="./data/img/qr-code.svg"> <label> scan </label> </button> <button class="secondary"> <img src="./data/img/info.svg"> <label> info </label> </button> <button class="secondary"> <img src="./data/img/use.svg"> <label> use </label> </button> <div class="main-button-space"></div> <button class="secondary"> <img src="./data/img/share.svg"> <label> share </label> </button> <button class="secondary"> <img src="./data/img/delete.svg"> <label> delete </label> </button>', '', '', function(opts) {
+riot.tag2('context-action-bar', '<button class="main-button" onclick="{goTo}" name="scan"> <img src="./data/img/qr-code.svg"> <label> scan </label> </button> <button class="secondary"> <img src="./data/img/info.svg"> <label> info </label> </button> <button class="secondary"> <img src="./data/img/use.svg"> <label> use </label> </button> <div class="main-button-space"></div> <button class="secondary"> <img src="./data/img/share.svg"> <label> share </label> </button> <button class="secondary"> <img src="./data/img/delete.svg"> <label> delete </label> </button>', '', '', function (opts) {
+  this.goTo = function (event) {
+    var state = event.currentTarget.name;
+    
+    switch (state) {
+      case 'scan':
+        riot.route('/scanner');
+    }
+  }
+
 });
 riot.tag2('info-bar', '<header> this is a header from riot.js <input type="text" placeholder="update marbles value" name="inputMarbles" onchange="{updateLabel}"> <a href="#/scanner">scanner</a> <a href="#/inventory">inventory</a> <span class="marbles">marbles: {this.marbles}</span> </header>', '', '', function(opts) {
 
@@ -66,7 +76,7 @@ riot.tag2('info-bar', '<header> this is a header from riot.js <input type="text"
         this.inputMarbles.value = "";
       };
 });
-riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul>', '', '', function(opts) {
+riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul> <context-action-bar></context-action-bar>', '', '', function (opts) {
     var scope = this;
 
     scope.items = app.getItems();

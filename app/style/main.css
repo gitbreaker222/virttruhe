@@ -398,9 +398,14 @@ context-action-bar {
     background: none;
     border: none; }
   context-action-bar button:focus {
-    border: none; }
+    outline: none;
+  }
   context-action-bar img {
     width: 3rem; }
+
+context-action-bar img:focus {
+  outline: none;
+}
   context-action-bar label {
     display: block;
     text-align: center; }
