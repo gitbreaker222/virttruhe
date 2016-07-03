@@ -1,6 +1,7 @@
 context-action-bar
   $background-color: #222
   $primary-color: #ddd
+  $icon-width: 3rem
 
   position: fixed
   bottom: 0
@@ -17,7 +18,7 @@ context-action-bar
     outline: none
 
   img
-    width: 3rem
+    width: $icon-width
 
   img:focus
     outline: none
@@ -32,7 +33,9 @@ context-action-bar
     bottom: 0
     transform: translateX(-50%)
 
-    img
+    div
+      width: $icon-width
+      height: $icon-width
       padding: 0.4rem
       border: solid 0.35rem $background-color
       border-radius: 100%

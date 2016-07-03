@@ -2,7 +2,9 @@
   <button class="main-button"
           onclick="{goTo}"
           name="scan">
-    <img src="./data/img/qr-code.svg">
+    <div>
+      <img src="./data/img/qr-code.svg">
+    </div>
     <label>
       scan
     </label>
