@@ -1,16 +1,13 @@
 <info-bar>
   <header>
-    this is a header from riot.js
+    <span name="infoText">
+      this is a header from riot.js
+    </span>
 
-    <input  type="text"
-            placeholder="update marbles value"
-            name="inputMarbles"
-            onchange="{ updateLabel }">
-
-    <a href="#/scanner">scanner</a>
-    <a href="#/inventory">inventory</a>
-
-    <span class="marbles">marbles: { this.marbles }</span>
+    <span class="marbles">
+      <img src="data/img/marble-icon.png">
+      { this.marbles }
+    </span>
   </header>
 
 
