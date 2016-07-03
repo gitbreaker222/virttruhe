@@ -353,6 +353,10 @@ td,
 th {
   padding: 0; }
 
+html, body {
+  height: 100%;
+}
+
 ul {
   padding: 0; }
 
@@ -365,27 +369,37 @@ body {
 a {
   background-color: white; }
 
+button:disabled img, button:disabled label {
+  opacity: 0.5;
+}
+
 .hide {
   display: none; }
 
 /* LAYOUT */
 #container {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center; }
+}
 
 .page {
-  display: flex;
-  justify-content: center; }
+  overflow: auto;
+}
 
 /* MODULES / IMPORTS */
 header {
-  min-height: 1em;
-  padding: 0 1em;
+  display: flex;
+  justify-content: space-between;
+  height: 1.2rem;
+  padding: 0 1rem;
   background-color: #f5f5f5;
   color: #222; }
-  header .marbles {
-    float: right; }
+
+header .marbles img {
+  height: 1rem;
+  vertical-align: text-top;
+}
 
 context-action-bar {
   position: fixed;
@@ -414,20 +428,24 @@ context-action-bar img:focus {
     left: 50%;
     bottom: 0;
     transform: translateX(-50%); }
-    context-action-bar .main-button img {
+
+context-action-bar .main-button div {
+  width: 3rem;
+  height: 3rem;
       padding: 0.4rem;
       border: solid 0.35rem #222;
       border-radius: 100%;
       background-color: #ddd; }
-  context-action-bar .secondary {
-    flex-grow: 1; }
   context-action-bar .main-button-space {
-    flex-grow: 2; }
+    flex-grow: 1;
+  }
 
 inventory ul {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap; }
+  flex-wrap: wrap;
+  margin-bottom: 6rem;
+}
 
 inventory li {
   margin: 0.5rem;
