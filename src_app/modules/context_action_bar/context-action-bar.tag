@@ -41,6 +41,9 @@
 
 
   <script>
+    //tag attributes
+    var mainAction = this.opts.main;
+
     //data model
     var imagePath = './data/img/';
     var buttons = {
@@ -77,7 +80,12 @@
     };
     //data model end----
 
-    this.mainButton = buttons.scan;
+    if (mainAction in buttons) {
+      this.mainButton = buttons[mainAction];
+    } else {
+      throw new Error('the main button "' + mainAction + '" is not defined. Please use one of these: ' + Object.keys(buttons).toString())
+    }
+
     this.secondaryButtons = [
       buttons.info,
       buttons.use,

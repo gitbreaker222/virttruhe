@@ -7,7 +7,8 @@
     </li>
   </ul>
 
-  <context-action-bar></context-action-bar>
+  <context-action-bar main="scan">
+  </context-action-bar>
 
 
   <script>
@@ -28,9 +29,7 @@
     };
 
     scope.select = function () {
-      console.log('previous selected: ', scope.selected);
       scope.selected = this.id;
-      console.log('new selected: ', scope.selected);
     }
 
   </script>
