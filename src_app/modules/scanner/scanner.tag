@@ -14,8 +14,7 @@
   <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png"
     id="img">
 
-  <context-action-bar main="inventory">
-
+  <context-action-bar main="stopScan">
   </context-action-bar>
 
 

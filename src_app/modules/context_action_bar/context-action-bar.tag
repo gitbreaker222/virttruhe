@@ -1,6 +1,6 @@
 <context-action-bar>
   <button class="main-button"
-          onclick="{goTo}"
+          onclick="{mainButton.action}"
           name="{mainButton.name}">
     <div>
       <img src="{mainButton.img}">
@@ -50,11 +50,16 @@
       scan: {
         name: 'scan',
         label: 'scan',
+        action: 'riot.route("/scanner")',
         img: imagePath + 'qr-code.svg'
       },
       stopScan: {
         name: 'stopScan',
         label: 'stop scan',
+        action: function stopScan() {
+          //qr.stop();
+          riot.route('/inventory');
+        },
         img: imagePath + 'cancel.svg'
       },
       info: {
@@ -78,6 +83,7 @@
         img: imagePath + 'delete.svg'
       }
     };
+
     //data model end----
 
     if (mainAction in buttons) {
@@ -92,15 +98,6 @@
       buttons.share,
       buttons.delete
     ];
-
-    this.goTo = function (event) {
-      var state = event.currentTarget.name;
-
-      switch (state) {
-        case 'scan':
-          riot.route('/scanner');
-      }
-    };
 
     switch (window.location.hash) {
       case '#scanner':
