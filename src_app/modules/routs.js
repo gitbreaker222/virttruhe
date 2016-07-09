@@ -5,7 +5,7 @@ riot.route.stop(); //clear all route callbacks
 
 app.currentPage = null;
 
-var goTo = function(page){
+app.goTo = function (page) {
   if (app.currentPage) {
     app.currentPage.unmount(true);
   }
@@ -22,11 +22,11 @@ riot.route('/', function(){
 });
 
 riot.route('/inventory', function(){
-  goTo('inventory');
+  app.goTo('inventory');
 });
 
 riot.route('/scanner', function() {
-  goTo('scanner');
+  app.goTo('scanner');
 });
 
 /*
