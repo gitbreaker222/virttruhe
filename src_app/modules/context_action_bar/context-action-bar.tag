@@ -10,34 +10,33 @@
     </label>
   </button>
 
+  <div class="secondary">
+    <button>
+      <img src="{secondaryButtons[0].img}">
+      <label>
+        {secondaryButtons[0].label}
+      </label>
+    </button>
+    <button>
+      <img src="{secondaryButtons[1].img}">
+      <label>
+        {secondaryButtons[1].label}
+      </label>
+    </button>
+    <button>
+      <img src="{secondaryButtons[2].img}">
+      <label>
+        {secondaryButtons[2].label}
+      </label>
+    </button>
+    <button>
+      <img src="{secondaryButtons[3].img}">
+      <label>
+        {secondaryButtons[3].label}
+      </label>
+    </button>
+  </div>
 
-  <button class="secondary">
-    <img src="{secondaryButtons[0].img}">
-    <label>
-      {secondaryButtons[0].label}
-    </label>
-  </button>
-  <button class="secondary">
-    <img src="{secondaryButtons[1].img}">
-    <label>
-      {secondaryButtons[1].label}
-    </label>
-  </button>
-
-  <div class="main-button-space"></div>
-
-  <button class="secondary">
-    <img src="{secondaryButtons[2].img}">
-    <label>
-      {secondaryButtons[2].label}
-    </label>
-  </button>
-  <button class="secondary">
-    <img src="{secondaryButtons[3].img}">
-    <label>
-      {secondaryButtons[3].label}
-    </label>
-  </button>
 
 
   <script>
