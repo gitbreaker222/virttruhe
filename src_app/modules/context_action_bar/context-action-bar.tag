@@ -11,25 +11,25 @@
   </button>
 
   <div class="secondary">
-    <button>
+    <button disabled>
       <img src="{secondaryButtons[0].img}">
       <label>
         {secondaryButtons[0].label}
       </label>
     </button>
-    <button>
+    <button disabled>
       <img src="{secondaryButtons[1].img}">
       <label>
         {secondaryButtons[1].label}
       </label>
     </button>
-    <button>
+    <button disabled>
       <img src="{secondaryButtons[2].img}">
       <label>
         {secondaryButtons[2].label}
       </label>
     </button>
-    <button>
+    <button disabled>
       <img src="{secondaryButtons[3].img}">
       <label>
         {secondaryButtons[3].label}
