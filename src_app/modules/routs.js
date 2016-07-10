@@ -5,7 +5,7 @@ riot.route.stop(); //clear all route callbacks
 
 app.currentPage = null;
 
-var goTo = function(page){
+app.goTo = function (page) {
   if (app.currentPage) {
     app.currentPage.unmount(true);
   }
@@ -13,19 +13,20 @@ var goTo = function(page){
 };
 
 riot.route(function() {
-  console.info("this page is not defined");
+  console.info("this page is not defined. Redirect to Inventory");
+  riot.route('/inventory', 'Inventory');
 });
 
 riot.route('/', function(){
-  riot.route('/inventory');
+  riot.route('/inventory', 'Inventory');
 });
 
 riot.route('/inventory', function(){
-  goTo('inventory');
+  app.goTo('inventory');
 });
 
 riot.route('/scanner', function() {
-  goTo('scanner');
+  app.goTo('scanner');
 });
 
 /*

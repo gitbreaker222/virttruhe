@@ -1,12 +1,7 @@
 <scanner>
-
   <video id="cameraOutput"
          autoplay>
   </video>
-
-  <button onclick="{stopVideo}">
-    Stop video
-  </button>
 
   <hr>
   <input type="file" accept="image">
@@ -14,24 +9,25 @@
   <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png"
     id="img">
 
+  <context-action-bar main="stopScan">
+  </context-action-bar>
 
 
   <script>
     var scope = this,
-        mediaSupportInfo = app.services.mediaDevicesService,
         cameraStream,
         qr = new QCodeDecoder();
 
-    scope.stopVideo = function(){
-      _stopVideo(scope.cameraOutput)
+    scope.stopScan = function () {
+      _stopScan(scope.cameraOutput)
     };
 
-    var updateScopeStartScan = function(){
+    var startScan = function () {
       scope.update();
       decodeFromVideo(scope.cameraOutput)
     };
 
-    var _stopVideo = function(video){
+    var _stopScan = function (video) {
       video.pause();
       video.src = null;
       qr.stop();
@@ -61,7 +57,15 @@
     }, true);
 */
 
+    //todo: if blackberry browser, skip promise call (in adapter.js, BBOS10 no Promises -_-)
 
-    mediaSupportInfo.checkDeviceSupport(updateScopeStartScan);
+    DetectRTC.load(function () {
+      scope.update();
+      startScan();
+    });
+
+    this.on('before-unmount', function () {
+      this.stopScan();
+    });
   </script>
 </scanner>

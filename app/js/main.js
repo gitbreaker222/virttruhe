@@ -8,6 +8,7 @@ app.services = {};
 
 window.onload = function(){
   riot.mount('info-bar');
+  riot.mount('context-action-bar');
   riot.route.start(true);
 };
 /*
@@ -21,7 +22,7 @@ riot.route.stop(); //clear all route callbacks
 
 app.currentPage = null;
 
-var goTo = function(page){
+app.goTo = function (page) {
   if (app.currentPage) {
     app.currentPage.unmount(true);
   }
@@ -29,19 +30,20 @@ var goTo = function(page){
 };
 
 riot.route(function() {
-  console.info("this page is not defined");
+  console.info("this page is not defined. Redirect to Inventory");
+  riot.route('/inventory', 'Inventory');
 });
 
 riot.route('/', function(){
-  riot.route('/inventory');
+  riot.route('/inventory', 'Inventory');
 });
 
 riot.route('/inventory', function(){
-  goTo('inventory');
+  app.goTo('inventory');
 });
 
 riot.route('/scanner', function() {
-  goTo('scanner');
+  app.goTo('scanner');
 });
 
 /*
@@ -54,7 +56,72 @@ riot.tag2('demo', '<form onsubmit="{updateLabel}"> <input type="text" name="inpu
             this.text = this.inputText.value;
         }
 });
-riot.tag2('info-bar', '<header> this is a header from riot.js <input type="text" placeholder="update marbles value" name="inputMarbles" onchange="{updateLabel}"> <a href="#/scanner">scanner</a> <a href="#/inventory">inventory</a> <span class="marbles">marbles: {this.marbles}</span> </header>', '', '', function(opts) {
+riot.tag2('context-action-bar', '<button class="main-button" onclick="{mainButton.action}" name="{mainButton.name}"> <div> <img riot-src="{mainButton.img}"> </div> <label> {mainButton.label} </label> </button> <div class="secondary"> <button disabled> <img riot-src="{secondaryButtons[0].img}"> <label> {secondaryButtons[0].label} </label> </button> <button disabled> <img riot-src="{secondaryButtons[1].img}"> <label> {secondaryButtons[1].label} </label> </button> <button disabled> <img riot-src="{secondaryButtons[2].img}"> <label> {secondaryButtons[2].label} </label> </button> <button disabled> <img riot-src="{secondaryButtons[3].img}"> <label> {secondaryButtons[3].label} </label> </button> </div>', '', '', function (opts) {
+  
+  var mainAction = this.opts.main;
+  
+  var imagePath = './data/img/';
+  var buttons = {
+    scan: {
+      name: 'scan',
+      label: 'scan',
+      action: 'riot.route("/scanner")',
+      img: imagePath + 'qr-code.svg'
+    },
+    stopScan: {
+      name: 'stopScan',
+      label: 'stop scan',
+      action: function stopScan() {
+        
+        riot.route('/inventory');
+      },
+      img: imagePath + 'cancel.svg'
+    },
+    info: {
+      name: 'info',
+      label: 'info',
+      img: imagePath + 'info.svg'
+    },
+    use: {
+      name: 'use',
+      label: 'benutzen',
+      img: imagePath + 'use.svg'
+    },
+    share: {
+      name: 'share',
+      label: 'share',
+      img: imagePath + 'share.svg'
+    },
+    delete: {
+      name: 'delete',
+      label: 'löschen',
+      img: imagePath + 'delete.svg'
+    }
+  };
+  
+  if (mainAction in buttons) {
+    this.mainButton = buttons[mainAction];
+  } else {
+    throw new Error('the main button "' + mainAction + '" is not defined. Please use one of these: ' + Object.keys(buttons).toString())
+    }
+  
+  this.secondaryButtons = [
+    buttons.info,
+    buttons.use,
+    buttons.share,
+    buttons.delete
+  ];
+  
+  switch (window.location.hash) {
+    case '#scanner':
+      console.log('show actions for scanner');
+      break;
+    case '#inventory':
+      console.log('show actions for inventory')
+    }
+
+});
+riot.tag2('info-bar', '<header> <span name="infoText"> this is a header from riot.js </span> <span class="marbles"> <img src="data/img/marble-icon.png"> {this.marbles} </span> </header>', '', '', function (opts) {
 
       this.marbles = this.opts.marbles;
 
@@ -63,7 +130,7 @@ riot.tag2('info-bar', '<header> this is a header from riot.js <input type="text"
         this.inputMarbles.value = "";
       };
 });
-riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul>', '', '', function(opts) {
+riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul> <context-action-bar main="scan"> </context-action-bar>', '', '', function (opts) {
     var scope = this;
 
     scope.items = app.getItems();
@@ -81,9 +148,7 @@ riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:i
     };
 
     scope.select = function () {
-      console.log('previous selected: ', scope.selected);
       scope.selected = this.id;
-      console.log('new selected: ', scope.selected);
     }
 
 });
@@ -343,22 +408,21 @@ app.getItems = function(){
   ];
 };
 
-riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <button onclick="{stopVideo}"> Stop video </button> <hr> <input type="file" accept="image"> <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png" id="img">', '', '', function(opts) {
+riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <hr> <input type="file" accept="image"> <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png" id="img"> <context-action-bar main="stopScan"> </context-action-bar>', '', '', function (opts) {
     var scope = this,
-        mediaSupportInfo = app.services.mediaDevicesService,
         cameraStream,
         qr = new QCodeDecoder();
-
-    scope.stopVideo = function(){
-      _stopVideo(scope.cameraOutput)
+  
+  scope.stopScan = function () {
+    _stopScan(scope.cameraOutput)
     };
-
-    var updateScopeStartScan = function(){
+  
+  var startScan = function () {
       scope.update();
       decodeFromVideo(scope.cameraOutput)
     };
-
-    var _stopVideo = function(video){
+  
+  var _stopScan = function (video) {
       video.pause();
       video.src = null;
       qr.stop();
@@ -378,137 +442,13 @@ riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <button onclic
         alert(result);
       }, true);
     };
-
-    mediaSupportInfo.checkDeviceSupport(updateScopeStartScan);
-});
-/*
- MEDIA-DEVICES-SERVICE.JS
- */
-// based on http://stackoverflow.com/a/30047627/3313410
-
-app.services.mediaDevicesService = {};
-
-(function(){
-  var scope = app.services.mediaDevicesService;
-
-  if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-    // Firefox 38+ seems having support of enumerateDevices
-    navigator.enumerateDevices = function (callback) {
-      navigator.mediaDevices.enumerateDevices().then(callback);
-    };
-  }
-
-  scope.MediaDevices = [];
-  scope.isHTTPs = location.protocol === 'https:';
-  scope.canEnumerate = false;
-
-  if (typeof MediaStreamTrack !== 'undefined' && 'getSources' in MediaStreamTrack) {
-    scope.canEnumerate = true;
-  } else if (navigator.mediaDevices && !!navigator.mediaDevices.enumerateDevices) {
-    scope.canEnumerate = true;
-  }
-
-  scope.hasMicrophone = false;
-  scope.hasSpeakers = false;
-  scope.hasWebcam = false;
-
-  scope.isMicrophoneAlreadyCaptured = false;
-  scope.isWebcamAlreadyCaptured = false;
-
-  scope.checkDeviceSupport = function (callback) {
-    if (!scope.canEnumerate) {
-      return;
-    }
-
-    if (!navigator.enumerateDevices && window.MediaStreamTrack && window.MediaStreamTrack.getSources) {
-      navigator.enumerateDevices = window.MediaStreamTrack.getSources.bind(window.MediaStreamTrack);
-    }
-
-    if (!navigator.enumerateDevices && navigator.enumerateDevices) {
-      navigator.enumerateDevices = navigator.enumerateDevices.bind(navigator);
-    }
-
-    if (!navigator.enumerateDevices) {
-      if (callback) {
-        callback();
-      }
-      return;
-    }
-
-    MediaDevices = [];
-    navigator.enumerateDevices(function (devices) {
-      devices.forEach(function (_device) {
-        var device = {};
-        for (var d in _device) {
-          device[d] = _device[d];
-        }
-
-        if (device.kind === 'audio') {
-          device.kind = 'audioinput';
-        }
-
-        if (device.kind === 'video') {
-          device.kind = 'videoinput';
-        }
-
-        var skip;
-        MediaDevices.forEach(function (d) {
-          if (d.id === device.id && d.kind === device.kind) {
-            skip = true;
-          }
-        });
-
-        if (skip) {
-          return;
-        }
-
-        if (!device.deviceId) {
-          device.deviceId = device.id;
-        }
-
-        if (!device.id) {
-          device.id = device.deviceId;
-        }
-
-        if (!device.label) {
-          device.label = 'Please invoke getUserMedia once.';
-          if (!scope.isHTTPs) {
-            device.label = 'HTTPs is required to get label of this ' + device.kind + ' device.';
-          }
-        } else {
-          if (device.kind === 'videoinput' && !scope.isWebcamAlreadyCaptured) {
-            scope.isWebcamAlreadyCaptured = true;
-          }
-
-          if (device.kind === 'audioinput' && !scope.isMicrophoneAlreadyCaptured) {
-            scope.isMicrophoneAlreadyCaptured = true;
-          }
-        }
-
-        if (device.kind === 'audioinput') {
-          scope.hasMicrophone = true;
-        }
-
-        if (device.kind === 'audiooutput') {
-          scope.hasSpeakers = true;
-        }
-
-        if (device.kind === 'videoinput') {
-          scope.hasWebcam = true;
-        }
-
-        // there is no 'videoouput' in the spec.
-
-        scope.MediaDevices.push(device);
-      });
-
-      if (callback) {
-        callback();
-      }
+  
+  DetectRTC.load(function () {
+    scope.update();
+    startScan();
     });
-  }
-})();
-
-/*
- MEDIA-DEVICES-SERVICE.JS END
- */
+  
+  this.on('before-unmount', function () {
+    this.stopScan();
+  });
+});
