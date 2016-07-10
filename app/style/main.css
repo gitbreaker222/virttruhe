@@ -385,6 +385,7 @@ button:disabled img, button:disabled label {
 
 .page {
   overflow: auto;
+  color: #fff;
 }
 
 /* MODULES / IMPORTS */
@@ -404,11 +405,15 @@ header .marbles img {
 context-action-bar {
   position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
-  display: flex;
-  justify-content: space-around;
-  background-color: #ddd; }
+  height: 4.5rem;
+  background-color: #ddd;
+  color: #000;
+}
   context-action-bar button {
+    position: absolute;
+    bottom: 0;
     background: none;
     border: none; }
   context-action-bar button:focus {
@@ -424,9 +429,8 @@ context-action-bar img:focus {
     display: block;
     text-align: center; }
   context-action-bar .main-button {
-    position: absolute;
     left: 50%;
-    bottom: 0;
+    -webkit-transform: translateX(-50%);
     transform: translateX(-50%); }
 
 context-action-bar .main-button div {
@@ -436,9 +440,26 @@ context-action-bar .main-button div {
       border: solid 0.35rem #222;
       border-radius: 100%;
       background-color: #ddd; }
-  context-action-bar .main-button-space {
-    flex-grow: 1;
-  }
+
+context-action-bar .secondary button:first-of-type {
+  left: 0;
+}
+
+context-action-bar .secondary button:nth-of-type(2) {
+  left: 25%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+
+context-action-bar .secondary button:nth-of-type(3) {
+  right: 25%;
+  -webkit-transform: translateX(50%);
+  transform: translateX(50%);
+}
+
+context-action-bar .secondary button:nth-of-type(4) {
+  right: 0;
+}
 
 inventory ul {
   display: flex;
@@ -463,4 +484,5 @@ video {
   background-color: #666;
   width: 100%;
   max-width: 44rem;
+  box-sizing: border-box;
   border: solid black 1rem; }
