@@ -40,8 +40,12 @@
 
 
   <script>
-    //tag attributes
-    var mainAction = this.opts.main;
+    /*
+     the context-action-bar takes an array of button names
+     - actions: array with max. 5 elements. First is main action
+     */
+    var mainAction = this.opts.actions[0];
+    var secondaryActions = this.opts.actions.slice(1, 5);
 
     //data model
     var imagePath = './data/img/';
@@ -56,7 +60,6 @@
         name: 'stopScan',
         label: 'stop scan',
         action: function stopScan() {
-          //qr.stop();
           riot.route('/inventory');
         },
         img: imagePath + 'cancel.svg'
@@ -76,8 +79,8 @@
         label: 'share',
         img: imagePath + 'share.svg'
       },
-      delete: {
-        name: 'delete',
+      remove: {
+        name: 'remove',
         label: 'löschen',
         img: imagePath + 'delete.svg'
       }
@@ -91,12 +94,11 @@
       throw new Error('the main button "' + mainAction + '" is not defined. Please use one of these: ' + Object.keys(buttons).toString())
     }
 
-    this.secondaryButtons = [
-      buttons.info,
-      buttons.use,
-      buttons.share,
-      buttons.delete
-    ];
+    this.secondaryButtons = [];
+    this.secondaryButtons.push(buttons[secondaryActions[0]]);
+    this.secondaryButtons.push(buttons[secondaryActions[1]]);
+    this.secondaryButtons.push(buttons[secondaryActions[2]]);
+    this.secondaryButtons.push(buttons[secondaryActions[3]]);
 
     switch (window.location.hash) {
       case '#scanner':
