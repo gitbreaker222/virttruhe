@@ -58,7 +58,8 @@ riot.tag2('demo', '<form onsubmit="{updateLabel}"> <input type="text" name="inpu
 });
 riot.tag2('context-action-bar', '<button class="main-button" onclick="{mainButton.action}" name="{mainButton.name}"> <div> <img riot-src="{mainButton.img}"> </div> <label> {mainButton.label} </label> </button> <div class="secondary"> <button disabled> <img riot-src="{secondaryButtons[0].img}"> <label> {secondaryButtons[0].label} </label> </button> <button disabled> <img riot-src="{secondaryButtons[1].img}"> <label> {secondaryButtons[1].label} </label> </button> <button disabled> <img riot-src="{secondaryButtons[2].img}"> <label> {secondaryButtons[2].label} </label> </button> <button disabled> <img riot-src="{secondaryButtons[3].img}"> <label> {secondaryButtons[3].label} </label> </button> </div>', '', '', function (opts) {
   
-  var mainAction = this.opts.main;
+  var mainAction = this.opts.actions[0];
+  var secondaryActions = this.opts.actions.slice(1, 5);
   
   var imagePath = './data/img/';
   var buttons = {
@@ -67,12 +68,11 @@ riot.tag2('context-action-bar', '<button class="main-button" onclick="{mainButto
       label: 'scan',
       action: 'riot.route("/scanner")',
       img: imagePath + 'qr-code.svg'
-    },
+      },
     stopScan: {
       name: 'stopScan',
       label: 'stop scan',
       action: function stopScan() {
-        
         riot.route('/inventory');
       },
       img: imagePath + 'cancel.svg'
@@ -92,8 +92,8 @@ riot.tag2('context-action-bar', '<button class="main-button" onclick="{mainButto
       label: 'share',
       img: imagePath + 'share.svg'
     },
-    delete: {
-      name: 'delete',
+    remove: {
+      name: 'remove',
       label: 'löschen',
       img: imagePath + 'delete.svg'
     }
@@ -105,12 +105,11 @@ riot.tag2('context-action-bar', '<button class="main-button" onclick="{mainButto
     throw new Error('the main button "' + mainAction + '" is not defined. Please use one of these: ' + Object.keys(buttons).toString())
     }
   
-  this.secondaryButtons = [
-    buttons.info,
-    buttons.use,
-    buttons.share,
-    buttons.delete
-  ];
+  this.secondaryButtons = [];
+  this.secondaryButtons.push(buttons[secondaryActions[0]]);
+  this.secondaryButtons.push(buttons[secondaryActions[1]]);
+  this.secondaryButtons.push(buttons[secondaryActions[2]]);
+  this.secondaryButtons.push(buttons[secondaryActions[3]]);
   
   switch (window.location.hash) {
     case '#scanner':
@@ -129,28 +128,6 @@ riot.tag2('info-bar', '<header> <span name="infoText"> this is a header from rio
         this.marbles = this.inputMarbles.value;
         this.inputMarbles.value = "";
       };
-});
-riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul> <context-action-bar main="scan"> </context-action-bar>', '', '', function (opts) {
-    var scope = this;
-
-    scope.items = app.getItems();
-    scope.selected = null;
-
-    scope.isSelected = function(item){
-      return item.id === scope.selected;
-    };
-
-    scope.getImageSource = function (item) {
-      if (item.image) {
-        return 'data/items/img/small/' + item.image;
-      }
-      return 'data/items/img/small/' + item.id + '.jpg';
-    };
-
-    scope.select = function () {
-      scope.selected = this.id;
-    }
-
 });
 
 app.getItems = function(){
@@ -408,7 +385,29 @@ app.getItems = function(){
   ];
 };
 
-riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <hr> <input type="file" accept="image"> <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png" id="img"> <context-action-bar main="stopScan"> </context-action-bar>', '', '', function (opts) {
+riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul> <context-action-bar actions="{[\'scan\',\'info\',\'use\',\'share\',\'remove\']}"> </context-action-bar>', '', '', function (opts) {
+  var scope = this;
+  
+  scope.items = app.getItems();
+  scope.selected = null;
+  
+  scope.isSelected = function (item) {
+    return item.id === scope.selected;
+  };
+  
+  scope.getImageSource = function (item) {
+    if (item.image) {
+      return 'data/items/img/small/' + item.image;
+    }
+    return 'data/items/img/small/' + item.id + '.jpg';
+  };
+  
+  scope.select = function () {
+    scope.selected = this.id;
+  }
+  
+});
+riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <hr> <input type="file" accept="image"> <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png" id="img"> <context-action-bar actions="{[\'stopScan\']}"> </context-action-bar>', '', '', function (opts) {
     var scope = this,
         cameraStream,
         qr = new QCodeDecoder();
@@ -427,13 +426,13 @@ riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <hr> <input ty
       video.src = null;
       qr.stop();
     };
-
-    var videoError = function(e){
+  
+  var videoError = function (e) {
       console.info('webcam may already be in use');
       alert(e);
     };
-
-    var decodeFromVideo = function (video){
+  
+  var decodeFromVideo = function (video) {
       qr.decodeFromCamera(video, function (error, result) {
         if (error) {
           return console.log(error);

@@ -354,7 +354,7 @@ th {
   padding: 0; }
 
 html, body {
-  height: 100%;
+    height: 100%;
 }
 
 ul {
@@ -370,7 +370,7 @@ a {
   background-color: white; }
 
 button:disabled img, button:disabled label {
-  opacity: 0.5;
+    opacity: 0.5;
 }
 
 .hide {
@@ -380,12 +380,12 @@ button:disabled img, button:disabled label {
 #container {
   height: 100%;
   display: flex;
-  flex-direction: column;
+    flex-direction: column;
 }
 
 .page {
   overflow: auto;
-  color: #fff;
+    color: #fff;
 }
 
 /* MODULES / IMPORTS */
@@ -398,8 +398,8 @@ header {
   color: #222; }
 
 header .marbles img {
-  height: 1rem;
-  vertical-align: text-top;
+    height: 1rem;
+    vertical-align: text-top;
 }
 
 context-action-bar {
@@ -409,7 +409,7 @@ context-action-bar {
   width: 100%;
   height: 4.5rem;
   background-color: #ddd;
-  color: #000;
+    color: #000;
 }
   context-action-bar button {
     position: absolute;
@@ -417,13 +417,13 @@ context-action-bar {
     background: none;
     border: none; }
   context-action-bar button:focus {
-    outline: none;
+      outline: none;
   }
   context-action-bar img {
     width: 3rem; }
 
 context-action-bar img:focus {
-  outline: none;
+    outline: none;
 }
   context-action-bar label {
     display: block;
@@ -434,38 +434,38 @@ context-action-bar img:focus {
     transform: translateX(-50%); }
 
 context-action-bar .main-button div {
-  width: 3rem;
-  height: 3rem;
+    width: 3rem;
+    height: 3rem;
       padding: 0.4rem;
       border: solid 0.35rem #222;
       border-radius: 100%;
       background-color: #ddd; }
 
 context-action-bar .secondary button:first-of-type {
-  left: 0;
+    left: 0;
 }
 
 context-action-bar .secondary button:nth-of-type(2) {
-  left: 25%;
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
+    left: 25%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
 }
 
 context-action-bar .secondary button:nth-of-type(3) {
-  right: 25%;
-  -webkit-transform: translateX(50%);
-  transform: translateX(50%);
+    right: 25%;
+    -webkit-transform: translateX(50%);
+    transform: translateX(50%);
 }
 
 context-action-bar .secondary button:nth-of-type(4) {
-  right: 0;
+    right: 0;
 }
 
 inventory ul {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 6rem;
+    margin-bottom: 6rem;
 }
 
 inventory li {
