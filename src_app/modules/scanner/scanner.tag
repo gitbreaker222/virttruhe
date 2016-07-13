@@ -7,9 +7,9 @@
   <input type="file" accept="image">
 
   <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png"
-    id="img">
+       id="img">
 
-  <context-action-bar main="stopScan">
+  <context-action-bar actions="{['stopScan']}">
   </context-action-bar>
 
 
@@ -33,12 +33,12 @@
       qr.stop();
     };
 
-    var videoError = function(e){
+    var videoError = function (e) {
       console.info('webcam may already be in use');
       alert(e);
     };
 
-    var decodeFromVideo = function (video){
+    var decodeFromVideo = function (video) {
       qr.decodeFromCamera(video, function (error, result) {
         if (error) {
           return console.log(error);
@@ -47,15 +47,15 @@
         alert(result);
       }, true);
     };
-/*
-    qr.decodeFromImage(img, function (error, result) {
-      if (error) {
-        console.log(error);
-        return;
-      }
-      alert(result);
-    }, true);
-*/
+    /*
+     qr.decodeFromImage(img, function (error, result) {
+     if (error) {
+     console.log(error);
+     return;
+     }
+     alert(result);
+     }, true);
+     */
 
     //todo: if blackberry browser, skip promise call (in adapter.js, BBOS10 no Promises -_-)
 
