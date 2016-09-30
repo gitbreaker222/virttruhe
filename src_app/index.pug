@@ -1,0 +1,27 @@
+doctype html
+html.no-js(lang="en")
+
+
+
+
+    body
+    #container
+        info-bar(marbles="7")
+
+        section.inventory
+            include modules/inventory/inventory.pug
+
+        section.scanner
+
+        inventory.page
+
+        scanner.page
+
+
+    //SCRIPTS
+    script(src="../bower_components/webrtc-adapter/adapter.js")
+    script(src="../bower_components/detectrtc/DetectRTC.min.js")
+    script(src="../bower_components/riot/riot.min.js")
+    script(src="../lib/qr-decoder.js")
+
+    script(src="js/main.js")

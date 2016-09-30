@@ -9,24 +9,24 @@ var runSequence = require('run-sequence');
 var del = require('del');
 var concat = require('gulp-concat');
 var riot = require('gulp-riot');
-var jade = require('gulp-jade');
+var pug = require('gulp-pug');
 var sass = require('gulp-sass');
 
 var packageJson = require('./package.json');
 
 /**********************
  *
- * JADE
+ * PUG
  * * * * *
  **********************/
 gulp.task('delete:index.html', function() {
   return del.sync('app/index.html');
 });
 
-gulp.task('compile_jade', ['delete:index.html'], function() {
-  console.log(jade);
-  gulp.src('./src_app/*.jade')
-    .pipe(jade({
+gulp.task('compile_pug', ['delete:index.html'], function () {
+  console.log(pug);
+  gulp.src('./src_app/*.pug')
+    .pipe(pug({
       locals: {
         title: packageJson.name
       }
@@ -107,7 +107,7 @@ gulp.task('copy_data', ['delete:data'], function() {
  * * * * *
  **********************/
 gulp.task('watch', function(){
-  gulp.watch('./src_app/**/*.jade', ['compile_jade']);
+  gulp.watch('./src_app/**/*.pug', ['compile_pug']);
   gulp.watch('./src_app/**/*.sass', ['compile_sass']);
   gulp.watch('src_app/**/*.tag', ['compile_riot_tags']);
   gulp.watch('./src_app/modules/{**/*.js, *.js}', ['concat_scripts']);
@@ -121,7 +121,7 @@ gulp.task('watch', function(){
  **********************/
 gulp.task('default', function(callback){
   runSequence([
-      'compile_jade',
+      'compile_pug',
       'compile_sass',
       'compile_riot_tags',
       'concat_scripts',
