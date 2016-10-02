@@ -5,11 +5,13 @@ riot.route.stop(); //clear all route callbacks
 
 app.currentPage = null;
 
-app.goTo = function (page) {
+app.goTo = function (pageName) {
+  var pageNode = document.querySelector(pageName);
   if (app.currentPage) {
-    app.currentPage.unmount(true);
+    app.currentPage.classList.remove('show');
   }
-  app.currentPage = riot.mount(page)[0];
+  pageNode.classList.add('show');
+  app.currentPage = pageNode;
 };
 
 riot.route(function() {
@@ -18,6 +20,7 @@ riot.route(function() {
 });
 
 riot.route('/', function(){
+  console.info('no page defined. Redirecting to inventory');
   riot.route('/inventory', 'Inventory');
 });
 
