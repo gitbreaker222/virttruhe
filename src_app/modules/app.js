@@ -7,9 +7,8 @@ var app = {};
 app.services = {};
 
 window.onload = function(){
-  riot.mount('info-bar');
-  riot.mount('context-action-bar');
   riot.route.start(true);
+  riot.mount('*');
 };
 /*
  APP.JS END
