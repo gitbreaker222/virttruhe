@@ -1,0 +1,23 @@
+{
+  "name": "VIRTTRUHE",
+  "description": "Experimental game to explore the border between physical and virtual space. A playground for augmented reality (or maybe augmented virtuality)",
+  "main": "app/index.html",
+  "authors": [
+    "Ruben La Biunda"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/gitbreaker222/virttruhe",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "riot": "^2.6.2",
+    "webrtc-adapter": "^2.0.3",
+    "detectrtc": "^1.3.1",
+    "animate.css": "^3.5.2"
+  }
+}
