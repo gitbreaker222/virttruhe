@@ -9,7 +9,7 @@
   <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png"
        id="img">
 
-  <context-action-bar actions="{['stopScan']}">
+  <context-action-bar actions={['stopScan']}>
   </context-action-bar>
 
 
@@ -57,7 +57,7 @@
      }, true);
      */
 
-    //todo: if blackberry browser, skip promise call (in adapter.js, BBOS10 no Promises -_-)
+    //todo: if blackberry browser, skip promise call (in adapter.js, BB10-OS no Promises -_-)
 
     DetectRTC.load(function () {
       scope.update();

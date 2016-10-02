@@ -1,9 +1,9 @@
 <context-action-bar>
   <button class="main-button"
-          onclick="{mainButton.action}"
-          name="{mainButton.name}">
+          onclick={mainButton.action}
+          name={mainButton.name}>
     <div>
-      <img src="{mainButton.img}">
+      <img src={mainButton.img}>
     </div>
     <label>
       {mainButton.label}
@@ -12,25 +12,25 @@
 
   <div class="secondary">
     <button disabled>
-      <img src="{secondaryButtons[0].img}">
+      <img src={secondaryButtons[0].img}>
       <label>
         {secondaryButtons[0].label}
       </label>
     </button>
     <button disabled>
-      <img src="{secondaryButtons[1].img}">
+      <img src={secondaryButtons[1].img}>
       <label>
         {secondaryButtons[1].label}
       </label>
     </button>
     <button disabled>
-      <img src="{secondaryButtons[2].img}">
+      <img src={secondaryButtons[2].img}>
       <label>
         {secondaryButtons[2].label}
       </label>
     </button>
     <button disabled>
-      <img src="{secondaryButtons[3].img}">
+      <img src={secondaryButtons[3].img}>
       <label>
         {secondaryButtons[3].label}
       </label>

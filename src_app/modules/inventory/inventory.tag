@@ -7,7 +7,7 @@
     </li>
   </ul>
 
-  <context-action-bar actions="{['scan','info','use','share','remove']}">
+  <context-action-bar actions={['scan','info','use','share','remove']}>
   </context-action-bar>
 
 
