@@ -59,7 +59,7 @@
       stopScan: {
         name: 'stopScan',
         label: 'stop scan',
-        action: function stopScan() {
+        action: function () {
           riot.route('/inventory');
         },
         img: imagePath + 'cancel.svg'
