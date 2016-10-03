@@ -7,8 +7,12 @@ var app = {};
 app.services = {};
 
 window.onload = function(){
-  riot.route.start(true);
   riot.mount('*');
+  riot.route.start(true);
+  
+  DetectRTC.load(function () {
+    console.info('web-rtc detection finished loading');
+  });
 };
 /*
  APP.JS END
