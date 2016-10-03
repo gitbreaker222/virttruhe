@@ -1,2 +1,6 @@
+# ignores build directories
+app/**
+distributions/**
+
 # ignores all compiled riot-tags
 src_app/modules/**/*.tag.js
