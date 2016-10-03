@@ -1,0 +1,2 @@
+# ignores all compiled riot-tags
+src_app/modules/**/*.tag.js
