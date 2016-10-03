@@ -42,22 +42,18 @@
      }
      */
 
-    startScan()
-    {
+    this.startScan = function () {
       console.log('starting scan');
       this.update();
-      decodeFromVideo(this.cameraOutput)
-    }
-    ;
+      decodeFromVideo(this.cameraOutput);
+    }.bind(this);
 
-    stopScan()
-    {
+    this.stopScan = function () {
       console.log('stopping scan');
       cameraOutput.pause();
       cameraOutput.src = null;
       qr.stop();
-    }
-    ;
+    }.bind(this);
 
     this.on('show', this.startScan);
     this.on('hide', this.stopScan);
