@@ -3,6 +3,7 @@ env:
 globals:
   require: false
   riot: false
+  DetectRTC: false
   app: true
 extends: 'eslint:recommended'
 rules:

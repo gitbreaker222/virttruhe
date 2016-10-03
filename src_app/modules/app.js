@@ -1,17 +1,17 @@
 /*
-  APP.JS
+ APP.JS
  */
 'use strict';
 
 var app = {};
 app.services = {};
 
-window.onload = function(){
+window.onload = function () {
   riot.mount('*');
   riot.route.start(true);
   
   DetectRTC.load(function () {
-    console.info('web-rtc detection finished loading');
+    window.console.info('web-rtc detection finished loading');
   });
 };
 /*
