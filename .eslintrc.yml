@@ -1,0 +1,30 @@
+env:
+  browser: true
+globals:
+  require: false
+  riot: false
+  app: true
+extends: 'eslint:recommended'
+rules:
+  indent:
+    - error
+    - 2
+  linebreak-style:
+    - error
+    - unix
+  quotes:
+    - error
+    - single
+  semi:
+    - error
+    - always
+  space-before-function-paren:
+    - error
+    - always
+  array-bracket-spacing:
+    - error
+    - always
+    - singleValue: false
+  no-magic-numbers:
+    - error
+    - ignoreArrayIndexes: true
