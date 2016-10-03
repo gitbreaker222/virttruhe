@@ -14,24 +14,7 @@
 
 
   <script>
-    var scope = this,
-        cameraStream,
-        qr = new QCodeDecoder();
-
-    scope.stopScan = function () {
-      _stopScan(scope.cameraOutput)
-    };
-
-    var startScan = function () {
-      scope.update();
-      decodeFromVideo(scope.cameraOutput)
-    };
-
-    var _stopScan = function (video) {
-      video.pause();
-      video.src = null;
-      qr.stop();
-    };
+    var qr = new QCodeDecoder();
 
     var videoError = function (e) {
       console.info('webcam may already be in use');
@@ -48,6 +31,7 @@
       }, true);
     };
     /*
+     var decodeFromImage = function (img) {
      qr.decodeFromImage(img, function (error, result) {
      if (error) {
      console.log(error);
@@ -55,17 +39,27 @@
      }
      alert(result);
      }, true);
+     }
      */
 
-    //todo: if blackberry browser, skip promise call (in adapter.js, BB10-OS no Promises -_-)
+    startScan()
+    {
+      console.log('starting scan');
+      this.update();
+      decodeFromVideo(this.cameraOutput)
+    }
+    ;
 
-    DetectRTC.load(function () {
-      scope.update();
-      startScan();
-    });
+    stopScan()
+    {
+      console.log('stopping scan');
+      cameraOutput.pause();
+      cameraOutput.src = null;
+      qr.stop();
+    }
+    ;
 
-    this.on('before-unmount', function () {
-      this.stopScan();
-    });
+    this.on('show', this.startScan);
+    this.on('hide', this.stopScan);
   </script>
 </scanner>
