@@ -2,11 +2,11 @@
 function DetectLocalIPAddress(callback) {
   if (!DetectRTC.isWebRTCSupported) {
     return;
-  }
+    }
   
   if (DetectRTC.isORTCSupported) {
     return;
-  }
+    }
   
   getIPs(function (ip) {
     //local IPs
@@ -39,7 +39,7 @@ function getIPs(callback) {
     var win = iframe.contentWindow;
     RTCPeerConnection = win.RTCPeerConnection || win.mozRTCPeerConnection || win.webkitRTCPeerConnection;
     useWebKit = !!win.webkitRTCPeerConnection;
-  }
+    }
   
   // if still no RTCPeerConnection then it is not supported by the browser so just return
   if (!RTCPeerConnection) {
@@ -48,10 +48,12 @@ function getIPs(callback) {
   
   //minimal requirements for data connection
   var mediaConstraints = {
-    optional: [{
-      RtpDataChannels: true
-    }]
-  };
+    optional: [
+      {
+        RtpDataChannels: true
+      }
+    ]
+    };
   
   //firefox already has a default stun server in about:config
   //    media.peerconnection.default_iceservers =
@@ -61,9 +63,11 @@ function getIPs(callback) {
   //add same stun server for chrome
   if (useWebKit) {
     servers = {
-      iceServers: [{
-        urls: 'stun:stun.services.mozilla.com'
-      }]
+      iceServers: [
+        {
+          urls: 'stun:stun.services.mozilla.com'
+        }
+      ]
     };
     
     if (typeof DetectRTC !== 'undefined' && DetectRTC.browser.isFirefox && DetectRTC.browser.version <= 38) {
@@ -71,7 +75,7 @@ function getIPs(callback) {
         url: servers[0].urls
       };
     }
-  }
+    }
   
   //construct a new RTCPeerConnection
   var pc = new RTCPeerConnection(servers, mediaConstraints);
@@ -92,7 +96,7 @@ function getIPs(callback) {
     }
     
     ipDuplicates[ipAddress] = true;
-  }
+    }
   
   //listen for candidate events
   pc.onicecandidate = function (ice) {

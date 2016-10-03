@@ -37,7 +37,7 @@ module.exports = function (grunt) {
         ],
         dest: 'DetectRTC.js',
       },
-    },
+        },
     jshint: {
       options: {
         ignores: [],
@@ -45,7 +45,7 @@ module.exports = function (grunt) {
         jshintrc: true
       },
       files: ['DetectRTC.js']
-    },
+        },
     uglify: {
       options: {
         mangle: false,
@@ -113,7 +113,7 @@ module.exports = function (grunt) {
         pushTo: 'upstream',
         gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d'
       }
-    }
+        }
   });
   
   // enable plugins

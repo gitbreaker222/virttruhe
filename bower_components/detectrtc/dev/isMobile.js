@@ -40,5 +40,5 @@ var isMobile = {
     }
     
     return osName;
-  }
+    }
 };

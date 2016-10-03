@@ -29,20 +29,20 @@ function getBrowserInfo() {
       fullVersion = '0.0.0.0';
       majorVersion = 0;
     }
-  }
+    }
   // In MSIE, the true version is after 'MSIE' in userAgent
   else if (isIE) {
     verOffset = nAgt.indexOf('MSIE');
     browserName = 'IE';
     fullVersion = nAgt.substring(verOffset + 5);
-  }
-  // In Chrome, the true version is after 'Chrome' 
+    }
+  // In Chrome, the true version is after 'Chrome'
   else if (isChrome) {
     verOffset = nAgt.indexOf('Chrome');
     browserName = 'Chrome';
     fullVersion = nAgt.substring(verOffset + 7);
-  }
-  // In Safari, the true version is after 'Safari' or after 'Version' 
+    }
+  // In Safari, the true version is after 'Safari' or after 'Version'
   else if (isSafari) {
     verOffset = nAgt.indexOf('Safari');
     browserName = 'Safari';
@@ -52,14 +52,14 @@ function getBrowserInfo() {
       fullVersion = nAgt.substring(verOffset + 8);
     }
   }
-  // In Firefox, the true version is after 'Firefox' 
+  // In Firefox, the true version is after 'Firefox'
   else if (isFirefox) {
     verOffset = nAgt.indexOf('Firefox');
     browserName = 'Firefox';
     fullVersion = nAgt.substring(verOffset + 8);
   }
   
-  // In most other browsers, 'name/version' is at the end of userAgent 
+  // In most other browsers, 'name/version' is at the end of userAgent
   else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) < (verOffset = nAgt.lastIndexOf('/'))) {
     browserName = nAgt.substring(nameOffset, verOffset);
     fullVersion = nAgt.substring(verOffset + 1);

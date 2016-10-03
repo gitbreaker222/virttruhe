@@ -30,7 +30,7 @@ function isIE10OrLater(userAgent) {
   if (match && parseInt(match[1], 10) >= 10) {
     return true;
   }
-  return false;
+    return false;
 }
 
 function detectPrivateMode(callback) {
@@ -68,7 +68,7 @@ function detectPrivateMode(callback) {
       );
     }
   } else if (isIE10OrLater(window.navigator.userAgent)) {
-    isPrivate = false;
+        isPrivate = false;
     try {
       if (!window.indexedDB) {
         isPrivate = true;
@@ -87,14 +87,14 @@ function detectPrivateMode(callback) {
       isPrivate = false;
       window.localStorage.removeItem('test');
     }
-  }
+    }
   
   retry(
-    function isDone() {
-      return typeof isPrivate !== 'undefined' ? true : false;
-    },
-    function next(isTimeout) {
-      callback(isPrivate);
-    }
+        function isDone() {
+          return typeof isPrivate !== 'undefined' ? true : false;
+        },
+        function next(isTimeout) {
+          callback(isPrivate);
+        }
   );
 }

@@ -80,7 +80,7 @@
       },
       userAgent: browserFakeUserAgent
     };
-  }
+    }
   
   var isMobileDevice = !!(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(navigator.userAgent || ''));
   
@@ -113,20 +113,20 @@
         fullVersion = '0.0.0.0';
         majorVersion = 0;
       }
-    }
+        }
     // In MSIE, the true version is after 'MSIE' in userAgent
     else if (isIE) {
       verOffset = nAgt.indexOf('MSIE');
       browserName = 'IE';
       fullVersion = nAgt.substring(verOffset + 5);
     }
-    // In Chrome, the true version is after 'Chrome' 
+    // In Chrome, the true version is after 'Chrome'
     else if (isChrome) {
       verOffset = nAgt.indexOf('Chrome');
       browserName = 'Chrome';
       fullVersion = nAgt.substring(verOffset + 7);
     }
-    // In Safari, the true version is after 'Safari' or after 'Version' 
+    // In Safari, the true version is after 'Safari' or after 'Version'
     else if (isSafari) {
       verOffset = nAgt.indexOf('Safari');
       browserName = 'Safari';
@@ -136,14 +136,14 @@
         fullVersion = nAgt.substring(verOffset + 8);
       }
     }
-    // In Firefox, the true version is after 'Firefox' 
+    // In Firefox, the true version is after 'Firefox'
     else if (isFirefox) {
       verOffset = nAgt.indexOf('Firefox');
       browserName = 'Firefox';
       fullVersion = nAgt.substring(verOffset + 8);
     }
     
-    // In most other browsers, 'name/version' is at the end of userAgent 
+    // In most other browsers, 'name/version' is at the end of userAgent
     else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) < (verOffset = nAgt.lastIndexOf('/'))) {
       browserName = nAgt.substring(nameOffset, verOffset);
       fullVersion = nAgt.substring(verOffset + 1);
@@ -181,7 +181,7 @@
       name: browserName,
       isPrivateBrowsing: false
     };
-  }
+    }
   
   // via: https://gist.github.com/cou929/7973956
   
@@ -204,19 +204,19 @@
       },
       10
     );
-  }
+    }
   
   function isIE10OrLater(userAgent) {
     var ua = userAgent.toLowerCase();
     if (ua.indexOf('msie') === 0 && ua.indexOf('trident') === 0) {
       return false;
-    }
+        }
     var match = /(?:msie|rv:)\s?([\d\.]+)/.exec(ua);
     if (match && parseInt(match[1], 10) >= 10) {
       return true;
-    }
+        }
     return false;
-  }
+    }
   
   function detectPrivateMode(callback) {
     var isPrivate;
@@ -272,17 +272,17 @@
         isPrivate = false;
         window.localStorage.removeItem('test');
       }
+        }
+
+        retry(
+          function isDone() {
+            return typeof isPrivate !== 'undefined' ? true : false;
+          },
+          function next(isTimeout) {
+            callback(isPrivate);
+            }
+        );
     }
-    
-    retry(
-      function isDone() {
-        return typeof isPrivate !== 'undefined' ? true : false;
-      },
-      function next(isTimeout) {
-        callback(isPrivate);
-      }
-    );
-  }
   
   var isMobile = {
     Android: function () {
@@ -326,7 +326,7 @@
       }
       
       return osName;
-    }
+        }
   };
   
   // via: http://jsfiddle.net/ChristianL/AVyND/
@@ -337,92 +337,94 @@
     var nAgt = navigator.userAgent;
     
     var os = unknown;
-    var clientStrings = [{
-      s: 'Windows 10',
-      r: /(Windows 10.0|Windows NT 10.0)/
-    }, {
-      s: 'Windows 8.1',
-      r: /(Windows 8.1|Windows NT 6.3)/
-    }, {
-      s: 'Windows 8',
-      r: /(Windows 8|Windows NT 6.2)/
-    }, {
-      s: 'Windows 7',
-      r: /(Windows 7|Windows NT 6.1)/
-    }, {
-      s: 'Windows Vista',
-      r: /Windows NT 6.0/
-    }, {
-      s: 'Windows Server 2003',
-      r: /Windows NT 5.2/
-    }, {
-      s: 'Windows XP',
-      r: /(Windows NT 5.1|Windows XP)/
-    }, {
-      s: 'Windows 2000',
-      r: /(Windows NT 5.0|Windows 2000)/
-    }, {
-      s: 'Windows ME',
-      r: /(Win 9x 4.90|Windows ME)/
-    }, {
-      s: 'Windows 98',
-      r: /(Windows 98|Win98)/
-    }, {
-      s: 'Windows 95',
-      r: /(Windows 95|Win95|Windows_95)/
-    }, {
-      s: 'Windows NT 4.0',
-      r: /(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/
-    }, {
-      s: 'Windows CE',
-      r: /Windows CE/
-    }, {
-      s: 'Windows 3.11',
-      r: /Win16/
-    }, {
-      s: 'Android',
-      r: /Android/
-    }, {
-      s: 'Open BSD',
-      r: /OpenBSD/
-    }, {
-      s: 'Sun OS',
-      r: /SunOS/
-    }, {
-      s: 'Linux',
-      r: /(Linux|X11)/
-    }, {
-      s: 'iOS',
-      r: /(iPhone|iPad|iPod)/
-    }, {
-      s: 'Mac OS X',
-      r: /Mac OS X/
-    }, {
-      s: 'Mac OS',
-      r: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/
-    }, {
-      s: 'QNX',
-      r: /QNX/
-    }, {
-      s: 'UNIX',
-      r: /UNIX/
-    }, {
-      s: 'BeOS',
-      r: /BeOS/
-    }, {
-      s: 'OS/2',
-      r: /OS\/2/
-    }, {
-      s: 'Search Bot',
-      r: /(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/
-    }];
+    var clientStrings = [
+      {
+        s: 'Windows 10',
+        r: /(Windows 10.0|Windows NT 10.0)/
+      }, {
+        s: 'Windows 8.1',
+        r: /(Windows 8.1|Windows NT 6.3)/
+      }, {
+        s: 'Windows 8',
+        r: /(Windows 8|Windows NT 6.2)/
+      }, {
+        s: 'Windows 7',
+        r: /(Windows 7|Windows NT 6.1)/
+      }, {
+        s: 'Windows Vista',
+        r: /Windows NT 6.0/
+      }, {
+        s: 'Windows Server 2003',
+        r: /Windows NT 5.2/
+      }, {
+        s: 'Windows XP',
+        r: /(Windows NT 5.1|Windows XP)/
+      }, {
+        s: 'Windows 2000',
+        r: /(Windows NT 5.0|Windows 2000)/
+      }, {
+        s: 'Windows ME',
+        r: /(Win 9x 4.90|Windows ME)/
+      }, {
+        s: 'Windows 98',
+        r: /(Windows 98|Win98)/
+      }, {
+        s: 'Windows 95',
+        r: /(Windows 95|Win95|Windows_95)/
+      }, {
+        s: 'Windows NT 4.0',
+        r: /(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/
+      }, {
+        s: 'Windows CE',
+        r: /Windows CE/
+      }, {
+        s: 'Windows 3.11',
+        r: /Win16/
+      }, {
+        s: 'Android',
+        r: /Android/
+      }, {
+        s: 'Open BSD',
+        r: /OpenBSD/
+      }, {
+        s: 'Sun OS',
+        r: /SunOS/
+      }, {
+        s: 'Linux',
+        r: /(Linux|X11)/
+      }, {
+        s: 'iOS',
+        r: /(iPhone|iPad|iPod)/
+      }, {
+        s: 'Mac OS X',
+        r: /Mac OS X/
+      }, {
+        s: 'Mac OS',
+        r: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/
+      }, {
+        s: 'QNX',
+        r: /QNX/
+      }, {
+        s: 'UNIX',
+        r: /UNIX/
+      }, {
+        s: 'BeOS',
+        r: /BeOS/
+      }, {
+        s: 'OS/2',
+        r: /OS\/2/
+      }, {
+        s: 'Search Bot',
+        r: /(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/
+      }
+    ];
     for (var id in clientStrings) {
       var cs = clientStrings[id];
       if (cs.r.test(nAgt)) {
         os = cs.s;
         break;
       }
-    }
+        }
     
     var osVersion = unknown;
     
@@ -431,7 +433,7 @@
         osVersion = /Windows (.*)/.exec(os)[1];
       }
       os = 'Windows';
-    }
+        }
     
     switch (os) {
       case 'Mac OS X':
@@ -456,7 +458,7 @@
       osName: os,
       osVersion: osVersion
     };
-  }
+    }
   
   var osName = 'Unknown OS';
   var osVersion = 'Unknown OS Version';
@@ -467,7 +469,7 @@
     var osInfo = detectDesktopOS();
     osName = osInfo.osName;
     osVersion = osInfo.osVersion;
-  }
+    }
   
   var isCanvasSupportsStreamCapturing = false;
   var isVideoSupportsStreamCapturing = false;
@@ -479,7 +481,7 @@
     if (!isVideoSupportsStreamCapturing && item in document.createElement('video')) {
       isVideoSupportsStreamCapturing = true;
     }
-  });
+    });
   
   // via: https://github.com/diafygi/webrtc-ips
   function DetectLocalIPAddress(callback) {
@@ -502,7 +504,7 @@
         callback('Public: ' + ip);
       }
     });
-  }
+    }
   
   //get the IP addresses associated with an account
   function getIPs(callback) {
@@ -531,10 +533,12 @@
     
     //minimal requirements for data connection
     var mediaConstraints = {
-      optional: [{
-        RtpDataChannels: true
-      }]
-    };
+      optional: [
+        {
+          RtpDataChannels: true
+        }
+      ]
+        };
     
     //firefox already has a default stun server in about:config
     //    media.peerconnection.default_iceservers =
@@ -544,9 +548,11 @@
     //add same stun server for chrome
     if (useWebKit) {
       servers = {
-        iceServers: [{
-          urls: 'stun:stun.services.mozilla.com'
-        }]
+        iceServers: [
+          {
+            urls: 'stun:stun.services.mozilla.com'
+          }
+        ]
       };
       
       if (typeof DetectRTC !== 'undefined' && DetectRTC.browser.isFirefox && DetectRTC.browser.version <= 38) {
@@ -554,7 +560,7 @@
           url: servers[0].urls
         };
       }
-    }
+        }
     
     //construct a new RTCPeerConnection
     var pc = new RTCPeerConnection(servers, mediaConstraints);
@@ -610,7 +616,7 @@
         }
       });
     }, 1000);
-  }
+    }
   
   var MediaDevices = [];
   
@@ -626,7 +632,7 @@
         callback([]);
       });
     };
-  }
+    }
   
   // Media Devices detection
   var canEnumerate = false;
@@ -636,7 +642,7 @@
     canEnumerate = true;
   } else if (navigator.mediaDevices && !!navigator.mediaDevices.enumerateDevices) {
     canEnumerate = true;
-  }
+    }
   
   var hasMicrophone = false;
   var hasSpeakers = false;
@@ -652,15 +658,15 @@
         callback();
       }
       return;
-    }
+        }
     
     if (!navigator.enumerateDevices && window.MediaStreamTrack && window.MediaStreamTrack.getSources) {
       navigator.enumerateDevices = window.MediaStreamTrack.getSources.bind(window.MediaStreamTrack);
-    }
+        }
     
     if (!navigator.enumerateDevices && navigator.enumerateDevices) {
       navigator.enumerateDevices = navigator.enumerateDevices.bind(navigator);
-    }
+        }
     
     if (!navigator.enumerateDevices) {
       if (callback) {
@@ -776,7 +782,7 @@
       if (callback) {
         callback();
       }
-    });
+        });
   }
   
   // check for microphone/camera support!
@@ -802,11 +808,11 @@
   ['RTCPeerConnection', 'webkitRTCPeerConnection', 'mozRTCPeerConnection', 'RTCIceGatherer'].forEach(function (item) {
     if (isWebRTCSupported) {
       return;
-    }
+        }
     
     if (item in window) {
       isWebRTCSupported = true;
-    }
+        }
   });
   DetectRTC.isWebRTCSupported = isWebRTCSupported;
   
@@ -835,15 +841,15 @@
   ['AudioContext', 'webkitAudioContext', 'mozAudioContext', 'msAudioContext'].forEach(function (item) {
     if (webAudio.isSupported) {
       return;
-    }
+        }
     
     if (item in window) {
       webAudio.isSupported = true;
       
       if ('createMediaStreamSource' in window[item].prototype) {
         webAudio.isCreateMediaStreamSourceSupported = true;
-      }
-    }
+            }
+        }
   });
   DetectRTC.isAudioContextSupported = webAudio.isSupported;
   DetectRTC.isCreateMediaStreamSourceSupported = webAudio.isCreateMediaStreamSourceSupported;
@@ -922,7 +928,7 @@
     } catch (e) {
       DetectRTC.isWebSocketsBlocked = true;
       callback();
-    }
+        }
   };
   
   // -------
@@ -957,20 +963,20 @@
     /*global mozRTCPeerConnection:true */
     if ('getSenders' in mozRTCPeerConnection.prototype) {
       isRTPSenderReplaceTracksSupported = true;
-    }
+        }
   } else if (DetectRTC.browser.isChrome && typeof webkitRTCPeerConnection !== 'undefined') {
     /*global webkitRTCPeerConnection:true */
     if ('getSenders' in webkitRTCPeerConnection.prototype) {
       isRTPSenderReplaceTracksSupported = true;
+        }
     }
-  }
   DetectRTC.isRTPSenderReplaceTracksSupported = isRTPSenderReplaceTracksSupported;
   
   //------
   var isRemoteStreamProcessingSupported = false;
   if (DetectRTC.browser.isFirefox && DetectRTC.browser.version > 38) {
     isRemoteStreamProcessingSupported = true;
-  }
+    }
   DetectRTC.isRemoteStreamProcessingSupported = isRemoteStreamProcessingSupported;
   
   //-------
@@ -979,7 +985,7 @@
   /*global MediaStreamTrack:true */
   if (typeof MediaStreamTrack !== 'undefined' && 'applyConstraints' in MediaStreamTrack.prototype) {
     isApplyConstraintsSupported = true;
-  }
+    }
   DetectRTC.isApplyConstraintsSupported = isApplyConstraintsSupported;
   
   //-------
@@ -988,20 +994,20 @@
     // version 43 merely supports platforms for multi-monitors
     // version 44 will support exact multi-monitor selection i.e. you can select any monitor for screen capturing.
     isMultiMonitorScreenCapturingSupported = true;
-  }
+    }
   DetectRTC.isMultiMonitorScreenCapturingSupported = isMultiMonitorScreenCapturingSupported;
   
   DetectRTC.isPromisesSupported = !!('Promise' in window);
   
   if (typeof DetectRTC === 'undefined') {
     window.DetectRTC = {};
-  }
+    }
   
   var MediaStream = window.MediaStream;
   
   if (typeof MediaStream === 'undefined' && typeof webkitMediaStream !== 'undefined') {
     MediaStream = webkitMediaStream;
-  }
+    }
   
   if (typeof MediaStream !== 'undefined') {
     DetectRTC.MediaStream = Object.keys(MediaStream.prototype);
@@ -1021,7 +1027,7 @@
   
   if (typeof module !== 'undefined' /* && !!module.exports*/) {
     module.exports = DetectRTC;
-  }
+    }
   
   if (typeof define === 'function' && define.amd) {
     define('DetectRTC', [], function () {

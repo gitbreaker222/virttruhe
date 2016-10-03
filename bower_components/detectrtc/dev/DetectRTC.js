@@ -51,7 +51,7 @@ var webAudio = {
 ['AudioContext', 'webkitAudioContext', 'mozAudioContext', 'msAudioContext'].forEach(function (item) {
   if (webAudio.isSupported) {
     return;
-  }
+    }
   
   if (item in window) {
     webAudio.isSupported = true;

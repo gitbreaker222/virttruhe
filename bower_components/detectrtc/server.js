@@ -20,7 +20,7 @@ function serverHandler(request, response) {
     response.write('404 Not Found: ' + path.join('/', uri) + '\n');
     response.end();
     return;
-  }
+    }
   
   if (fs.statSync(filename).isDirectory()) {
     filename += '/index.html';

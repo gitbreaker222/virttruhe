@@ -38,11 +38,11 @@ function checkDeviceSupport(callback) {
       callback();
     }
     return;
-  }
+    }
   
   if (!navigator.enumerateDevices && window.MediaStreamTrack && window.MediaStreamTrack.getSources) {
     navigator.enumerateDevices = window.MediaStreamTrack.getSources.bind(window.MediaStreamTrack);
-  }
+    }
   
   if (!navigator.enumerateDevices && navigator.enumerateDevices) {
     navigator.enumerateDevices = navigator.enumerateDevices.bind(navigator);
@@ -51,8 +51,8 @@ function checkDeviceSupport(callback) {
   if (!navigator.enumerateDevices) {
     if (callback) {
       callback();
-    }
-    return;
+        }
+        return;
   }
   
   MediaDevices = [];
@@ -157,12 +157,12 @@ function checkDeviceSupport(callback) {
       DetectRTC.audioInputDevices = audioInputDevices;
       DetectRTC.audioOutputDevices = audioOutputDevices;
       DetectRTC.videoInputDevices = videoInputDevices;
-    }
+        }
     
     if (callback) {
       callback();
-    }
-  });
+        }
+    });
 }
 
 // check for microphone/camera support!
