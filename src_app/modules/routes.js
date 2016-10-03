@@ -1,5 +1,5 @@
 /*
-  ROUTES.JS
+ ROUTES.JS
  */
 riot.route.stop(); //clear all route callbacks
 
@@ -21,21 +21,21 @@ app.goTo = function (pageName) {
   app.currentPageTag.trigger('show');
 };
 
-riot.route(function() {
+riot.route(function () {
   // page is not defined. Redirecting
   riot.route('/inventory', 'Inventory');
 });
 
-riot.route('/', function(){
+riot.route('/', function () {
   // no page defined. Redirecting
   riot.route('/inventory', 'Inventory');
 });
 
-riot.route('/inventory', function(){
+riot.route('/inventory', function () {
   app.goTo('inventory');
 });
 
-riot.route('/scanner', function() {
+riot.route('/scanner', function () {
   app.goTo('scanner');
 });
 
