@@ -6,12 +6,19 @@ riot.route.stop(); //clear all route callbacks
 app.currentPage = null;
 
 app.goTo = function (pageName) {
-  var pageNode = document.querySelector(pageName);
+  var nextPageTag = riot.vdom.find(function (tag) {
+    return tag.root.localName === pageName
+  });
+  
   if (app.currentPage) {
-    app.currentPage.classList.remove('show');
+    app.currentPage.root.classList.remove('show');
+    app.currentPage.trigger('hide');
   }
-  pageNode.classList.add('show');
-  app.currentPage = pageNode;
+  
+  app.currentPage = nextPageTag;
+  
+  app.currentPage.root.classList.add('show');
+  app.currentPage.trigger('show');
 };
 
 riot.route(function() {
