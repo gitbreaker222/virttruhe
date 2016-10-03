@@ -21,7 +21,6 @@
     "gulp-rename": "^1.2.2",
     "gulp-riot": "^0.4.9",
     "gulp-sass": "^2.2.0",
-    "gulp-util": "^3.0.7",
     "pug": "^2.0.0-beta6",
     "run-sequence": "^1.1.5",
     "sass": "^0.5.0"
