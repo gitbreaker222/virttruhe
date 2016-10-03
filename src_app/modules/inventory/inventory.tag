@@ -12,25 +12,23 @@
 
 
   <script>
-    var scope = this;
+    this.items = app.getItems();
+    this.selected = null;
 
-    scope.items = app.getItems();
-    scope.selected = null;
+    this.isSelected = function (item) {
+      return item.id === this.selected;
+    }.bind(this);
 
-    scope.isSelected = function(item){
-      return item.id === scope.selected;
-    };
-
-    scope.getImageSource = function (item) {
+    this.getImageSource = function (item) {
       if (item.image) {
         return 'data/items/img/small/' + item.image;
       }
       return 'data/items/img/small/' + item.id + '.jpg';
-    };
+    }.bind(this);
 
-    scope.select = function () {
-      scope.selected = this.id;
-    }
+    this.select = function () {
+      this.selected = this.id;
+    }.bind(this);
 
   </script>
 </inventory>
