@@ -8,6 +8,7 @@ var gutil = require('gulp-util');
 var runSequence = require('run-sequence');
 var del = require('del');
 var concat = require('gulp-concat');
+var rename = require('gulp-rename');
 var riot = require('gulp-riot');
 var pug = require('gulp-pug');
 var sass = require('gulp-sass');
@@ -24,14 +25,13 @@ gulp.task('delete:index.html', function() {
 });
 
 gulp.task('compile_pug', ['delete:index.html'], function () {
-  console.log(pug);
   gulp.src('./src_app/*.pug')
     .pipe(pug({
       locals: {
         title: packageJson.name
       }
     }))
-    .pipe(gulp.dest('./app/'))
+    .pipe(gulp.dest('./app/'));
 });
 
 /**********************
@@ -46,7 +46,7 @@ gulp.task('delete:main.css', function() {
 gulp.task('compile_sass', ['delete:main.css'], function(){
   gulp.src('src_app/style/main.sass')
     .pipe(sass())
-    .pipe(gulp.dest('app/style'))
+    .pipe(gulp.dest('app/style'));
 });
 
 /**********************
@@ -57,7 +57,10 @@ gulp.task('compile_sass', ['delete:main.css'], function(){
 gulp.task('compile_riot_tags', function(){
   gulp.src('src_app/**/*.tag')
     .pipe(riot())
-    .pipe(gulp.dest('src_app'))
+    .pipe(rename(function (path) {
+      path.extname = '.tag.js';
+    }))
+    .pipe(gulp.dest('src_app'));
 });
 
 /**********************
@@ -129,6 +132,6 @@ gulp.task('default', function(callback){
     ],
     'watch',
     callback
-  )
+  );
 });
 
