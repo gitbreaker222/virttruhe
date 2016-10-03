@@ -7,7 +7,6 @@ var gulp = require('gulp');
 var runSequence = require('run-sequence');
 var del = require('del');
 var concat = require('gulp-concat');
-var rename = require('gulp-rename');
 var riot = require('gulp-riot');
 var pug = require('gulp-pug');
 var sass = require('gulp-sass');
@@ -57,9 +56,6 @@ gulp.task('compile_sass', ['delete:main.css'], function () {
 gulp.task('compile_riot_tags', function () {
   return gulp.src('src_app/**/*.tag')
     .pipe(riot())
-    //.pipe(rename(function (path) {
-    //  path.extname = '.tag.js';
-    //}))
     .pipe(concat('compiled-tags.tag.js'))
     .pipe(gulp.dest('src_app/.tmp/'));
 });

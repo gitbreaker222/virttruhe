@@ -17,7 +17,6 @@
     "gulp-concat": "^2.6.0",
     "gulp-live-server": "0.0.30",
     "gulp-pug": "^3.0.4",
-    "gulp-rename": "^1.2.2",
     "gulp-riot": "^0.4.9",
     "gulp-sass": "^2.2.0",
     "pug": "^2.0.0-beta6",
