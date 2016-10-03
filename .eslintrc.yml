@@ -18,3 +18,13 @@ rules:
   semi:
     - error
     - always
+  space-before-function-paren:
+    - error
+    - always
+  array-bracket-spacing:
+    - error
+    - always
+    - singleValue: false
+  no-magic-numbers:
+    - error
+    - ignoreArrayIndexes: true

@@ -122,12 +122,14 @@ gulp.task('watch', function () {
  * * * * *
  **********************/
 gulp.task('default', function (callback) {
-  runSequence([
+  runSequence(
+    [
       'compile_pug',
       'compile_sass',
       'compile_riot_tags',
       'concat_scripts',
-      'copy_data'],
+      'copy_data'
+    ],
     'watch',
     callback
   );
