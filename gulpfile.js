@@ -129,7 +129,7 @@ gulp.task('watch', function () {
   gulp.watch('./src_app/**/*.pug', ['compile_pug']);
   gulp.watch('./src_app/**/*.sass', ['compile_sass']);
   gulp.watch('src_app/**/*.tag', ['compile_riot_tags']);
-  gulp.watch('./src_app/modules/{**/*.js, *.js}', ['concat_scripts']);
+  gulp.watch('./src_app/{.tmp,**}/*.js', ['concat_scripts']);
 });
 
 
