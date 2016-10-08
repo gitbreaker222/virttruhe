@@ -148,6 +148,7 @@ gulp.task('default', function (callback) {
       'copy_data'
     ],
     'watch',
+    'serve',
     callback
   );
 });
