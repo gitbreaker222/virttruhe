@@ -26,8 +26,8 @@
       return 'data/items/img/small/' + item.id + '.jpg';
     }.bind(this);
 
-    this.select = function () {
-      this.selected = this.id;
+    this.select = function (event) {
+      this.selected = event.item.id;
     }.bind(this);
 
   </script>
