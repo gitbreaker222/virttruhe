@@ -2,6 +2,17 @@
   <video id="cameraOutput"
          autoplay>
   </video>
+  <span if={hasWebcam()}
+       style="
+    min-width: 1rem;
+    height: 1rem;
+    font-size: 7pt;
+    padding: 0 0.2rem;
+    background-color: green;
+    border: 0 transparent;
+    border-radius: 1rem;
+  "> has webcam
+  </span>
 
   <hr>
   <input type="file" accept="image">
@@ -19,17 +30,18 @@
     var videoError = function (e) {
       console.info('webcam may already be in use');
       alert(e);
-    };
+    }.bind(this);
 
     var decodeFromVideo = function (video) {
       qr.decodeFromCamera(video, function (error, result) {
         if (error) {
+          videoError(error);
           return console.log(error);
         }
-        _stopVideo(video);
+        this.stopScan();
         alert(result);
       }, true);
-    };
+    }.bind(this);
     /*
      var decodeFromImage = function (img) {
      qr.decodeFromImage(img, function (error, result) {
@@ -41,6 +53,10 @@
      }, true);
      }
      */
+
+    this.hasWebcam = function() {
+      return DetectRTC.hasWebcam;
+    };
 
     this.startScan = function () {
       console.log('starting scan');
