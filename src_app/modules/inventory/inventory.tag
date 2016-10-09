@@ -12,7 +12,7 @@
 
 
   <script>
-    this.items = app.getItems();
+    this.items = app.services.items.getItems();
     this.selected = null;
 
     this.isSelected = function (item) {
@@ -28,6 +28,11 @@
 
     this.select = function (event) {
       this.selected = event.item.id;
+    }.bind(this);
+
+    this.remove = function (itemId) {
+      var itemIndex = this.items.indexOf({id: itemId});
+      console.log(itemIndex)
     }.bind(this);
 
   </script>
