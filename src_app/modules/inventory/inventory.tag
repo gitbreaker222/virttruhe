@@ -7,9 +7,51 @@
     </li>
   </ul>
 
-  <context-action-bar actions={['scan','info','use','share','remove']}>
-  </context-action-bar>
+  <!--<context-action-bar actions={['scan','info','use','share','remove']}>
+  </context-action-bar>-->
 
+  <div class="context-actions">
+    <button class="button-primary">
+      <div class="icon">
+
+      </div>
+      <label>
+        scan
+      </label>
+    </button>
+    <button disabled>
+      <div class="icon">
+
+      </div>
+      <label>
+        111111
+      </label>
+    </button>
+    <button>
+      <div class="icon">
+
+      </div>
+      <label>
+        22222
+      </label>
+    </button>
+    <button>
+      <div class="icon">
+
+      </div>
+      <label>
+        333
+      </label>
+    </button>
+    <button>
+      <div class="icon">
+
+      </div>
+      <label>
+        444444
+      </label>
+    </button>
+  </div>
 
   <script>
     this.items = app.services.items.getItems();
