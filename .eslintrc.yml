@@ -4,6 +4,7 @@ globals:
   require: false
   riot: false
   DetectRTC: false
+  process: false
   app: true
 extends: 'eslint:recommended'
 rules:

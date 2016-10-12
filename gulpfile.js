@@ -108,15 +108,22 @@ gulp.task('copy_data', ['delete:data'], function () {
     .pipe(gulp.dest('./app/data/items'));
 });
 
-
+var server = null;
 /**********************
  *
  * SERVE
  * * * * *
  **********************/
 gulp.task('serve', function () {
-  var server = liveServer.static('app');
-  server.start();
+  var parameter = process.argv[3];
+  server = liveServer.static('app');
+  switch(parameter) {
+    case '-stop':
+      server.stop();
+      break;
+    default:
+      server.start();
+  }
 });
 
 
@@ -148,7 +155,6 @@ gulp.task('default', function (callback) {
       'copy_data'
     ],
     'watch',
-    'serve',
     callback
   );
 });
