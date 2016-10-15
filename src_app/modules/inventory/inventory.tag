@@ -7,10 +7,12 @@
     </li>
   </ul>
 
-  <!--<context-action-bar actions={['scan','info','use','share','remove']}>
-  </context-action-bar>-->
+  <vt-button-bar
+      class="context-actions"
+      buttons={buttonList}>
+  </vt-button-bar>
 
-  <div class="context-actions">
+  <!--<div class="context-actions">
     <button class="button-primary">
       <div class="icon">
 
@@ -51,11 +53,42 @@
         444444
       </label>
     </button>
-  </div>
+  </div>-->
 
   <script>
     this.items = app.services.items.getItems();
     this.selected = null;
+    this.buttonList = [
+      {
+        label: 'scan',
+        icon: 'asdf',
+        action: 'asdff'
+      },
+      {
+        label: '22222',
+        icon: 'asdf',
+        action: 'asdff'
+      },
+      {
+        label: '3333',
+        icon: 'asdf',
+        action: 'asdff'
+      },
+      {
+        label: '4444',
+        icon: 'asdf',
+        action: 'asdff'
+      },
+      {
+        label: '55555555 5',
+        icon: 'asdf',
+        action: 'asdff'
+      },
+    ];
+
+    this.asdff = function(event){
+      console.log('pushed button', event)
+    };
 
     this.isSelected = function (item) {
       return item.id === this.selected;
