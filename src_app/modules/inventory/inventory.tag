@@ -9,85 +9,62 @@
 
   <vt-button-bar
       class="context-actions"
-      buttons={buttonList}>
+      buttons={data.buttonList}>
   </vt-button-bar>
 
-  <!--<div class="context-actions">
-    <button class="button-primary">
-      <div class="icon">
-
-      </div>
-      <label>
-        scan
-      </label>
-    </button>
-    <button disabled>
-      <div class="icon">
-
-      </div>
-      <label>
-        111111
-      </label>
-    </button>
-    <button>
-      <div class="icon">
-
-      </div>
-      <label>
-        22222
-      </label>
-    </button>
-    <button>
-      <div class="icon">
-
-      </div>
-      <label>
-        333
-      </label>
-    </button>
-    <button>
-      <div class="icon">
-
-      </div>
-      <label>
-        444444
-      </label>
-    </button>
-  </div>-->
-
   <script>
+    var self = this;
+
+    var init = function () {
+      setButtonStates();
+    };
+
+    var setButtonStates = function () {
+      self.data.buttonList.forEach(function(button){
+        switch (button.label) {
+          case 'scan':
+            button.disabled = false;
+            break;
+          default: button.disabled = !self.selected;
+        }
+      })
+    };
+
     this.items = app.services.items.getItems();
     this.selected = null;
-    this.buttonList = [
+    this.data = {
+      buttonList: [
       {
         label: 'scan',
         icon: 'asdf',
-        action: 'asdff'
+        action: 'scan',
+        disabled: false
       },
       {
-        label: '22222',
+        label: 'info',
         icon: 'asdf',
-        action: 'asdff'
+        action: 'info',
+        disabled: false
       },
       {
-        label: '3333',
+        label: 'use',
         icon: 'asdf',
-        action: 'asdff'
+        action: 'use',
+        disabled: false
       },
       {
-        label: '4444',
+        label: 'share',
         icon: 'asdf',
-        action: 'asdff'
+        action: 'share',
+        disabled: false
       },
       {
-        label: '55555555 5',
+        label: 'delete ++++++',
         icon: 'asdf',
-        action: 'asdff'
-      },
-    ];
-
-    this.asdff = function(event){
-      console.log('pushed button', event)
+        action: 'delete',
+        disabled: false
+      }
+    ]
     };
 
     this.isSelected = function (item) {
@@ -103,12 +80,19 @@
 
     this.select = function (event) {
       this.selected = event.item.id;
+      setButtonStates();
     }.bind(this);
 
     this.remove = function (itemId) {
       var itemIndex = this.items.indexOf({id: itemId});
       console.log(itemIndex)
     }.bind(this);
+
+    this.on('scan', function(){
+      console.log('pushed scan button', event)
+    });
+
+    init();
 
   </script>
 </inventory>
