@@ -20,8 +20,10 @@
   <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png"
        id="img">
 
-  <context-action-bar actions={['stopScan']}>
-  </context-action-bar>
+  <vt-button-bar
+      class="context-actions"
+      buttons={data.buttonList}>
+  </vt-button-bar>
 
 
   <script>
@@ -54,6 +56,17 @@
      }
      */
 
+    this.data = {
+      buttonList: [
+        {
+          label: 'stop',
+          icon: 'cancel',
+          action: 'toInventory',
+          disabled: false
+        }
+      ]
+    };
+
     this.hasWebcam = function() {
       return DetectRTC.hasWebcam;
     };
@@ -66,12 +79,17 @@
 
     this.stopScan = function () {
       console.log('stopping scan');
-      cameraOutput.pause();
-      cameraOutput.src = null;
+      this.cameraOutput.pause();
+      this.cameraOutput.src = null;
       qr.stop();
+    }.bind(this);
+
+    this.goToInventory = function () {
+      riot.route('inventory')
     }.bind(this);
 
     this.on('show', this.startScan);
     this.on('hide', this.stopScan);
+    this.on('toInventory', this.goToInventory)
   </script>
 </scanner>
