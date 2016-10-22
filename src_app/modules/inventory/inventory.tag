@@ -25,7 +25,7 @@
           case 'scan':
             button.disabled = false;
             break;
-          default: button.disabled = !self.selected;
+          default: button.disabled = !!self.selected;
         }
       })
     };
@@ -59,7 +59,7 @@
         disabled: false
       },
       {
-        label: 'delete ++++++',
+        label: 'delete',
         icon: 'delete',
         action: 'delete',
         disabled: false
@@ -79,7 +79,11 @@
     }.bind(this);
 
     this.select = function (event) {
-      this.selected = event.item.id;
+      if (this.selected === event.item.id) {
+        this.selected = null;
+      } else {
+        this.selected = event.item.id;
+      }
       setButtonStates();
     }.bind(this);
 
@@ -88,7 +92,10 @@
       console.log(itemIndex)
     }.bind(this);
 
-    this.on('scan info use share delete', function(type){
+    this.on('scan', function(){
+      riot.route('scanner')
+    });
+    this.on('info use share delete', function(type){
       console.log('pushed', type, 'button')
     });
 
