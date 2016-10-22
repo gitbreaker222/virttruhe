@@ -1,12 +1,13 @@
 <vt-button-bar>
-  <button each={this.opts.buttons}
-          disabled="{this.disabled}"
-          onclick="{triggerAction}">
-    <div class="icon"></div>
+  <div each={this.opts.buttons}
+       class="button"
+       disabled="{this.disabled}"
+       onclick="{triggerAction}">
+    <i class="icon"></i>
     <label>
       {this.label}
     </label>
-  </button>
+  </div>
 
 
   <script>
