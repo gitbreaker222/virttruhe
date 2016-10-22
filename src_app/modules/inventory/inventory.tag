@@ -36,31 +36,31 @@
       buttonList: [
       {
         label: 'scan',
-        icon: 'asdf',
+        icon: 'qr-code',
         action: 'scan',
         disabled: false
       },
       {
         label: 'info',
-        icon: 'asdf',
+        icon: 'info',
         action: 'info',
         disabled: false
       },
       {
         label: 'use',
-        icon: 'asdf',
+        icon: 'use',
         action: 'use',
         disabled: false
       },
       {
         label: 'share',
-        icon: 'asdf',
+        icon: 'share',
         action: 'share',
         disabled: false
       },
       {
         label: 'delete ++++++',
-        icon: 'asdf',
+        icon: 'delete',
         action: 'delete',
         disabled: false
       }

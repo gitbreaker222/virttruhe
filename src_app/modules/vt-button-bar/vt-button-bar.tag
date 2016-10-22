@@ -3,7 +3,7 @@
        class="button"
        disabled="{this.disabled}"
        onclick="{triggerAction}">
-    <i class="icon"></i>
+    <img src="../data/img/{this.icon}.svg" class="icon"></img>
     <label>
       {this.label}
     </label>
