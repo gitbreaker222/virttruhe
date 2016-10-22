@@ -88,8 +88,8 @@
       console.log(itemIndex)
     }.bind(this);
 
-    this.on('scan', function(){
-      console.log('pushed scan button', event)
+    this.on('scan info use share delete', function(type){
+      console.log('pushed', type, 'button')
     });
 
     init();
