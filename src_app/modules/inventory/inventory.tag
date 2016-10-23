@@ -1,6 +1,6 @@
 <inventory>
   <ul class="items">
-    <li each={items}
+    <li each={data.items}
         class={selected:isSelected(this)}
         onclick={select}>
       <img src={getImageSource(this)}>
@@ -15,6 +15,45 @@
   <script>
     var self = this;
 
+    this.data = {
+      items: [],
+      selected: null,
+      buttonList: [
+      {
+        label: 'scan',
+        icon: 'qr-code',
+        action: 'scan',
+        disabled: null
+      },
+      {
+        label: 'info',
+        icon: 'info',
+        action: 'info',
+        disabled: null
+      },
+      {
+        label: 'use',
+        icon: 'use',
+        action: 'use',
+        disabled: null
+      },
+      {
+        label: 'share',
+        icon: 'share',
+        action: 'share',
+        disabled: null
+      },
+      {
+        label: 'delete',
+        icon: 'delete',
+        action: 'remove',
+        disabled: null
+      }
+    ]
+    };
+
+    this.data.items = app.services.items.getItems();
+
     var init = function () {
       setButtonStates();
     };
@@ -25,50 +64,14 @@
           case 'scan':
             button.disabled = false;
             break;
-          default: button.disabled = !!self.selected;
+          default:
+            button.disabled = !self.data.selected;
         }
       })
     };
 
-    this.items = app.services.items.getItems();
-    this.selected = null;
-    this.data = {
-      buttonList: [
-      {
-        label: 'scan',
-        icon: 'qr-code',
-        action: 'scan',
-        disabled: false
-      },
-      {
-        label: 'info',
-        icon: 'info',
-        action: 'info',
-        disabled: false
-      },
-      {
-        label: 'use',
-        icon: 'use',
-        action: 'use',
-        disabled: false
-      },
-      {
-        label: 'share',
-        icon: 'share',
-        action: 'share',
-        disabled: false
-      },
-      {
-        label: 'delete',
-        icon: 'delete',
-        action: 'delete',
-        disabled: false
-      }
-    ]
-    };
-
     this.isSelected = function (item) {
-      return item.id === this.selected;
+      return item.id === this.data.selected;
     }.bind(this);
 
     this.getImageSource = function (item) {
@@ -79,24 +82,32 @@
     }.bind(this);
 
     this.select = function (event) {
-      if (this.selected === event.item.id) {
-        this.selected = null;
+      if (this.data.selected === event.item.id) {
+        this.data.selected = null;
       } else {
-        this.selected = event.item.id;
+        this.data.selected = event.item.id;
       }
       setButtonStates();
     }.bind(this);
 
+    this.info = function (itemId) {
+      console.log('info', itemId);
+    };
+    this.use = function (itemId) {
+      console.log('use', itemId);
+    };
+    this.share = function (itemId) {
+      console.log('share', itemId);
+    };
     this.remove = function (itemId) {
-      var itemIndex = this.items.indexOf({id: itemId});
-      console.log(itemIndex)
+      console.log('remove', itemId);
     }.bind(this);
 
     this.on('scan', function(){
       riot.route('scanner')
     });
-    this.on('info use share delete', function(type){
-      console.log('pushed', type, 'button')
+    this.on('info use share remove', function(type){
+      this[type](this.data.selected);
     });
 
     init();
