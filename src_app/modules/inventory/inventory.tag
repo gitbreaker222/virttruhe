@@ -78,6 +78,20 @@
       return itemsService.getItem(itemId);
     };
 
+    var showDialog = function (message, type) {
+      //validation
+      if (!message || message === '') {
+        throw new Error('please provide a message string. Got: '+ message);
+      }
+
+      switch (type) {
+        case 'confirm':
+          return confirm(message);
+          break;
+        default: alert(message)
+      }
+    };
+
     this.isSelected = function (item) {
       return item.id === this.data.selected;
     }.bind(this);
@@ -108,6 +122,12 @@
       console.log('share', itemId);
     };
     this.remove = function (itemId) {
+      var item = itemsService.getItem(itemId);
+      var message = 'Delete '+ item.name +'?';
+      var choice = showDialog(message, 'confirm');
+      if (!choice) {
+        return;
+      }
       this.data.items = this.data.items.filter(function (item) {
         return item.id !== itemId;
       });
