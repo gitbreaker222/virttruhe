@@ -13,6 +13,7 @@
   </vt-button-bar>
 
   <script>
+    var itemsService = app.services.items;
     var self = this;
 
     this.data = {
@@ -52,10 +53,9 @@
     ]
     };
 
-    this.data.items = app.services.items.getItems();
-
     var init = function () {
       setButtonStates();
+      loadItems();
     };
 
     var setButtonStates = function () {
@@ -68,6 +68,14 @@
             button.disabled = !self.data.selected;
         }
       })
+    };
+
+    var loadItems = function () {
+      this.data.items = itemsService.getAllItems();
+    }.bind(this);
+
+    var getItem = function (itemId) {
+      return itemsService.getItem(itemId);
     };
 
     this.isSelected = function (item) {
@@ -100,7 +108,10 @@
       console.log('share', itemId);
     };
     this.remove = function (itemId) {
-      console.log('remove', itemId);
+      this.data.items = this.data.items.filter(function (item) {
+        return item.id !== itemId;
+      });
+      this.update();
     }.bind(this);
 
     this.on('scan', function(){

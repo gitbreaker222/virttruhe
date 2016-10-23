@@ -251,8 +251,13 @@ app.services.items = {
       'set':'crime'
     }
   ],
-  getItems: function () {
+  getAllItems: function () {
     return this.itemsData;
+  },
+  getItem: function (itemId) {
+    return this.itemsData.find(function (item) {
+      return item.id === itemId;
+    });
   }
 };
 
