@@ -119,7 +119,9 @@
     }.bind(this);
 
     this.info = function (itemId) {
-      console.log('info', itemId);
+      var item = itemsService.getItem(itemId);
+      var message = item.name + ':\n' + item.description;
+      showDialog(message);
     };
     this.use = function (itemId) {
       console.log('use', itemId);
