@@ -64,6 +64,10 @@
           case 'scan':
             button.disabled = false;
             break;
+          case 'use':
+            var item = itemsService.getItem(self.data.selected);
+            button.disabled = !(item && item.action);
+            break;
           default:
             button.disabled = !self.data.selected;
         }
