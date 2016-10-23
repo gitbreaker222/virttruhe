@@ -74,6 +74,12 @@
       this.data.items = itemsService.getAllItems();
     }.bind(this);
 
+    var removeItemFromList = function (itemId, list) {
+      return list.filter(function (item) {
+        return item.id !== itemId;
+      });
+    };
+
     var getItem = function (itemId) {
       return itemsService.getItem(itemId);
     };
@@ -128,9 +134,7 @@
       if (!choice) {
         return;
       }
-      this.data.items = this.data.items.filter(function (item) {
-        return item.id !== itemId;
-      });
+      this.data.items = removeItemFromList(itemId, this.data.items);
       this.update();
     }.bind(this);
 
