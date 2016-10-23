@@ -3105,16 +3105,25 @@ body {
 a {
   background-color: white; }
 
-button {
+button, .button {
   background: none;
   border: none; }
-  button:disabled {
+  button:disabled, button.disabled, .button:disabled, .button.disabled {
     opacity: 0.5; }
-  button:focus {
+  button:focus, .button:focus {
     outline: none; }
 
 .hide {
   display: none; }
+
+.fade-out {
+  opacity: 0;
+  transition: 400ms; }
+
+.icon {
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat; }
 
 /* LAYOUT */
 #container {
@@ -3151,37 +3160,34 @@ header {
   height: 3rem;
   background-color: #ddd;
   color: black; }
-  .context-actions button {
+  .context-actions .button {
     width: 1%;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center; }
-  .context-actions button:nth-child(1) {
-    order: 3; }
-    .context-actions button:nth-child(1) .icon {
-      position: absolute;
-      top: -1rem;
-      border: 0.4rem solid #222;
-      border-radius: 2rem;
-      background-color: #2196f3; }
-  .context-actions button:nth-child(2) {
-    order: 1; }
-  .context-actions button:nth-child(3) {
-    order: 2; }
-  .context-actions button:nth-child(4) {
-    order: 4; }
-  .context-actions button:nth-child(5) {
-    order: 5; }
+    .context-actions .button:nth-child(1) {
+      order: 3; }
+      .context-actions .button:nth-child(1) .icon {
+        position: absolute;
+        top: -1.5rem;
+        -moz-transform: translateX(-50%);
+        padding: 0.2rem;
+        border: 0.4rem solid #222;
+        border-radius: 2rem;
+        background-color: #2196f3; }
+    .context-actions .button:nth-child(2) {
+      order: 1; }
+    .context-actions .button:nth-child(3) {
+      order: 2; }
+    .context-actions .button:nth-child(4) {
+      order: 4; }
+    .context-actions .button:nth-child(5) {
+      order: 5; }
   .context-actions .icon {
-    position: absolute;
-    top: 0;
     width: 2.1rem;
-    height: 2.1rem;
-    background-image: url(../data/img/cancel.svg);
-    background-size: contain;
-    background-repeat: no-repeat; }
+    height: 2.1rem; }
   .context-actions label {
     font-size: 9pt;
     overflow: hidden;

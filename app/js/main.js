@@ -2644,11 +2644,50 @@ riot.tag2('info-bar', '<header> <span name="infoText"> this is a header from rio
         this.inputMarbles.value = "";
       };
 });
-riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
+riot.tag2('inventory', '<ul class="items"> <li each="{data.items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
+    var itemsService = app.services.items;
     var self = this;
+
+    this.data = {
+      items: [],
+      selected: null,
+      buttonList: [
+      {
+        label: 'scan',
+        icon: 'qr-code',
+        action: 'scan',
+        disabled: null
+      },
+      {
+        label: 'info',
+        icon: 'info',
+        action: 'info',
+        disabled: null
+      },
+      {
+        label: 'use',
+        icon: 'use',
+        action: 'use',
+        disabled: null
+      },
+      {
+        label: 'share',
+        icon: 'share',
+        action: 'share',
+        disabled: null
+      },
+      {
+        label: 'delete',
+        icon: 'delete',
+        action: 'remove',
+        disabled: null
+      }
+    ]
+    };
 
     var init = function () {
       setButtonStates();
+      loadItems();
     };
 
     var setButtonStates = function () {
@@ -2657,50 +2696,46 @@ riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:i
           case 'scan':
             button.disabled = false;
             break;
-          default: button.disabled = !self.selected;
+          case 'use':
+            var item = itemsService.getItem(self.data.selected);
+            button.disabled = !(item && item.action);
+            break;
+          default:
+            button.disabled = !self.data.selected;
         }
       })
     };
 
-    this.items = app.services.items.getItems();
-    this.selected = null;
-    this.data = {
-      buttonList: [
-      {
-        label: 'scan',
-        icon: 'asdf',
-        action: 'scan',
-        disabled: false
-      },
-      {
-        label: 'info',
-        icon: 'asdf',
-        action: 'info',
-        disabled: false
-      },
-      {
-        label: 'use',
-        icon: 'asdf',
-        action: 'use',
-        disabled: false
-      },
-      {
-        label: 'share',
-        icon: 'asdf',
-        action: 'share',
-        disabled: false
-      },
-      {
-        label: 'delete ++++++',
-        icon: 'asdf',
-        action: 'delete',
-        disabled: false
+    var loadItems = function () {
+      this.data.items = itemsService.getAllItems();
+    }.bind(this);
+
+    var removeItemFromList = function (itemId, list) {
+      return list.filter(function (item) {
+        return item.id !== itemId;
+      });
+    };
+
+    var getItem = function (itemId) {
+      return itemsService.getItem(itemId);
+    };
+
+    var showDialog = function (message, type) {
+
+      if (!message || message === '') {
+        throw new Error('please provide a message string. Got: '+ message);
       }
-    ]
+
+      switch (type) {
+        case 'confirm':
+          return confirm(message);
+          break;
+        default: alert(message)
+      }
     };
 
     this.isSelected = function (item) {
-      return item.id === this.selected;
+      return item.id === this.data.selected;
     }.bind(this);
 
     this.getImageSource = function (item) {
@@ -2711,23 +2746,50 @@ riot.tag2('inventory', '<ul class="items"> <li each="{items}" class="{selected:i
     }.bind(this);
 
     this.select = function (event) {
-      this.selected = event.item.id;
+      if (this.data.selected === event.item.id) {
+        this.data.selected = null;
+      } else {
+        this.data.selected = event.item.id;
+      }
       setButtonStates();
     }.bind(this);
 
+    this.info = function (itemId) {
+      var item = itemsService.getItem(itemId);
+      var message = item.name + ':\n' + item.description;
+      showDialog(message);
+    };
+    this.use = function (itemId) {
+      var item = itemsService.getItem(itemId);
+      var message = 'Use ' + item.name + '?\n' + item.action;
+      showDialog(message);
+    };
+    this.share = function (itemId) {
+      message = 'To Do - show QR-Code for:\n'+ itemId;
+      showDialog(message)
+    };
     this.remove = function (itemId) {
-      var itemIndex = this.items.indexOf({id: itemId});
-      console.log(itemIndex)
+      var item = itemsService.getItem(itemId);
+      var message = 'Delete '+ item.name +'?';
+      var choice = showDialog(message, 'confirm');
+      if (!choice) {
+        return;
+      }
+      this.data.items = removeItemFromList(itemId, this.data.items);
+      this.update();
     }.bind(this);
 
     this.on('scan', function(){
-      console.log('pushed scan button', event)
+      riot.route('scanner')
+    });
+    this.on('info use share remove', function(type){
+      this[type](this.data.selected);
     });
 
     init();
 
 });
-riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <span if="{hasWebcam()}" style=" min-width: 1rem; height: 1rem; font-size: 7pt; padding: 0 0.2rem; background-color: green; border: 0 transparent; border-radius: 1rem; "> has webcam </span> <hr> <input type="file" accept="image"> <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png" id="img"> <context-action-bar actions="{[\'stopScan\']}"> </context-action-bar>', '', '', function(opts) {
+riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <span if="{hasWebcam()}" style=" min-width: 1rem; height: 1rem; font-size: 7pt; padding: 0 0.2rem; background-color: green; border: 0 transparent; border-radius: 1rem; "> has webcam </span> <hr> <input type="file" accept="image"> <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png" id="img"> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
     var qr = new QCodeDecoder();
 
     var videoError = function (e) {
@@ -2746,6 +2808,17 @@ riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <span if="{has
       }, true);
     }.bind(this);
 
+    this.data = {
+      buttonList: [
+        {
+          label: 'stop',
+          icon: 'cancel',
+          action: 'toInventory',
+          disabled: false
+        }
+      ]
+    };
+
     this.hasWebcam = function() {
       return DetectRTC.hasWebcam;
     };
@@ -2758,18 +2831,26 @@ riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <span if="{has
 
     this.stopScan = function () {
       console.log('stopping scan');
-      cameraOutput.pause();
-      cameraOutput.src = null;
+      this.cameraOutput.pause();
+      this.cameraOutput.src = null;
       qr.stop();
+    }.bind(this);
+
+    this.goToInventory = function () {
+      riot.route('inventory')
     }.bind(this);
 
     this.on('show', this.startScan);
     this.on('hide', this.stopScan);
+    this.on('toInventory', this.goToInventory)
 });
-riot.tag2('vt-button-bar', '<button each="{this.opts.buttons}" __disabled="{this.disabled}" onclick="{triggerAction}"> <div class="icon"></div> <label> {this.label} </label> </button>', '', '', function(opts) {
+riot.tag2('vt-button-bar', '<div each="{this.opts.buttons}" class="{button:true, disabled:this.disabled}" onclick="{triggerAction}"> <img riot-src="../data/img/{this.icon}.svg" class="icon"></img> <label __disabled="{this.disabled}"> {this.label} </label> </div>', '', '', function(opts) {
     this.triggerAction = function (event) {
-      var action = event.item.action;
-      this.parent.trigger(action);
+      if (event.item.disabled) {
+        event.stopPropagation();
+        return;
+      }
+      this.parent.trigger(event.item.action);
     }.bind(this)
 });
 
@@ -3124,8 +3205,13 @@ app.services.items = {
       'set':'crime'
     }
   ],
-  getItems: function () {
+  getAllItems: function () {
     return this.itemsData;
+  },
+  getItem: function (itemId) {
+    return this.itemsData.find(function (item) {
+      return item.id === itemId;
+    });
   }
 };
 
