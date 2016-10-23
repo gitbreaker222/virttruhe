@@ -124,10 +124,13 @@
       showDialog(message);
     };
     this.use = function (itemId) {
-      console.log('use', itemId);
+      var item = itemsService.getItem(itemId);
+      var message = 'Use ' + item.name + '?\n' + item.action;
+      showDialog(message);
     };
     this.share = function (itemId) {
-      console.log('share', itemId);
+      message = 'To Do - show QR-Code for:\n'+ itemId;
+      showDialog(message)
     };
     this.remove = function (itemId) {
       var item = itemsService.getItem(itemId);
