@@ -14,6 +14,8 @@
 
   <script>
     var itemsService = app.services.items;
+    var dialogService = app.services.dialog;
+
     var self = this;
 
     this.data = {
@@ -89,17 +91,7 @@
     };
 
     var showDialog = function (message, type) {
-      //validation
-      if (!message || message === '') {
-        throw new Error('please provide a message string. Got: '+ message);
-      }
-
-      switch (type) {
-        case 'confirm':
-          return confirm(message);
-          break;
-        default: alert(message)
-      }
+      dialogService.newDialog(message, type)
     };
 
     this.isSelected = function (item) {
