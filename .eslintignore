@@ -4,3 +4,6 @@ distributions/**
 
 # ignores all compiled riot-tags
 src_app/modules/**/*.tag.js
+
+# ignores polyfills
+src_app/modules/polyfills/polyfills.js
