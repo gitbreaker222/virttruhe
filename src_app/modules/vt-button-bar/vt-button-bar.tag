@@ -2,10 +2,12 @@
   <div each={this.opts.buttons}
        class="{button:true, disabled:this.disabled}"
        onclick="{triggerAction}">
-    <img src="../data/img/{this.icon}.svg" class="icon"></img>
-    <label disabled="{this.disabled}">
-      {this.label}
-    </label>
+    <div>
+      <img src="../data/img/{this.icon}.svg" class="icon"></img>
+      <label disabled="{this.disabled}">
+        {this.label}
+      </label>
+    </div>
   </div>
 
 

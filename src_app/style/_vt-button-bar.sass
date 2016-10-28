@@ -16,18 +16,20 @@
   .button
     width: 1%
     flex-grow: 1
-    display: flex
-    flex-direction: column
-    justify-content: flex-end
-    align-items: center
+
+    div
+      height: $bar-height
+      display: flex
+      flex-direction: column
+      justify-content: flex-end
+      align-items: center
 
     &:nth-child(1)
       //main button
       order: 3
       .icon
-        position: absolute
-        top: -1.5rem
-        -moz-transform: translateX(-50%)
+        overflow: visible
+        margin-top: -1.5rem
         padding: 0.2rem
         border: 0.4rem solid $background-color
         border-radius: 2rem
