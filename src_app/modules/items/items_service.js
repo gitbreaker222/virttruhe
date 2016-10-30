@@ -258,6 +258,24 @@ app.services.items = {
     return this.itemsData.find(function (item) {
       return item.id === itemId;
     });
+  },
+  checkCode: function (string) {
+    //validation
+    if (typeof(string) !== 'string') {
+      var message = 'expected string, but got ' + typeof(string);
+      return window.console.error(new TypeError(message));
+    }
+    
+    var virttruheMap = app.services.virttruhe.getMap();
+    var virttruhe;
+    var start = 1;
+  
+    virttruhe = string.match(app.constants.virttruheCodePattern);
+    if (!virttruhe){
+      return;
+    }
+    virttruhe = virttruhe[0].substr(start);
+    return virttruheMap[virttruhe];
   }
 };
 
