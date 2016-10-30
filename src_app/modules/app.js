@@ -3,16 +3,18 @@
  */
 'use strict';
 
-var app = {};
-app.services = {};
+var app = {
+  constants: {},
+  settings: {},
+  services: {},
+  models: {}
+};
 
 window.onload = function () {
+  app.services.utility.detectRTC();
+  
   riot.mount('*');
   riot.route.start(true);
-  
-  DetectRTC.load(function () {
-    window.console.info('web-rtc detection finished loading');
-  });
 };
 /*
  APP.JS END
