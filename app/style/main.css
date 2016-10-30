@@ -3105,6 +3105,12 @@ body {
 a {
   background-color: white; }
 
+input {
+  background-color: inherit; }
+  input.invalid {
+    color: salmon;
+    border-color: salmon; }
+
 button, .button {
   background: none;
   border: none; }
@@ -3162,17 +3168,18 @@ header {
   color: black; }
   .context-actions .button {
     width: 1%;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center; }
+    flex-grow: 1; }
+    .context-actions .button div {
+      height: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center; }
     .context-actions .button:nth-child(1) {
       order: 3; }
       .context-actions .button:nth-child(1) .icon {
-        position: absolute;
-        top: -1.5rem;
-        -moz-transform: translateX(-50%);
+        overflow: visible;
+        margin-top: -1.5rem;
         padding: 0.2rem;
         border: 0.4rem solid #222;
         border-radius: 2rem;
@@ -3203,8 +3210,8 @@ inventory ul {
 
 inventory li {
   margin: 0.5rem;
-  width: 8rem;
-  height: 8rem;
+  width: 6rem;
+  height: 6rem;
   background-color: #34b989;
   list-style: none;
   box-shadow: 0 0 0 transparent; }

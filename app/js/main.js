@@ -2646,6 +2646,8 @@ riot.tag2('info-bar', '<header> <span name="infoText"> this is a header from rio
 });
 riot.tag2('inventory', '<ul class="items"> <li each="{data.items}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getImageSource(this)}"> </li> </ul> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
     var itemsService = app.services.items;
+    var dialogService = app.services.dialog;
+
     var self = this;
 
     this.data = {
@@ -2720,20 +2722,6 @@ riot.tag2('inventory', '<ul class="items"> <li each="{data.items}" class="{selec
       return itemsService.getItem(itemId);
     };
 
-    var showDialog = function (message, type) {
-
-      if (!message || message === '') {
-        throw new Error('please provide a message string. Got: '+ message);
-      }
-
-      switch (type) {
-        case 'confirm':
-          return confirm(message);
-          break;
-        default: alert(message)
-      }
-    };
-
     this.isSelected = function (item) {
       return item.id === this.data.selected;
     }.bind(this);
@@ -2746,7 +2734,7 @@ riot.tag2('inventory', '<ul class="items"> <li each="{data.items}" class="{selec
     }.bind(this);
 
     this.select = function (event) {
-      if (this.data.selected === event.item.id) {
+      if (!event || this.data.selected === event.item.id) {
         this.data.selected = null;
       } else {
         this.data.selected = event.item.id;
@@ -2754,28 +2742,33 @@ riot.tag2('inventory', '<ul class="items"> <li each="{data.items}" class="{selec
       setButtonStates();
     }.bind(this);
 
+    this.resetSelection = function () {
+      this.select(null);
+    }.bind(this);
+
     this.info = function (itemId) {
       var item = itemsService.getItem(itemId);
       var message = item.name + ':\n' + item.description;
-      showDialog(message);
+      dialogService.newDialog(message);
     };
     this.use = function (itemId) {
       var item = itemsService.getItem(itemId);
       var message = 'Use ' + item.name + '?\n' + item.action;
-      showDialog(message);
+      dialogService.newDialog(message);
     };
     this.share = function (itemId) {
       message = 'To Do - show QR-Code for:\n'+ itemId;
-      showDialog(message)
+      dialogService.newDialog(message)
     };
     this.remove = function (itemId) {
       var item = itemsService.getItem(itemId);
       var message = 'Delete '+ item.name +'?';
-      var choice = showDialog(message, 'confirm');
+      var choice = dialogService.newDialog(message, 'confirm');
       if (!choice) {
         return;
       }
       this.data.items = removeItemFromList(itemId, this.data.items);
+      this.select('');
       this.update();
     }.bind(this);
 
@@ -2789,26 +2782,18 @@ riot.tag2('inventory', '<ul class="items"> <li each="{data.items}" class="{selec
     init();
 
 });
-riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <span if="{hasWebcam()}" style=" min-width: 1rem; height: 1rem; font-size: 7pt; padding: 0 0.2rem; background-color: green; border: 0 transparent; border-radius: 1rem; "> has webcam </span> <hr> <input type="file" accept="image"> <img src="./data/img/10000000 - visit virttruhe.tumblr.com.png" id="img"> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
+riot.tag2('scanner', '<div if="{showVideoScanner}"> <video id="cameraOutputt" autoplay> </video> <span if="{hasWebcam()}" style=" min-width: 1rem; height: 1rem; font-size: 7pt; padding: 0 0.2rem; background-color: green; border: 0 transparent; border-radius: 1rem; "> has webcam </span> <hr> </div> <div if={showImageScanner}"> <input type="file" accept="image"> <img src="./-data/img/10000000 - visit virttruhe.tumblr.com.png" id="img"> <hr> </div> <div if="{showTextScanner}"> <input title="itemId" type="text" class="{invalid:isInvalid}" oninput="{scanInput}"> <hr> </div> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
+    var Utility = app.services.utility;
+    var Dialog = app.services.dialog;
+    var Items = app.services.items;
     var qr = new QCodeDecoder();
 
-    var videoError = function (e) {
-      console.info('webcam may already be in use');
-      alert(e);
-    }.bind(this);
-
-    var decodeFromVideo = function (video) {
-      qr.decodeFromCamera(video, function (error, result) {
-        if (error) {
-          videoError(error);
-          return console.log(error);
-        }
-        this.stopScan();
-        alert(result);
-      }, true);
-    }.bind(this);
-
+    this.showTextScanner = true;
+    this.showImageScanner = true;
+    this.showVideoScanner = false;
+    this.isInvalid = true;
     this.data = {
+      isScanning: null,
       buttonList: [
         {
           label: 'stop',
@@ -2819,18 +2804,72 @@ riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <span if="{has
       ]
     };
 
+    var handleVideoError = function (e) {
+      Dialog.newDialog(e);
+      throw new Error(e);
+    }.bind(this);
+
+    var decodeFromVideo = function (video) {
+      qr.decodeFromCamera(video, function (error, result) {
+        if (error) {
+          handleVideoError(error)
+              .catch(riot.route('inventory'));
+        }
+        this.stopScan();
+        Dialog.newDialog(result);
+      }, true);
+    }.bind(this);
+
+    var normalizeInput = function (something) {
+      if (something.constructor === Event) {
+        return something.srcElement.value;
+      }
+    };
+
+    this.reset = function () {
+      console.log(this)
+    };
+
+    this.scanInput = function (input) {
+      var text = normalizeInput(input);
+      var result = Items.checkCode(text);
+      if (result) {
+        this.isInvalid = false;
+        Dialog.newDialog('You have found: ' + result);
+        this.reset();
+        riot.route('inventory');
+      }
+    }.bind(this);
+
     this.hasWebcam = function() {
       return DetectRTC.hasWebcam;
     };
 
+    this.canVideoScan = function () {
+      return app.services.utility.canVideoScan();
+    };
+
     this.startScan = function () {
+      if (!this.showVideoScanner) {
+        return;
+      }
+      if (!Utility.canVideoScan()) {
+        var message = 'this device cannot use the video scanner';
+        Dialog.newDialog(e);
+        return;
+      }
       console.log('starting scan');
+      this.data.isScanning = true;
       this.update();
       decodeFromVideo(this.cameraOutput);
     }.bind(this);
 
     this.stopScan = function () {
+      if (!this.data.isScanning){
+        return;
+      }
       console.log('stopping scan');
+      this.data.isScanning = false;
       this.cameraOutput.pause();
       this.cameraOutput.src = null;
       qr.stop();
@@ -2844,7 +2883,7 @@ riot.tag2('scanner', '<video id="cameraOutput" autoplay> </video> <span if="{has
     this.on('hide', this.stopScan);
     this.on('toInventory', this.goToInventory)
 });
-riot.tag2('vt-button-bar', '<div each="{this.opts.buttons}" class="{button:true, disabled:this.disabled}" onclick="{triggerAction}"> <img riot-src="../data/img/{this.icon}.svg" class="icon"></img> <label __disabled="{this.disabled}"> {this.label} </label> </div>', '', '', function(opts) {
+riot.tag2('vt-button-bar', '<div each="{this.opts.buttons}" class="{button:true, disabled:this.disabled}" onclick="{triggerAction}"> <div> <img riot-src="../data/img/{this.icon}.svg" class="icon"></img> <label __disabled="{this.disabled}"> {this.label} </label> </div> </div>', '', '', function(opts) {
     this.triggerAction = function (event) {
       if (event.item.disabled) {
         event.stopPropagation();
@@ -2860,17 +2899,18 @@ riot.tag2('vt-button-bar', '<div each="{this.opts.buttons}" class="{button:true,
  */
 'use strict';
 
-var app = {};
-app.services = {};
-app.models = {};
+var app = {
+  constants: {},
+  settings: {},
+  services: {},
+  models: {}
+};
 
 window.onload = function () {
+  app.services.utility.detectRTC();
+  
   riot.mount('*');
   riot.route.start(true);
-  
-  DetectRTC.load(function () {
-    window.console.info('web-rtc detection finished loading');
-  });
 };
 /*
  APP.JS END
@@ -2921,6 +2961,20 @@ riot.route('/scanner', function () {
  ROUTES.JS END
  */
 
+app.services.dialog = {
+  newDialog: function (message, type) {
+    //validation
+    if (!message || message === '') {
+      throw new Error('please provide a message string. Got: '+ message);
+    }
+  
+    switch (type) {
+      case 'confirm':
+        return confirm(message);
+      default: alert(message);
+    }
+  }
+};
 app.models.Item = function (
   name,
   description,
@@ -3212,6 +3266,112 @@ app.services.items = {
     return this.itemsData.find(function (item) {
       return item.id === itemId;
     });
+  },
+  checkCode: function (string) {
+    //validation
+    if (typeof(string) !== 'string') {
+      var message = 'expected string, but got ' + typeof(string);
+      return window.console.error(new TypeError(message));
+    }
+    
+    var virttruheMap = app.services.virttruhe.getMap();
+    var virttruhe;
+    var start = 1;
+  
+    virttruhe = string.match(app.constants.virttruheCodePattern);
+    if (!virttruhe){
+      return;
+    }
+    virttruhe = virttruhe[0].substr(start);
+    return virttruheMap[virttruhe];
   }
 };
 
+
+app.services.virttruhe = {
+  map: {
+    default: {
+      '00000000': 'pine_(closed)',
+      '00000001': 'pine_(open)',
+      '00000002': 'pine_seed',
+      '00000003': 'pot',
+      '00000004': 'pot1',
+      '00000005': 'flower01',
+      '00000006': 'flower02',
+      '00000007': 'flower03',
+      '00000008': 'beer',
+      '00000009': 'wine',
+      '0000000a': 'intro',
+      '0000000b': 'note01',
+      '0000000c': 'note02',
+      '0000000d': 'fingerp_scanner',
+      '0000000e': 'pills',
+      '0000000f': 'fingerprint01',
+      'a0000000': 'museum',
+      'a0000001': 'music'
+    }
+  },
+  getMap: function (layer) {
+    layer = layer || 'default';
+    return this.map[layer];
+  }
+};
+
+/*
+  POLYFILLS
+ */
+if (
+  !Array.prototype.find
+) {
+  Object.defineProperty(Array.prototype, "find", {
+    value: function (predicate) {
+      'use strict';
+      if (this == null) {
+        throw new TypeError('Array.prototype.find called on null or undefined');
+      }
+      if (typeof predicate !== 'function') {
+        throw new TypeError('predicate must be a function');
+      }
+      var list = Object(this);
+      var length = list.length >>> 0;
+      var thisArg = arguments[1];
+      var value;
+      
+      for (var i = 0; i < length; i++) {
+        value = list[i];
+        if (predicate.call(thisArg, value, i, list)) {
+          return value;
+        }
+      }
+      return undefined;
+    }
+  });
+}
+/*
+ POLYFILLS END
+ */
+app.constants = {
+  virttruheCodePattern: /#[\da-fA-F]{8}\b/ //http://regexr.com/3ehu3
+};
+app.settings ={
+  
+};
+app.services.utility = {
+  isBB10: function () {
+    var pos = 0;
+    return window.navigator.userAgent.indexOf('BB10') >= pos;
+  },
+  detectRTC: function () {
+    if (!this.isBB10()) {
+      DetectRTC.load(function () {
+        window.console.info('web-rtc detection finished loading');
+      });
+    } else {
+      DetectRTC.hasWebcam = true;
+    }
+  },
+  canVideoScan: function () {
+    return DetectRTC.hasWebcam;
+  }
+}
+;
