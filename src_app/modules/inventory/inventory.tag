@@ -12,6 +12,7 @@
       buttons={data.buttonList}>
   </vt-button-bar>
 
+
   <script>
     var itemsService = app.services.items;
     var dialogService = app.services.dialog;
@@ -102,12 +103,16 @@
     }.bind(this);
 
     this.select = function (event) {
-      if (this.data.selected === event.item.id) {
+      if (!event || this.data.selected === event.item.id) {
         this.data.selected = null;
       } else {
         this.data.selected = event.item.id;
       }
       setButtonStates();
+    }.bind(this);
+
+    this.resetSelection = function () {
+      this.select(null);
     }.bind(this);
 
     this.info = function (itemId) {
@@ -132,6 +137,7 @@
         return;
       }
       this.data.items = removeItemFromList(itemId, this.data.items);
+      this.select('');
       this.update();
     }.bind(this);
 
