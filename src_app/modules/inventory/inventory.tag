@@ -90,10 +90,6 @@
       return itemsService.getItem(itemId);
     };
 
-    var showDialog = function (message, type) {
-      dialogService.newDialog(message, type)
-    };
-
     this.isSelected = function (item) {
       return item.id === this.data.selected;
     }.bind(this);
@@ -117,21 +113,21 @@
     this.info = function (itemId) {
       var item = itemsService.getItem(itemId);
       var message = item.name + ':\n' + item.description;
-      showDialog(message);
+      dialogService.newDialog(message);
     };
     this.use = function (itemId) {
       var item = itemsService.getItem(itemId);
       var message = 'Use ' + item.name + '?\n' + item.action;
-      showDialog(message);
+      dialogService.newDialog(message);
     };
     this.share = function (itemId) {
       message = 'To Do - show QR-Code for:\n'+ itemId;
-      showDialog(message)
+      dialogService.newDialog(message)
     };
     this.remove = function (itemId) {
       var item = itemsService.getItem(itemId);
       var message = 'Delete '+ item.name +'?';
-      var choice = showDialog(message, 'confirm');
+      var choice = dialogService.newDialog(message, 'confirm');
       if (!choice) {
         return;
       }
