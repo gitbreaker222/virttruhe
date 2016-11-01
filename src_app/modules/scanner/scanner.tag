@@ -26,8 +26,9 @@
   </div>
 
   <div if={showTextScanner}>
-    <input title="itemId"
+    <input title="scanText"
            type="text"
+           placeholder="#0000FFFF"
            class={invalid:isInvalid}
            oninput={scanInput}>
     <hr>
@@ -94,14 +95,20 @@
       }
     };
 
+    this.reset = function () {
+      var inputElement = this.root.querySelector("[title='scanText']");
+      inputElement.value = '';
+    };
+
     this.scanInput = function (input) {
       var text = normalizeInput(input);
       var result = Items.checkCode(text);
       if (result) {
         this.isInvalid = false;
         Dialog.newDialog('You have found: ' + result);
+        riot.route('inventory');
       }
-    };
+    }.bind(this);
 
     this.hasWebcam = function() {
       return DetectRTC.hasWebcam;
@@ -141,7 +148,10 @@
       riot.route('inventory')
     }.bind(this);
 
-    this.on('show', this.startScan);
+    this.on('show', function() {
+      this.reset();
+      this.startScan();
+    });
     this.on('hide', this.stopScan);
     this.on('toInventory', this.goToInventory)
   </script>
