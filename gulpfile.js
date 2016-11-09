@@ -69,6 +69,7 @@ var scripts = [
   'bower_components/detectrtc/DetectRTC.min.js',
   'bower_components/riot/riot.min.js',
   'bower_components/webrtc-adapter/release/adapter.js',
+  'bower_components/vex/dist/js/vex.combined.min.js',
   'lib/qr-decoder.js',
   'src_app/.tmp/**/*.js',
   'src_app/**/*.js'
