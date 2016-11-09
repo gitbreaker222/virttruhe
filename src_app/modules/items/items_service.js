@@ -3,7 +3,7 @@ app.services.items = {
     {
       'id':'pine_(closed)',
       'name':'Pine (closed)',
-      'image':null,
+      'imageName':null,
       'description':'A Pine. They are often put into fires for their cracking sounds',
       'stackable':'false',
       'action':'combine',
@@ -13,7 +13,7 @@ app.services.items = {
     {
       'id':'pine_(open)',
       'name':'Pine (open)',
-      'image':null,
+      'imageName':null,
       'description':'It\'s cracked from the heat',
       'stackable':'false',
       'action':'take_seeds',
@@ -23,7 +23,7 @@ app.services.items = {
     {
       'id':'pine_seed',
       'name':'Pine seed',
-      'image':null,
+      'imageName':null,
       'description':'Can be planted',
       'stackable':'true',
       'action':'combine',
@@ -33,7 +33,7 @@ app.services.items = {
     {
       'id':'pot',
       'name':'Flower pot',
-      'image':null,
+      'imageName':null,
       'description':'Can grow something',
       'stackable':'false',
       'action':'combine',
@@ -43,7 +43,7 @@ app.services.items = {
     {
       'id':'pot1',
       'name':'Pot with pineshine',
-      'image':null,
+      'imageName':null,
       'description':'A light emitting flower',
       'stackable':'false',
       'action':null,
@@ -53,7 +53,7 @@ app.services.items = {
     {
       'id':'flower01',
       'name':'Krokus',
-      'image':null,
+      'imageName':null,
       'description':'...',
       'stackable':'true',
       'action':null,
@@ -63,7 +63,7 @@ app.services.items = {
     {
       'id':'flower02',
       'name':'Tulpe',
-      'image':null,
+      'imageName':null,
       'description':'...',
       'stackable':'true',
       'action':null,
@@ -73,7 +73,7 @@ app.services.items = {
     {
       'id':'flower03',
       'name':'Rose',
-      'image':null,
+      'imageName':null,
       'description':'...',
       'stackable':'true',
       'action':null,
@@ -83,7 +83,7 @@ app.services.items = {
     {
       'id':'beer',
       'name':'Beer',
-      'image':null,
+      'imageName':null,
       'description':'A bottle of cool beer',
       'stackable':'true',
       'action':'drink',
@@ -93,7 +93,7 @@ app.services.items = {
     {
       'id':'wine',
       'name':'Wine',
-      'image':null,
+      'imageName':null,
       'description':'A bottle of cheap wine',
       'stackable':'true',
       'action':'drink',
@@ -103,7 +103,7 @@ app.services.items = {
     {
       'id':'knife',
       'name':'Knife',
-      'image':null,
+      'imageName':null,
       'description':'Normal kitchen knife',
       'stackable':'false',
       'action':'cut',
@@ -113,7 +113,7 @@ app.services.items = {
     {
       'id':'intro',
       'name':'Introduction',
-      'image':'memory_card.png',
+      'imageName':'memory_card.png',
       'description':'Short and long description about VIRTTRUHE',
       'stackable':'false',
       'action':'listen',
@@ -123,7 +123,7 @@ app.services.items = {
     {
       'id':'24dtf_song1',
       'name':'Song: 24 days to fall - New Frontiers',
-      'image':null,
+      'imageName':null,
       'description':'Song from the Album "A buggle wardshen"',
       'stackable':'false',
       'action':'listen',
@@ -133,7 +133,7 @@ app.services.items = {
     {
       'id':'24dtf_album01',
       'name':'Album: A buggle wardshen',
-      'image':null,
+      'imageName':null,
       'description':'Album from "24 days to fall"',
       'stackable':'false',
       'action':'show_songs',
@@ -143,7 +143,7 @@ app.services.items = {
     {
       'id':'st_wheel',
       'name':'Steering Wheel',
-      'image':null,
+      'imageName':null,
       'description':'Part of a car. It is used to steer the car',
       'stackable':'false',
       'action':'combine',
@@ -153,7 +153,7 @@ app.services.items = {
     {
       'id':'pedal',
       'name':'Gas pedal',
-      'image':null,
+      'imageName':null,
       'description':'Part of a car. It is used to increase speed',
       'stackable':'false',
       'action':'combine',
@@ -163,7 +163,7 @@ app.services.items = {
     {
       'id':'frame',
       'name':'Car frame',
-      'image':null,
+      'imageName':null,
       'description':'The skelleton of a car',
       'stackable':'false',
       'action':'combine',
@@ -173,7 +173,7 @@ app.services.items = {
     {
       'id':'car_parts1',
       'name':'Frame with steering wheel',
-      'image':null,
+      'imageName':null,
       'description':'Combination of Frame and steering wheel',
       'stackable':'false',
       'action':'combine',
@@ -183,7 +183,7 @@ app.services.items = {
     {
       'id':'car_parts2',
       'name':'Frame with pedal',
-      'image':null,
+      'imageName':null,
       'description':'Combination of Frame and gas pedal',
       'stackable':'false',
       'action':'combine',
@@ -193,7 +193,7 @@ app.services.items = {
     {
       'id':'car1',
       'name':'Mercedes 230 E',
-      'image':null,
+      'imageName':null,
       'description':'The timeless Mercedes 230 E',
       'stackable':'false',
       'action':null,
@@ -203,7 +203,7 @@ app.services.items = {
     {
       'id':'note01',
       'name':'Crime Scene',
-      'image':null,
+      'imageName':null,
       'description':'The body lies face down on the floor. Blood spilled everywhere...',
       'stackable':'false',
       'action':null,
@@ -213,7 +213,7 @@ app.services.items = {
     {
       'id':'note02',
       'name':'Clue "Hat"',
-      'image':null,
+      'imageName':null,
       'description':'This hat looks like the one from the guy in the bar...',
       'stackable':'false',
       'action':null,
@@ -223,7 +223,7 @@ app.services.items = {
     {
       'id':'fingerp_scanner',
       'name':'Finger print scanner',
-      'image':null,
+      'imageName':null,
       'description':'Search for finger prints on items',
       'stackable':'false',
       'action':'combine',
@@ -233,7 +233,7 @@ app.services.items = {
     {
       'id':'pills',
       'name':'Sleeping Pills',
-      'image':null,
+      'imageName':null,
       'description':'Super effective Sleeping pills. One is missing',
       'stackable':'false',
       'action':'filler',
@@ -243,7 +243,7 @@ app.services.items = {
     {
       'id':'fingerprint01',
       'name':'Wifes Finger print',
-      'image':null,
+      'imageName':null,
       'description':'found on the package of sleeping pills. hmm... as far as I know she has no problem getting to sleep...',
       'stackable':'false',
       'action':null,
@@ -255,9 +255,21 @@ app.services.items = {
     return this.itemsData;
   },
   getItem: function (itemId) {
-    return this.itemsData.find(function (item) {
+    if (!itemId) {
+      return null;
+    }
+    var item = this.itemsData.find(function (item) {
       return item.id === itemId;
     });
+    if (!item) {
+      window.console.error('no such item: ' + itemId);
+      return null;
+    }
+    return item;
+  },
+  itemHasAction: function (itemId) {
+    var item = this.getItem(itemId);
+    return item && item.action;
   },
   checkCode: function (string) {
     //validation

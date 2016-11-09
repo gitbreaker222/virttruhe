@@ -1,6 +1,6 @@
 <inventory>
   <ul class="items">
-    <li each={data.items}
+    <li each={items()}
         class={selected:isSelected(this)}
         onclick={select}>
       <img src={getImageSource(this)}>
@@ -14,14 +14,19 @@
 
 
   <script>
+    var tag = this;
+
     var itemsService = app.services.items;
     var dialogService = app.services.dialog;
+    var inventory = app.inventory;
 
-    var self = this;
+    var update = function () {
+      tag.update();
+    };
 
-    this.data = {
-      items: [],
-      selected: null,
+    tag.items = inventory.getItems;
+
+    tag.data = {
       buttonList: [
       {
         label: 'scan',
@@ -56,99 +61,94 @@
     ]
     };
 
-    var init = function () {
-      setButtonStates();
-      loadItems();
+    tag.getImageSource = function (item) {
+      if (item.imageName) {
+        return 'data/items/img/small/' + item.imageName;
+      }
+      return 'data/items/img/small/' + item.id + '.jpg';
     };
 
-    var setButtonStates = function () {
-      self.data.buttonList.forEach(function(button){
+    tag.isSelected = function (item) {
+      return item.id === inventory.getSelected();
+    };
+
+    tag.select = function (event) {
+      item = event.item;
+      if (item.id === inventory.getSelected()) {
+        return tag.resetSelection();
+      }
+      inventory.trigger('select', item.id);
+      tag.updateButtonStates();
+    };
+
+    tag.resetSelection = function () {
+      inventory.trigger('select');
+      tag.updateButtonStates();
+    };
+
+    tag.updateButtonStates = function () {
+      var selected = inventory.getSelected();
+      tag.data.buttonList.forEach(function(button){
         switch (button.label) {
           case 'scan':
             button.disabled = false;
             break;
           case 'use':
-            var item = itemsService.getItem(self.data.selected);
-            button.disabled = !(item && item.action);
+            button.disabled = !itemsService.itemHasAction(selected);
             break;
           default:
-            button.disabled = !self.data.selected;
+            button.disabled = !selected;
         }
       })
     };
 
-    var loadItems = function () {
-      this.data.items = itemsService.getAllItems();
-    }.bind(this);
-
-    var removeItemFromList = function (itemId, list) {
-      return list.filter(function (item) {
-        return item.id !== itemId;
-      });
-    };
-
-    var getItem = function (itemId) {
-      return itemsService.getItem(itemId);
-    };
-
-    this.isSelected = function (item) {
-      return item.id === this.data.selected;
-    }.bind(this);
-
-    this.getImageSource = function (item) {
-      if (item.image) {
-        return 'data/items/img/small/' + item.image;
-      }
-      return 'data/items/img/small/' + item.id + '.jpg';
-    }.bind(this);
-
-    this.select = function (event) {
-      if (!event || this.data.selected === event.item.id) {
-        this.data.selected = null;
-      } else {
-        this.data.selected = event.item.id;
-      }
-      setButtonStates();
-    }.bind(this);
-
-    this.resetSelection = function () {
-      this.select(null);
-    }.bind(this);
-
-    this.info = function (itemId) {
-      var item = itemsService.getItem(itemId);
-      var message = item.name + ':\n' + item.description;
+    tag.info = function (itemId) {
+      var message = inventory.getItemDescription(itemId);
       dialogService.newDialog(message);
     };
-    this.use = function (itemId) {
+
+    tag.use = function (itemId) {
       var item = itemsService.getItem(itemId);
-      var message = 'Use ' + item.name + '?\n' + item.action;
-      dialogService.newDialog(message);
+      var message = '(Preview) Use ' + item.name + '?\n' + item.action;
+      var callback = function (choice) {
+        if (choice) {
+          inventory.trigger('use', itemId);
+        }
+      };
+      dialogService.newDialog(message, 'confirm', callback);
     };
-    this.share = function (itemId) {
+
+    tag.remove = function (itemId) {
+      var item = itemsService.getItem(itemId);
+      var message = 'Deleted "'+item.name+'" from the inventory. Undo?';
+      var reAddItem = function (choice) {
+        if (choice) {
+          inventory.trigger('addItem', itemId);
+        }
+      };
+      inventory.trigger('deleteItem', itemId);
+      dialogService.newDialog(message, 'confirm', reAddItem)
+    };
+
+    // Listen to own events
+    tag.on('show', update);
+    tag.on('scan', function(){
+      riot.route('scanner')
+    });
+    tag.on('info use share remove', function(type){
+      this[type](inventory.getSelected());
+    });
+
+    // Listen to external events
+    inventory.on('addItem deleteItem', update);
+
+    tag.updateButtonStates();
+
+    /*
+    share(itemId) {
       message = 'To Do - show QR-Code for:\n'+ itemId;
       dialogService.newDialog(message)
     };
-    this.remove = function (itemId) {
-      var item = itemsService.getItem(itemId);
-      var message = 'Delete '+ item.name +'?';
-      var choice = dialogService.newDialog(message, 'confirm');
-      if (!choice) {
-        return;
-      }
-      this.data.items = removeItemFromList(itemId, this.data.items);
-      this.select('');
-      this.update();
-    }.bind(this);
-
-    this.on('scan', function(){
-      riot.route('scanner')
-    });
-    this.on('info use share remove', function(type){
-      this[type](this.data.selected);
-    });
-
-    init();
-
+    */
   </script>
 </inventory>
