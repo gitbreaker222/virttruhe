@@ -1,8 +1,8 @@
-/* Riot v2.6.2, @license MIT */
+/* Riot v2.6.7, @license MIT */
 
 ;(function(window, undefined) {
   'use strict';
-  var riot = {version: 'v2.6.2', settings: {}},
+var riot = { version: 'v2.6.7', settings: {} },
   // be aware, internal usage
   // ATTENTION: prefix the global dynamic variables with `__`
 
@@ -28,8 +28,8 @@
   T_OBJECT = 'object',
   T_UNDEF  = 'undefined',
   T_FUNCTION = 'function',
-    XLINK_NS = 'http://www.w3.org/1999/xlink',
-    XLINK_REGEX = /^xlink:(\w+)/,
+  XLINK_NS = 'http://www.w3.org/1999/xlink',
+  XLINK_REGEX = /^xlink:(\w+)/,
   // special native tags that cannot be treated like the others
   SPECIAL_TAGS_REGEX = /^(?:t(?:body|head|foot|[rhd])|caption|col(?:group)?|opt(?:ion|group))$/,
   RESERVED_WORDS_BLACKLIST = /^(?:_(?:item|id|parent)|update|root|(?:un)?mount|mixin|is(?:Mounted|Loop)|tags|parent|opts|trigger|o(?:n|ff|ne))$/,
@@ -90,8 +90,8 @@ riot.observable = function(el) {
     on: {
       value: function(events, fn) {
         if (typeof fn != 'function')  return el
-  
-        onEachEvent(events, function (name, pos) {
+
+        onEachEvent(events, function(name, pos) {
           (callbacks[name] = callbacks[name] || []).push(fn)
           fn.typed = pos > 0
         })
@@ -113,7 +113,7 @@ riot.observable = function(el) {
       value: function(events, fn) {
         if (events == '*' && !fn) callbacks = {}
         else {
-          onEachEvent(events, function (name, pos) {
+          onEachEvent(events, function(name, pos) {
             if (fn) {
               var arr = callbacks[name]
               for (var i = 0, cb; cb = arr && arr[i]; ++i) {
@@ -166,8 +166,8 @@ riot.observable = function(el) {
         for (var i = 0; i < arglen; i++) {
           args[i] = arguments[i + 1] // skip first argument
         }
-  
-        onEachEvent(events, function (name, pos) {
+
+        onEachEvent(events, function(name, pos) {
 
           fns = slice.call(callbacks[name] || [], 0)
 
@@ -348,7 +348,7 @@ function click(e) {
     || el.target && el.target != '_self' // another window or frame
     || el.href.indexOf(loc.href.match(RE_ORIGIN)[0]) == -1 // cross origin
   ) return
-  
+
   if (el.href != loc.href
     && (
       el.href.split('#')[0] == loc.href.split('#')[0] // internal jump
@@ -370,7 +370,7 @@ function click(e) {
 function go(path, title, shouldReplace) {
   // Server-side usage: directly execute handlers for the path
   if (!hist) return central[TRIGGER]('emit', getPathFromBase(path))
-  
+
   path = base + normalize(path)
   title = title || doc.title
   // browsers ignores the second parameter `title`
@@ -533,7 +533,7 @@ riot.route = route
 
 /**
  * The riot template engine
- * @version v2.4.1
+ * @version v2.4.2
  */
 /**
  * riot.util.brackets
@@ -556,9 +556,9 @@ var brackets = (function (UNDEF) {
     S_QBLOCKS = R_STRINGS.source + '|' +
       /(?:\breturn\s+|(?:[$\w\)\]]|\+\+|--)\s*(\/)(?![*\/]))/.source + '|' +
       /\/(?=[^*\/])[^[\/\\]*(?:(?:\[(?:\\.|[^\]\\]*)*\]|\\.)[^[\/\\]*)*?(\/)[gim]*/.source,
-  
+
     UNSUPPORTED = RegExp('[\\' + 'x00-\\x1F<>a-zA-Z0-9\'",;\\\\]'),
-  
+
     NEED_ESCAPE = /(?=[[\]()*+?.^$|])/g,
 
     FINDBRACES = {
@@ -600,7 +600,7 @@ var brackets = (function (UNDEF) {
     if (pair === DEFAULT) return _pairs
 
     var arr = pair.split(' ')
-  
+
     if (arr.length !== 2 || UNSUPPORTED.test(pair)) {
       throw new Error('Unsupported brackets "' + pair + '"')
     }
@@ -763,11 +763,9 @@ var tmpl = (function () {
   _tmpl.hasExpr = brackets.hasExpr
 
   _tmpl.loopKeys = brackets.loopKeys
-  
+
   // istanbul ignore next
-  _tmpl.clearCache = function () {
-    _cache = {}
-  }
+  _tmpl.clearCache = function () { _cache = {} }
 
   _tmpl.errorHandler = null
 
@@ -787,12 +785,12 @@ var tmpl = (function () {
     var expr = _getTmpl(str)
 
     if (expr.slice(0, 11) !== 'try{return ') expr = 'return ' + expr
-  
+
     return new Function('E', expr + ';')    // eslint-disable-line no-new-func
   }
 
   var
-    CH_IDEXPR = '\u2057',
+    CH_IDEXPR = String.fromCharCode(0x2057),
     RE_CSNAME = /^(?:(-?[_A-Za-z\xA0-\xFF][-\w\xA0-\xFF]*)|\u2057(\d+)~):/,
     RE_QBLOCK = RegExp(brackets.S_QBLOCKS, 'g'),
     RE_DQUOTE = /\u2057/g,
@@ -908,7 +906,7 @@ var tmpl = (function () {
   // istanbul ignore next: not both
   var // eslint-disable-next-line max-len
     JS_CONTEXT = '"in this?this:' + (typeof window !== 'object' ? 'global' : 'window') + ').',
-    JS_VARNAME = /[,{][$\w]+(?=:)|(^ *|[^$\w\.])(?!(?:typeof|true|false|null|undefined|in|instanceof|is(?:Finite|NaN)|void|NaN|new|Date|RegExp|Math)(?![$\w]))([$_A-Za-z][$\w]*)/g,
+    JS_VARNAME = /[,{][\$\w]+(?=:)|(^ *|[^$\w\.{])(?!(?:typeof|true|false|null|undefined|in|instanceof|is(?:Finite|NaN)|void|NaN|new|Date|RegExp|Math)(?![$\w]))([$_A-Za-z][$\w]*)/g,
     JS_NOPROPS = /^(?=(\.[$\w]+))\1(?:[^.[(]|$)/
 
   function _wrapExpr (expr, asText, key) {
@@ -947,8 +945,8 @@ var tmpl = (function () {
 
     return expr
   }
-  
-  _tmpl.version = brackets.version = 'v2.4.1'
+
+  _tmpl.version = brackets.version = 'v2.4.2'
 
   return _tmpl
 
@@ -976,16 +974,17 @@ var mkdom = (function _mkdom() {
    * Creates a DOM element to wrap the given content. Normally an `DIV`, but can be
    * also a `TABLE`, `SELECT`, `TBODY`, `TR`, or `COLGROUP` element.
    *
-   * @param   {string} templ  - The template coming from the custom tag definition
-   * @param   {string} [html] - HTML content that comes from the DOM element where you
+   * @param   { String } templ  - The template coming from the custom tag definition
+   * @param   { String } [html] - HTML content that comes from the DOM element where you
    *           will mount the tag, mostly the original tag in the page
+   * @param   { Boolean } checkSvg - flag needed to know if we need to force the svg rendering in case of loop nodes
    * @returns {HTMLElement} DOM element with _templ_ merged through `YIELD` with the _html_.
    */
-  function _mkdom(templ, html) {
+  function _mkdom(templ, html, checkSvg) {
     var
       match   = templ && templ.match(/^\s*<([-\w]+)/),
       tagName = match && match[1].toLowerCase(),
-      el = mkEl('div', isSVGTag(tagName))
+      el = mkEl('div', checkSvg && isSVGTag(tagName))
 
     // replace all the yield tags with the tag inner html
     templ = replaceYield(templ, html)
@@ -1147,6 +1146,22 @@ function moveVirtual(tag, src, target, len) {
   }
 }
 
+/**
+ * Insert a new tag avoiding the insert for the conditional tags
+ * @param   {Boolean} isVirtual [description]
+ * @param   { Tag }  prevTag - tag instance used as reference to prepend our new tag
+ * @param   { Tag }  newTag - new tag to be inserted
+ * @param   { HTMLElement }  root - loop parent node
+ * @param   { Array }  tags - array containing the current tags list
+ * @param   { Function }  virtualFn - callback needed to move or insert virtual DOM
+ * @param   { Object } dom - DOM node we need to loop
+ */
+function insertTag(isVirtual, prevTag, newTag, root, tags, virtualFn, dom) {
+  if (isInStub(prevTag.root)) return
+  if (isVirtual) virtualFn(prevTag, root, newTag, dom.childNodes.length)
+  else root.insertBefore(prevTag.root, newTag.root) // #1374 some browsers reset selected here
+}
+
 
 /**
  * Manage tags having the 'each'
@@ -1242,9 +1257,7 @@ function _each(dom, parent, expr) {
         }
         // this tag must be insert
         else {
-          if (isVirtual)
-            addVirtual(tag, root, tags[i])
-          else root.insertBefore(tag.root, tags[i].root) // #1374 some browsers reset selected here
+          insertTag(isVirtual, tag, tags[i], root, tags, addVirtual, dom)
           oldItems.splice(i, 0, item)
         }
 
@@ -1257,10 +1270,11 @@ function _each(dom, parent, expr) {
         pos !== i && _mustReorder &&
         tags[i] // fix 1581 unable to reproduce it in a test!
       ) {
-        // update the DOM
-        if (isVirtual)
-          moveVirtual(tag, root, tags[i], dom.childNodes.length)
-        else if (tags[i].root.parentNode) root.insertBefore(tag.root, tags[i].root)
+        // #closes 2040 PLEASE DON'T REMOVE IT!
+        // there are no tests for this feature
+        if (contains(items, oldItems[i]))
+          insertTag(isVirtual, tag, tags[i], root, tags, moveVirtual, dom)
+
         // update the position attribute if it exists
         if (expr.pos)
           tag[expr.pos] = i
@@ -1480,7 +1494,7 @@ function Tag(impl, conf, innerHTML) {
     if (tmpl.hasExpr(val)) attr[el.name] = val
   })
 
-  dom = mkdom(impl.tmpl, innerHTML)
+  dom = mkdom(impl.tmpl, innerHTML, isLoop)
 
   // options
   function updateOpts() {
@@ -1503,9 +1517,9 @@ function Tag(impl, conf, innerHTML) {
         self[key] = data[key]
     }
   }
-  
+
   function inheritFrom(target) {
-    each(Object.keys(target), function (k) {
+    each(Object.keys(target), function(k) {
       // some properties must be always in sync with the parent tag
       var mustSync = !RESERVED_WORDS_BLACKLIST.test(k) && contains(propsInSyncWithParent, k)
 
@@ -1568,22 +1582,22 @@ function Tag(impl, conf, innerHTML) {
         // create the new mixin instance
         instance = new mix()
       } else instance = mix
-  
+
       var proto = Object.getPrototypeOf(instance)
-  
+
       // build multilevel prototype inheritance chain property list
       do props = props.concat(Object.getOwnPropertyNames(obj || instance))
       while (obj = Object.getPrototypeOf(obj || instance))
 
       // loop the keys in the function prototype or the all object keys
-      each(props, function (key) {
+      each(props, function(key) {
         // bind methods to self
         // allow mixins to override other properties/parent mixins
         if (key != 'init') {
           // check for getters/setters
           var descriptor = Object.getOwnPropertyDescriptor(instance, key) || Object.getOwnPropertyDescriptor(proto, key)
           var hasGetterSetter = descriptor && (descriptor.get || descriptor.set)
-      
+
           // apply method only if it does not already exist on the instance
           if (!self.hasOwnProperty(key) && hasGetterSetter) {
             Object.defineProperty(self, key, descriptor)
@@ -1612,7 +1626,7 @@ function Tag(impl, conf, innerHTML) {
       for (var i in globalMixin)
         if (globalMixin.hasOwnProperty(i))
           self.mixin(globalMixin[i])
-  
+
     // children in loop should inherit from true parent
     if (self._parent && self._parent.root.isLoop) {
       inheritFrom(self._parent)
@@ -2662,43 +2676,43 @@ riot.Tag = Tag
 /* istanbul ignore next */
 
 // istanbul ignore next
-  function safeRegex(re) {
-    var src = re.source
-    var opt = re.global ? 'g' : ''
-    
-    if (re.ignoreCase) opt += 'i'
-    if (re.multiline)  opt += 'm'
-    
-    for (var i = 1; i < arguments.length; i++) {
-      src = src.replace('@', '\\' + arguments[i])
-    }
-    
-    return new RegExp(src, opt)
+function safeRegex (re) {
+  var src = re.source
+  var opt = re.global ? 'g' : ''
+
+  if (re.ignoreCase) opt += 'i'
+  if (re.multiline)  opt += 'm'
+
+  for (var i = 1; i < arguments.length; i++) {
+    src = src.replace('@', '\\' + arguments[i])
   }
+
+  return new RegExp(src, opt)
+}
 
 /**
  * @module parsers
  */
 var parsers = (function (win) {
-  
+
   var _p = {}
-  
-  function _r(name) {
+
+  function _r (name) {
     var parser = win[name]
-    
+
     if (parser) return parser
-    
+
     throw new Error('Parser "' + name + '" not loaded.')
   }
 
   function _req (name) {
     var parts = name.split('.')
-  
+
     if (parts.length !== 2) throw new Error('Bad format for parsers._req')
-  
+
     var parser = _p[parts[0]][parts[1]]
     if (parser) return parser
-  
+
     throw new Error('Parser "' + name + '" not found.')
   }
 
@@ -2722,7 +2736,7 @@ var parsers = (function (win) {
     }, opts)
     return _r(compilerName).render(html, opts)
   }
-  
+
   _p.html = {
     jade: function (html, opts, url) {
       /* eslint-disable */
@@ -2737,7 +2751,7 @@ var parsers = (function (win) {
   _p.css = {
     less: function (tag, css, opts, url) {
       var ret
-      
+
       opts = extend({
         sync: true,
         syncImport: true,
@@ -2761,7 +2775,7 @@ var parsers = (function (win) {
       return _r('babel').transform(js, opts).code
     },
     babel: function (js, opts, url) {
-      return _r('babel').transform(js, extend({filename: url}, opts)).code
+      return _r('babel').transform(js, extend({ filename: url }, opts)).code
     },
     buble: function (js, opts, url) {
       opts = extend({
@@ -2771,10 +2785,10 @@ var parsers = (function (win) {
       return _r('buble').transform(js, opts).code
     },
     coffee: function (js, opts) {
-      return _r('CoffeeScript').compile(js, extend({bare: true}, opts))
+      return _r('CoffeeScript').compile(js, extend({ bare: true }, opts))
     },
     livescript: function (js, opts) {
-      return _r('livescript').compile(js, extend({bare: true, header: false}, opts))
+      return _r('livescript').compile(js, extend({ bare: true, header: false }, opts))
     },
     typescript: function (js, opts) {
       return _r('typescript')(js, opts)
@@ -2785,13 +2799,13 @@ var parsers = (function (win) {
   }
   _p.js.javascript   = _p.js.none
   _p.js.coffeescript = _p.js.coffee
-  _p._req = _req
+  _p._req  = _req
   _p.utils = {
     extend: extend
   }
 
   return _p
-  
+
 })(window || global)
 
 riot.parsers = parsers
@@ -2830,7 +2844,7 @@ var compile = (function () {
   var PRE_TAGS = /<pre(?:\s+(?:[^">]*|"[^"]*")*)?>([\S\s]+?)<\/pre\s*>/gi
 
   var SPEC_TYPES = /^"(?:number|date(?:time)?|time|month|email|color)\b/i
-  
+
   var IMPORT_STATEMENT = /^\s*import(?:\s*[*{]|\s+[$_a-zA-Z'"]).*\n?/gm
 
   var TRIM_TRAIL = /[ \t]+$/gm
@@ -3051,7 +3065,7 @@ var compile = (function () {
   function _compileJS (js, opts, type, parserOpts, url) {
     if (!/\S/.test(js)) return ''
     if (!type) type = opts.type
-  
+
     var parser = opts.parser || type && parsers._req('js.' + type, true) || riotjs
 
     return parser(js, parserOpts, url).replace(/\r\n?/g, '\n').replace(TRIM_TRAIL, '')
@@ -3110,7 +3124,7 @@ var compile = (function () {
       if (type === 'scoped-css') {
         scoped = true
       } else if (type !== 'css') {
-  
+
         var parser = parsers._req('css.' + type, true)
         css = parser(tag, css, opts.parserOpts || {}, opts.url)
       }
@@ -3147,14 +3161,14 @@ var compile = (function () {
     s = SQ + s.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + SQ
     return r && ~s.indexOf('\n') ? s.replace(/\n/g, '\\n') : s
   }
-  
-  function mktag(name, html, css, attr, js, imports, opts) {
+
+  function mktag (name, html, css, attr, js, imports, opts) {
     var
       c = opts.debug ? ',\n  ' : ', ',
       s = '});'
 
     if (js && js.slice(-1) !== '\n') s = '\n' + s
-    
+
     return imports + 'riot.tag2(\'' + name + SQ +
       c + _q(html, 1) +
       c + _q(css) +
@@ -3252,7 +3266,7 @@ var compile = (function () {
   }
 
   function compileTemplate (html, url, lang, opts) {
-  
+
     var parser = parsers._req('html.' + lang, true)
     return parser(html, opts, url)
   }
@@ -3367,7 +3381,7 @@ var compile = (function () {
           })
           return ''
         }
-  
+
         return mktag(tagName, html, styles, attribs, jscode, imports, opts)
       })
 
@@ -3517,9 +3531,10 @@ riot.compile = (function () {
 // reassign mount methods -----
 var mount = riot.mount
 
-riot.mount = function (a, b, c) {
-  var ret
-  riot.compile(function () { ret = mount(a, b, c) })
+riot.mount = function () {
+  var ret,
+    args = arguments
+  riot.compile(function () { ret = mount.apply(riot, args) })
   return ret
 }
   // support CommonJS, AMD & browser

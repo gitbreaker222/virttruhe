@@ -29,12 +29,12 @@
     "Shim"
   ],
   "homepage": "https://github.com/webrtc/adapter",
-  "version": "2.0.3",
-  "_release": "2.0.3",
+  "version": "2.0.6",
+  "_release": "2.0.6",
   "_resolution": {
     "type": "version",
-    "tag": "v2.0.3",
-    "commit": "6845ca40935d586de9c19e4546db54229a8b8390"
+    "tag": "v2.0.6",
+    "commit": "5495e727c069268b02510ba652be9b60ffeebd65"
   },
   "_source": "https://github.com/webrtc/adapter.git",
   "_target": "^2.0.3",

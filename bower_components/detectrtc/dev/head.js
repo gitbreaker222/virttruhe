@@ -10,6 +10,6 @@
 // DetectRTC.hasMicrophone (has microphone device!)
 // DetectRTC.hasSpeakers (has speakers!)
 
-(function () {
-  
-  'use strict';
+(function() {
+
+        'use strict';
