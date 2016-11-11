@@ -13,18 +13,6 @@ app.models.Inventory = function () {
   };
   
   // Private methods
-  var addItem = function (itemId) {
-    var item = itemsService.getItem(itemId);
-    return data.items.push(item);
-  };
-  
-  var deleteItem = function (itemId) {
-    data.items = data.items.filter(function (item) {
-      return item.id !== itemId;
-    });
-    return data.items;
-  };
-  
   var select = function (item) {
     if (!item) {
       return data.selected = null;
@@ -46,7 +34,22 @@ app.models.Inventory = function () {
     data.items = itemsService.getAllItems();
   };
   
-  // Get stuff
+  
+  this.addItem = function (itemId) {
+    var item = itemsService.getItem(itemId);
+    data.items.push(item);
+    this.trigger('addItem', itemId);
+    return data.items;
+  };
+  
+  this.deleteItem = function (itemId) {
+    data.items = data.items.filter(function (item) {
+      return item.id !== itemId;
+    });
+    this.trigger('deleteItem', itemId);
+    return data.items;
+  };
+  
   this.getItems = function () {
     return data.items;
   };
@@ -62,8 +65,6 @@ app.models.Inventory = function () {
   };
   
   // Listen to events
-  this.on('addItem', addItem);
-  this.on('deleteItem', deleteItem);
   this.on('loadItems', loadAllItems);
   this.on('select', select);
   this.on('use', use);

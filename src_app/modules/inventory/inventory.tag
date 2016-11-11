@@ -123,10 +123,10 @@
       var message = 'Deleted "'+item.name+'" from the inventory. Undo?';
       var reAddItem = function (choice) {
         if (choice) {
-          inventory.trigger('addItem', itemId);
+          inventory.addItem(itemId);
         }
       };
-      inventory.trigger('deleteItem', itemId);
+      inventory.deleteItem(itemId);
       dialogService.newDialog(message, 'confirm', reAddItem)
     };
 
