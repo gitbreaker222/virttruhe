@@ -1,9 +1,9 @@
 <scanner>
   <div if={showVideoScanner}>
-    <video id="cameraOutputt"
+    <video id="cameraOutput"
            autoplay>
     </video>
-    <span if={hasWebcam()}
+    <span if={canVideoScan()}
           style="
       min-width: 1rem;
       height: 1rem;
@@ -41,16 +41,20 @@
 
 
   <script>
-    var Utility = app.services.utility;
+    var tag = this;
+
+    // private properties
+    var Scanner = app.scanner;
     var Dialog = app.services.dialog;
-    var Items = app.services.items;
     var qr = new QCodeDecoder();
 
-    this.showTextScanner = true;
-    this.showImageScanner = true;
-    this.showVideoScanner = false;
-    this.isInvalid = true;
-    this.data = {
+    // public properties
+    tag.showTextScanner = true;
+    tag.showImageScanner = true;
+    tag.showVideoScanner = true;
+
+    tag.isInvalid = true;
+    tag.data = {
       isScanning: null,
       buttonList: [
         {
@@ -62,23 +66,64 @@
       ]
     };
 
-    var handleVideoError = function (e) {
-      Dialog.newDialog(e);
-      throw new Error(e);
-    }.bind(this);
+    // private methods
+    var normalizeInput = function (something) {
+      if (typeof(something) === 'string') {
+        return something;
+      } else if (something.constructor === Event) {
+        return something.srcElement.value;
+      } else {
+        throw new Error('Exception: Cannot normalize this: ' + something)
+      }
+    };
 
-    var decodeFromVideo = function (video) {
-      qr.decodeFromCamera(video, function (error, result) {
+    var presentItem = function(item) {
+      callback = function (choice) {
+        console.log(choice, item.name);
+        riot.route('inventory');
+      };
+      Dialog.newDialog('You have found: ' + item.name, '', callback);
+    };
+
+    var presentNoSuccess = function () {
+      //can be deleted
+    };
+
+    var handleVideoError = function (e) {
+      window.console.error(e);
+      riot.route('inventory');
+    };
+
+
+    // public methods
+    tag.canVideoScan = function () {
+      return app.services.utility.canVideoScan();
+    };
+
+    tag.reset = function () {
+      var inputElement = this.root.querySelector("[title='scanText']");
+      inputElement.value = '';
+      tag.isInvalid = true;
+    };
+
+    tag.scanInput = function (input) {
+      var text = normalizeInput(input);
+      var result = Scanner.scan(text);
+      if (result) {
+        tag.isInvalid = false;
+      }
+    };
+
+    tag.scanVideo = function (video) {
+      qr.decodeFromCamera(video, function (error, text) {
         if (error) {
           handleVideoError(error)
-              .catch(riot.route('inventory'));
         }
-        this.stopScan();
-        Dialog.newDialog(result);
+        tag.scanInput(text);
       }, true);
-    }.bind(this);
+    };
     /*
-     var decodeFromImage = function (img) {
+     this.decodeFromImage = function (img) {
      qr.decodeFromImage(img, function (error, result) {
      if (error) {
      console.log(error);
@@ -87,72 +132,51 @@
      alert(result);
      }, true);
      }
-     */
+    */
 
-    var normalizeInput = function (something) {
-      if (something.constructor === Event) {
-        return something.srcElement.value;
-      }
-    };
-
-    this.reset = function () {
-      var inputElement = this.root.querySelector("[title='scanText']");
-      inputElement.value = '';
-    };
-
-    this.scanInput = function (input) {
-      var text = normalizeInput(input);
-      var result = Items.checkCode(text);
-      if (result) {
-        this.isInvalid = false;
-        Dialog.newDialog('You have found: ' + result);
-        riot.route('inventory');
-      }
-    }.bind(this);
-
-    this.hasWebcam = function() {
-      return DetectRTC.hasWebcam;
-    };
-
-    this.canVideoScan = function () {
-      return app.services.utility.canVideoScan();
-    };
-
-    this.startScan = function () {
-      if (!this.showVideoScanner) {
+    tag.startScan = function () {
+      if (!tag.showVideoScanner) {
         return;
       }
-      if (!Utility.canVideoScan()) {
+      if (!tag.canVideoScan()) {
         var message = 'this device cannot use the video scanner';
-        Dialog.newDialog(e);
+        Dialog.newDialog(message, 'error');
         return;
       }
       console.log('starting scan');
-      this.data.isScanning = true;
-      this.update();
-      decodeFromVideo(this.cameraOutput);
-    }.bind(this);
+      tag.data.isScanning = true;
+      tag.update();
+      tag.scanVideo(tag.cameraOutput);
+    };
 
-    this.stopScan = function () {
-      if (!this.data.isScanning){
+    tag.stopScan = function () {
+      if (!tag.data.isScanning){
         return;
       }
       console.log('stopping scan');
-      this.data.isScanning = false;
-      this.cameraOutput.pause();
-      this.cameraOutput.src = null;
+      tag.data.isScanning = false;
+      tag.cameraOutput.pause();
+      tag.cameraOutput.src = null;
       qr.stop();
-    }.bind(this);
+    };
 
-    this.goToInventory = function () {
+    tag.goToInventory = function () {
       riot.route('inventory')
-    }.bind(this);
+    };
 
-    this.on('show', function() {
-      this.reset();
-      this.startScan();
+    //tag.showVideoScanner = tag.canVideoScan();
+
+
+    // listen to own events
+    tag.on('show', function() {
+      tag.reset();
+      tag.startScan();
     });
-    this.on('hide', this.stopScan);
-    this.on('toInventory', this.goToInventory)
+    tag.on('hide', tag.stopScan);
+    tag.on('toInventory', tag.goToInventory);
+
+    // listen to external events
+    Scanner.on('success', presentItem);
+    Scanner.on('noSucces', presentNoSuccess);
   </script>
 </scanner>
