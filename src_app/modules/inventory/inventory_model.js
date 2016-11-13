@@ -1,5 +1,5 @@
 /*
-  INVENTORY JS
+  INVENTORY MODEL
  */
 app.models.Inventory = function () {
   // Make Inventory instances observable
@@ -34,11 +34,19 @@ app.models.Inventory = function () {
     data.items = itemsService.getAllItems();
   };
   
-  
-  this.addItem = function (itemId) {
-    var item = itemsService.getItem(itemId);
+  // public methods
+  this.addItem = function (item) {
+    //validation
+    if (typeof(item) === 'string') {
+      item = itemsService.getItem(item);
+    }
+    if (!item) {
+      window.console.Error('No item passed. Please provide an item object to this function.');
+      return;
+    }
+    
     data.items.push(item);
-    this.trigger('addItem', itemId);
+    this.trigger('addItem', item.id);
     return data.items;
   };
   
@@ -64,8 +72,19 @@ app.models.Inventory = function () {
     return item.name + ':\n' + item.description;
   };
   
+  
+  var init = function () {
+    // Listen to external events
+    app.scanner.on('success', this.addItem);
+  }.bind(this);
+  
   // Listen to events
   this.on('loadItems', loadAllItems);
   this.on('select', select);
   this.on('use', use);
+  app.on('initInstances', init);
+  
 };
+/*
+  INVENTORY MODEL END
+ */
