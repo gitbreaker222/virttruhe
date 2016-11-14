@@ -73,7 +73,7 @@
     };
 
     tag.select = function (event) {
-      item = event.item;
+      var item = event.item;
       if (item.id === inventory.getSelected()) {
         return tag.resetSelection();
       }
@@ -118,6 +118,11 @@
       dialogService.newDialog(message, 'confirm', callback);
     };
 
+    tag.share = function (itemId) {
+        var message = '(preview) show QR Code for this item.';
+        dialogService.newDialog(message);
+    };
+
     tag.remove = function (itemId) {
       var item = itemsService.getItem(itemId);
       var message = 'Deleted "'+item.name+'" from the inventory. Undo?';
@@ -136,7 +141,7 @@
       riot.route('scanner')
     });
     tag.on('info use share remove', function(type){
-      this[type](inventory.getSelected());
+      tag[type](inventory.getSelected());
     });
 
     // Listen to external events
