@@ -5,7 +5,7 @@ app.models.Demo = function () {
   // Make instances observable
   riot.observable(this);
   
-  // variables
+  // private properties
   var greetingText = 'Servus';
   
   // private methods
