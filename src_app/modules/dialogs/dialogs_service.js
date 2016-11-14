@@ -1,6 +1,7 @@
 app.services.dialog = {
   newDialog: function (message, type, callback) {
     //validation
+    type = type || '';
     if (!message || message === '') {
       throw new Error('please provide a message string. Got: '+ message);
     }
@@ -10,7 +11,7 @@ app.services.dialog = {
     if (!callback) {
       callback = function () {};
     }
-    
+
     switch (type) {
       case 'confirm':
         vex.dialog.confirm({
