@@ -3348,9 +3348,13 @@ button, .button {
 #container {
   height: 100%;
   display: flex;
-  flex-direction: column; }
+  flex-direction: column;
+  align-items: center; }
 
 .page {
+  width: 100%;
+  max-width: 700px;
+  margin-bottom: 4em;
   overflow: auto;
   color: #fff;
   display: none; }
@@ -3358,6 +3362,12 @@ button, .button {
     display: initial; }
 
 /* MODULES / IMPORTS */
+.vex.vex-theme-default.error {
+  background-color: rgba(255, 120, 123, 0.53); }
+
+info-bar {
+  width: 100%; }
+
 header {
   display: flex;
   justify-content: space-between;
@@ -3394,7 +3404,7 @@ header {
         overflow: visible;
         margin-top: -1.5rem;
         padding: 0.2rem;
-        border: 0.4rem solid #222;
+        border: 0.4rem solid #2196f3;
         border-radius: 2rem;
         background-color: #2196f3; }
     .context-actions .button:nth-child(2) {
