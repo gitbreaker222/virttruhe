@@ -117,7 +117,8 @@
     tag.scanVideo = function (video) {
       qr.decodeFromCamera(video, function (error, text) {
         if (error) {
-          handleVideoError(error)
+          handleVideoError(error);
+          return
         }
         tag.scanInput(text);
       }, true);
@@ -151,13 +152,14 @@
 
     tag.stopScan = function () {
       if (!tag.data.isScanning){
+        console.log('no need to trigger stop scan, because flag is already set')
         return;
       }
       console.log('stopping scan');
       tag.data.isScanning = false;
+      qr.stop();
       tag.cameraOutput.pause();
       tag.cameraOutput.src = null;
-      qr.stop();
     };
 
     tag.goToInventory = function () {
