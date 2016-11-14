@@ -837,13 +837,8 @@ var chromeShim = {
     var nativeAddIceCandidate =
         RTCPeerConnection.prototype.addIceCandidate;
     RTCPeerConnection.prototype.addIceCandidate = function() {
-      if (arguments[0] === null) {
-        if (arguments[1]) {
-          arguments[1].apply(null);
-        }
-        return Promise.resolve();
-      }
-      return nativeAddIceCandidate.apply(this, arguments);
+      return arguments[0] === null ? Promise.resolve()
+          : nativeAddIceCandidate.apply(this, arguments);
     };
   }
 };
@@ -1028,16 +1023,7 @@ module.exports = function() {
         bind(navigator.mediaDevices);
     navigator.mediaDevices.getUserMedia = function(cs) {
       return shimConstraints_(cs, function(c) {
-        return origGetUserMedia(c).then(function(stream) {
-          if (c.audio && !stream.getAudioTracks().length ||
-              c.video && !stream.getVideoTracks().length) {
-            stream.getTracks().forEach(function(track) {
-              track.stop();
-            });
-            throw new DOMException('', 'NotFoundError');
-          }
-          return stream;
-        }, function(e) {
+        return origGetUserMedia(c).catch(function(e) {
           return Promise.reject(shimError_(e));
         });
       });
@@ -1175,7 +1161,6 @@ var edgeShim = {
           return false;
         });
       }
-      this._config = config;
 
       // per-track iceGathers, iceTransports, dtlsTransports, rtpSenders, ...
       // everything that is needed to describe a SDP m-line.
@@ -1221,10 +1206,6 @@ var edgeShim = {
         }
       });
       this._localIceCandidatesBuffer = [];
-    };
-
-    window.RTCPeerConnection.prototype.getConfiguration = function() {
-      return this._config;
     };
 
     window.RTCPeerConnection.prototype.addStream = function(stream) {
@@ -1428,13 +1409,6 @@ var edgeShim = {
         transceiver.rtpSender.send(params);
       }
       if (recv && transceiver.rtpReceiver) {
-        // remove RTX field in Edge 14942
-        if (transceiver.kind === 'video'
-            && transceiver.recvEncodingParameters) {
-          transceiver.recvEncodingParameters.forEach(function(p) {
-            delete p.rtx;
-          });
-        }
         params.encodings = transceiver.recvEncodingParameters;
         params.rtcp = {
           cname: transceiver.cname
@@ -1664,14 +1638,6 @@ var edgeShim = {
               }
 
               localCapabilities = RTCRtpReceiver.getCapabilities(kind);
-
-              // filter RTX until additional stuff needed for RTX is implemented
-              // in adapter.js
-              localCapabilities.codecs = localCapabilities.codecs.filter(
-                  function(codec) {
-                    return codec.name !== 'rtx';
-                  });
-
               sendEncodingParameters = [{
                 ssrc: (2 * sdpMLineIndex + 2) * 1001
               }];
@@ -1981,21 +1947,6 @@ var edgeShim = {
         } : self._createIceAndDtlsTransports(mid, sdpMLineIndex);
 
         var localCapabilities = RTCRtpSender.getCapabilities(kind);
-        // filter RTX until additional stuff needed for RTX is implemented
-        // in adapter.js
-        localCapabilities.codecs = localCapabilities.codecs.filter(
-            function(codec) {
-              return codec.name !== 'rtx';
-            });
-        localCapabilities.codecs.forEach(function(codec) {
-          // work around https://bugs.chromium.org/p/webrtc/issues/detail?id=6552
-          // by adding level-asymmetry-allowed=1
-          if (codec.name === 'H264' &&
-              codec.parameters['level-asymmetry-allowed'] === undefined) {
-            codec.parameters['level-asymmetry-allowed'] = '1';
-          }
-        });
-
         var rtpSender;
         var rtpReceiver;
 
@@ -2324,13 +2275,8 @@ var firefoxShim = {
     var nativeAddIceCandidate =
         RTCPeerConnection.prototype.addIceCandidate;
     RTCPeerConnection.prototype.addIceCandidate = function() {
-      if (arguments[0] === null) {
-        if (arguments[1]) {
-          arguments[1].apply(null);
-        }
-        return Promise.resolve();
-      }
-      return nativeAddIceCandidate.apply(this, arguments);
+      return arguments[0] === null ? Promise.resolve()
+          : nativeAddIceCandidate.apply(this, arguments);
     };
 
     // shim getStats with maplike support
@@ -2498,18 +2444,7 @@ module.exports = function() {
     var origGetUserMedia = navigator.mediaDevices.getUserMedia.
         bind(navigator.mediaDevices);
     navigator.mediaDevices.getUserMedia = function(c) {
-      return origGetUserMedia(c).then(function(stream) {
-        // Work around https://bugzil.la/802326
-        if (c.audio && !stream.getAudioTracks().length ||
-            c.video && !stream.getVideoTracks().length) {
-          stream.getTracks().forEach(function(track) {
-            track.stop();
-          });
-          throw new DOMException('The object can not be found here.',
-                                 'NotFoundError');
-        }
-        return stream;
-      }, function(e) {
+      return origGetUserMedia(c).catch(function(e) {
         return Promise.reject(shimError_(e));
       });
     };
@@ -2765,7 +2700,7 @@ riot.tag2('inventory', '<ul class="items"> <li each="{items()}" class="{selected
     };
 
     tag.select = function (event) {
-      var item = event.item;
+      item = event.item;
       if (item.id === inventory.getSelected()) {
         return tag.resetSelection();
       }
@@ -2810,11 +2745,6 @@ riot.tag2('inventory', '<ul class="items"> <li each="{items()}" class="{selected
       dialogService.newDialog(message, 'confirm', callback);
     };
 
-    tag.share = function (itemId) {
-        var message = '(preview) show QR Code for this item.';
-        dialogService.newDialog(message);
-    };
-
     tag.remove = function (itemId) {
       var item = itemsService.getItem(itemId);
       var message = 'Deleted "'+item.name+'" from the inventory. Undo?';
@@ -2832,7 +2762,7 @@ riot.tag2('inventory', '<ul class="items"> <li each="{items()}" class="{selected
       riot.route('scanner')
     });
     tag.on('info use share remove', function(type){
-      tag[type](inventory.getSelected());
+      this[type](inventory.getSelected());
     });
 
     inventory.on('addItem deleteItem', update);
@@ -2840,7 +2770,12 @@ riot.tag2('inventory', '<ul class="items"> <li each="{items()}" class="{selected
     tag.updateButtonStates();
 
 });
-
+riot.tag2('demo', '<form onsubmit="{updateLabel}"> <input type="text" name="inputText"> <button type="submit">Do it!</button> <input type="submit" hidden> </form> <h3>--> {this.text}</h3>', '', '', function(opts) {
+        this.updateLabel = function (){
+            console.log(this);
+            this.text = this.inputText.value;
+        }
+});
 riot.tag2('scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput" autoplay> </video> <span if="{canVideoScan()}" style=" min-width: 1rem; height: 1rem; font-size: 7pt; padding: 0 0.2rem; background-color: green; border: 0 transparent; border-radius: 1rem; "> has webcam </span> <hr> </div> <div if={showImageScanner}"> <input type="file" accept="image"> <img src="./-data/img/10000000 - visit virttruhe.tumblr.com.png" id="img"> <hr> </div> <div if="{showTextScanner}"> <input title="scanText" type="text" placeholder="#0000FFFF" class="{invalid:isInvalid}" oninput="{scanInput}"> <hr> </div> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
     var tag = this;
 
