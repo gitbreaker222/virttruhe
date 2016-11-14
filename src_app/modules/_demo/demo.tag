@@ -4,7 +4,10 @@
                onclick={clickFn}>
 
         <span each={demoProp2.length}
-              class={focus: true, item: demoMethod(this)}
+              class="{
+                  focus: true,
+                  item: demoMethod(this)
+              }"
         >
             {demoProp2}
         </span>
