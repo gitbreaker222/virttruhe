@@ -1,9 +1,13 @@
 <inventory>
+  <section if="{!hasItems()}">
+    Your inventory is empty. Use the scanner function <i class="scan"></i> , to find items in VIRTTRUHE Codes.
+  </section>
+
   <ul class="items">
     <li each={items()}
         class={selected:isSelected(this)}
         onclick={select}>
-      <img src={getImageSource(this)}>
+      <img src={getItemImageSrc(this)}>
     </li>
   </ul>
 
@@ -20,11 +24,17 @@
     var dialogService = app.services.dialog;
     var inventory = app.inventory;
 
+    // private functions
     var update = function () {
       tag.update();
     };
 
+    // public functions
     tag.items = inventory.getItems;
+
+    tag.hasItems = function () {
+      return tag.items().length > 0;
+    };
 
     tag.data = {
       buttonList: [
@@ -61,11 +71,16 @@
     ]
     };
 
-    tag.getImageSource = function (item) {
-      if (item.imageName) {
-        return 'data/items/img/small/' + item.imageName;
+    tag.getItemImageSrc = function (item) {
+      var itemName;
+      if (item.imageName && typeof(item.imageName) === 'string') {
+        itemName = item.imageName;
+      } else if (item.id && typeof(item.id) === 'string') {
+        itemName = item.id + '.jpg';
+      } else {
+        throw new Error('Exception for itemName')
       }
-      return 'data/items/img/small/' + item.id + '.jpg';
+      return app.constants.itemImageSmallPath + itemName;
     };
 
     tag.isSelected = function (item) {
