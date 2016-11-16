@@ -1,4 +1,4 @@
-<inventory>
+<app-inventory>
   <section if="{!hasItems()}">
     Your inventory is empty. Use the scanner function <i class="scan"></i> , to find items in VIRTTRUHE Codes.
   </section>
@@ -171,4 +171,4 @@
     };
     */
   </script>
-</inventory>
+</app-inventory>

@@ -1,4 +1,4 @@
-<scanner>
+<app-scanner>
   <div if={showVideoScanner}>
     <video id="cameraOutput"
            autoplay>
@@ -181,4 +181,4 @@
     Scanner.on('success', presentItem);
     Scanner.on('noSucces', presentNoSuccess);
   </script>
-</scanner>
+</app-scanner>

@@ -7,7 +7,7 @@ app.currentPageTag = null;
 
 app.goTo = function (pageName) {
   var nextPageTag = riot.vdom.find(function (tag) {
-    return tag.root.localName === pageName;
+    return tag.root.localName === 'app-'+pageName;
   });
   
   if (app.currentPageTag) {
@@ -31,6 +31,10 @@ riot.route('/', function () {
   riot.route('/inventory', 'Inventory');
 });
 
+riot.route('/intro', function () {
+  app.goTo('intro');
+});
+
 riot.route('/inventory', function () {
   app.goTo('inventory');
 });
@@ -38,7 +42,6 @@ riot.route('/inventory', function () {
 riot.route('/scanner', function () {
   app.goTo('scanner');
 });
-
 /*
  ROUTES.JS END
  */

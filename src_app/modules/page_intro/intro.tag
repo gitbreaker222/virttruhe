@@ -1,4 +1,4 @@
-<vt-intro-page>
+<app-intro>
   <div>
     scan the start card
   </div>
@@ -43,4 +43,4 @@
 
 
   </script>
-</vt-intro-page>
+</app-intro>
