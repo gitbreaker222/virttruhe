@@ -7,10 +7,10 @@ var gulp = require('gulp');
 var runSequence = require('run-sequence');
 var del = require('del');
 var concat = require('gulp-concat');
-var rename = require('gulp-rename');
 var riot = require('gulp-riot');
 var pug = require('gulp-pug');
 var sass = require('gulp-sass');
+var liveServer = require('gulp-live-server');
 
 var packageJson = require('./package.json');
 
@@ -54,12 +54,10 @@ gulp.task('compile_sass', ['delete:main.css'], function () {
  * * * * *
  **********************/
 gulp.task('compile_riot_tags', function () {
-  gulp.src('src_app/**/*.tag')
+  return gulp.src('src_app/**/*.tag')
     .pipe(riot())
-    .pipe(rename(function (path) {
-      path.extname = '.tag.js';
-    }))
-    .pipe(gulp.dest('src_app'));
+    .pipe(concat('compiled-tags.tag.js'))
+    .pipe(gulp.dest('src_app/.tmp/'));
 });
 
 /**********************
@@ -67,16 +65,25 @@ gulp.task('compile_riot_tags', function () {
  * SCRIPT
  * * * * *
  **********************/
+var scripts = [
+  'bower_components/detectrtc/DetectRTC.min.js',
+  'bower_components/riot/riot.min.js',
+  'bower_components/webrtc-adapter/release/adapter.js',
+  'bower_components/vex/dist/js/vex.combined.min.js',
+  'lib/qr-decoder.js',
+  'src_app/.tmp/**/*.js',
+  'src_app/**/*.js'
+];
+
 gulp.task('delete:js', function () {
   return del.sync('app/js');
 });
 
 gulp.task('concat_scripts', ['delete:js'], function () {
-  return gulp.src('./src_app/modules/**/*.js')
+  return gulp.src(scripts)
     .pipe(concat('main.js'))
     .pipe(gulp.dest('./app/js/'));
 });
-
 
 /**********************
  *
@@ -88,8 +95,8 @@ gulp.task('delete:data', function () {
 });
 
 var data = {
-  img: './src_app/img/**/*.*',
-  audio: './src_app/audio/**/*.*',
+  img: './src_app/data/img/**/*.*',
+  audio: './src_app/data/audio/**/*.*',
   items: './src_app/data/items/**/*.{jpg,png}'
 };
 
@@ -102,6 +109,24 @@ gulp.task('copy_data', ['delete:data'], function () {
     .pipe(gulp.dest('./app/data/items'));
 });
 
+var server = null;
+/**********************
+ *
+ * SERVE
+ * * * * *
+ **********************/
+gulp.task('serve', function () {
+  var parameter = process.argv[3];
+  server = liveServer.static('app');
+  switch(parameter) {
+    case '-stop':
+      server.stop();
+      break;
+    default:
+      server.start();
+  }
+});
+
 
 /**********************
  *
@@ -112,7 +137,7 @@ gulp.task('watch', function () {
   gulp.watch('./src_app/**/*.pug', ['compile_pug']);
   gulp.watch('./src_app/**/*.sass', ['compile_sass']);
   gulp.watch('src_app/**/*.tag', ['compile_riot_tags']);
-  gulp.watch('./src_app/modules/{**/*.js, *.js}', ['concat_scripts']);
+  gulp.watch('./src_app/{.tmp,**}/*.js', ['concat_scripts']);
 });
 
 

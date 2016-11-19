@@ -3,12 +3,17 @@ env:
 globals:
   require: false
   riot: false
+  DetectRTC: false
+  QCodeDecoder: false
+  vex: false
+  process: false
   app: true
 extends: 'eslint:recommended'
 rules:
   indent:
     - error
     - 2
+    - SwitchCase: 1
   linebreak-style:
     - error
     - unix

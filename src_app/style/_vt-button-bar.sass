@@ -1,0 +1,56 @@
+.context-actions
+  $background-color: $dark
+  $primary-color: $light
+  $bar-height: 3rem
+  $icon-width: $bar-height * 0.7
+  display: flex
+  position: fixed
+  justify-content: space-around
+  bottom: 0
+  left: 0
+  width: 100%
+  height: $bar-height
+  background-color: $primary-color
+  color: black
+
+  .button
+    width: 1%
+    flex-grow: 1
+
+    div
+      height: $bar-height
+      display: flex
+      flex-direction: column
+      justify-content: flex-end
+      align-items: center
+
+    &:nth-child(1)
+      //main button
+      order: 3
+      .icon
+        overflow: visible
+        margin-top: -1.5rem
+        padding: 0.2rem
+        border: 0.4rem solid $highlight-color
+        border-radius: 2rem
+        background-color: $highlight-color
+    &:nth-child(2)
+      order: 1
+    &:nth-child(3)
+      order: 2
+    &:nth-child(4)
+      order: 4
+    &:nth-child(5)
+      order: 5
+
+  .icon
+
+    width: $icon-width
+    height: $icon-width
+
+  label
+    font-size: 9pt
+    overflow: hidden
+    text-overflow: ellipsis
+    max-width: 4rem
+    white-space: nowrap

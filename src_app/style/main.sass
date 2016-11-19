@@ -1,3 +1,14 @@
+/*   --------========          ========-------- */
+/* --------========  LIBRARIES  ========-------- */
+/*   --------========          ========-------- */
+@import ../../bower_components/animate.css/animate.min
+@import ../../bower_components/vex/sass/vex
+@import ../../bower_components/vex/sass/vex-theme-default
+
+/*   --------========          ========-------- */
+/* --------======== NORMALIZING ========-------- */
+/*   --------========          ========-------- */
+
 @import normalize
 html, body
   height: 100%
@@ -8,6 +19,14 @@ ul
 /*   --------========          ========-------- */
 /* --------======== CUSTOM STYLE ========-------- */
 /*   --------========          ========-------- */
+$dark: #222
+$light: #ddd
+$blue: #2196f3
+
+$primary-color: $dark
+$seconsary-color: $light
+$highlight-color: $blue
+
 
 body
   background-color: #222
@@ -15,20 +34,46 @@ body
 a
   background-color: white
 
-button:disabled
-  img, label
+input
+  background-color: inherit
+
+  &.invalid
+    color: salmon
+    border-color: salmon
+
+button, .button
+  background: none
+  border: none
+
+  &:disabled, &.disabled
     opacity: 0.5
+
+  &:focus
+    outline: none
 
 .hide
   display: none
+
+.fade-out
+  opacity: 0
+  transition: 400ms
+
+.icon
+  display: block
+  background-size: contain
+  background-repeat: no-repeat
 
 /* LAYOUT */
 #container
   height: 100%
   display: flex
   flex-direction: column
+  align-items: center
 
 .page
+  width: 100%
+  max-width: 700px
+  margin-bottom: 4em
   overflow: auto
   color: #fff
   display: none
@@ -36,7 +81,9 @@ button:disabled
     display: initial
 
 /* MODULES / IMPORTS */
+@import dialog
+@import icons
 @import info-bar
-@import context-action-bar
+@import vt-button-bar
 @import inventory
 @import scanner

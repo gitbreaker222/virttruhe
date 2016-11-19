@@ -1,6 +1,6 @@
 {
   "name": "detectrtc",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "authors": [
     {
       "name": "Muaz Khan",
@@ -29,14 +29,13 @@
     "**/.*",
     "node_modules"
   ],
-  "_release": "1.3.1",
+  "_release": "1.3.2",
   "_resolution": {
     "type": "version",
-    "tag": "1.3.1",
-    "commit": "07822b57c0fff5c9ce05009ba6732e74f7304692"
+    "tag": "1.3.2",
+    "commit": "2945317c1bc6d296f9b383ae855faff555439aa0"
   },
   "_source": "https://github.com/muaz-khan/DetectRTC.git",
   "_target": "^1.3.1",
-  "_originalSource": "detectrtc",
-  "_direct": true
+  "_originalSource": "detectrtc"
 }

@@ -33,51 +33,64 @@ To run it locally and as long as there is no distributed app or extra run script
 
  NodeJS has now installed the task runner _gulp_ from the _node package manager (npm)_ for you.
 
- Run ```gulp``` in the terminal to trigger the _gulp default_ task. An IDE like Webstorm shows these tasks usually on the left. You can also run the _default_ task from there.
+ Run
+ ```
+ gulp
+ ``` 
+ in the terminal to trigger the _gulp default_ task. An IDE like Webstorm shows these tasks usually on the left. You can also run the _default_ task from there.
 
   The folder **app** will be created/overridden with all compiled files from **src_app**.
 
- ### 3: run the app
- run `app/index.html` in your browser. Preferrably with a webserver - an IDE like AptanaStudio or WebStorm can do that, if you don't want to setup a webserver manually.
+ ### 3: run the app`
+ 
+ Run the web server with the _gulp serve_ task. To start it from terminal, type:
+ ```
+ gulp serve
+ ```
+ 
+ This will open `app/index.html` in your browser on localhost:3000`.
 
- Congratulation! You are now familiar with the technology to work on modern web applications :) 🍻
+---
 
- (more information follows....)
+ Congratulation! You are now familiar with the technology to work on modern web applications :)
 
  ## App Architechture
+ 
  ```
  virttruhe/
  ├── app/ ( built app for preview, completely created by gulp )
  │    ├── data/
  │    │    └── ( audio, img, json )
  │    ├── js/
- │    |    └── main.js ( concatenated scripts )
+ │    │    └── main.js ( concatenated scripts )
  │    ├── style/
  │    │    └── main.css ( compiled & concatenated sass files )
  │    └── index.html ( compiled index.jade )
- |
+ │
  ├── concept/
  │    └── ( sketches, notes, designs, etc... )
- |
+ │
  ├── src_app/ ( development directory )
- │    ├── audio/
- │    │    └── ( audio files )
+ │    ├── .tmp/ (riot tags get compiled into here)
+ │    │
  │    ├── data/
- │    │    └── ( json and similar data )
- │    ├── img/
- │    │    └── ( image files )
- │    ├── modules/
+ │    │    └── ( audio, img, json / data )
+ │    │
+ │    ├── modules/ (pages/riot tags, js)
  │    │    ├── sample_module/
- │    │    │  ( └ ─ sample-module.js ) ( gulp creates compiled tag here )
- │    │    │    └── sample-module.tag ( riot.js tag, template + logic )
- │    │    ├── app.js ( root script file )
- │    │    └── routes.js
+ │    │    │    ├── sample-module-model.js (model with logic)
+ │    │    │    ├── sample-module-service.js (object with service functions, e.g. fetch data)
+ │    │    │    └── sample-module.tag ( riot.js tag, template + controller )
+ │    │    ├── app.js ( root js file )
+ │    │    └── routes.js (manage url/page states)
+ │    │
  │    ├── style/
  │    │    ├── _sample-module.sass
  │    │    └── main.sass
+ │    │
  │    ├── favicon.ico
- │    └── index.jade
- |
+ │    └── index.jade ... (renamed to .pug)
+ │
  ├── ( some config files )
  ├── gulpfile.js ( config for the build tasks )
  ├── package.json ( metadata for the app )
