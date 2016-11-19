@@ -1,7 +1,7 @@
 <app-inventory>
-  <section if="{!hasItems()}">
+  <div if="{!hasItems()}">
     Your inventory is empty. Use the scanner function <i class="scan"></i> , to find items in VIRTTRUHE Codes.
-  </section>
+  </div>
 
   <ul class="items">
     <li each={items()}

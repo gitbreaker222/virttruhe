@@ -91,7 +91,6 @@
 
     var handleVideoError = function (e) {
       window.console.error(e);
-      riot.route('inventory');
     };
 
 
@@ -120,6 +119,8 @@
           handleVideoError(error);
           return
         }
+        //success
+        tag.stopScan();
         tag.scanInput(text);
       }, true);
     };
@@ -152,7 +153,6 @@
 
     tag.stopScan = function () {
       if (!tag.data.isScanning){
-        console.log('no need to trigger stop scan, because flag is already set')
         return;
       }
       console.log('stopping scan');

@@ -62,35 +62,35 @@ To run it locally and as long as there is no distributed app or extra run script
  │    ├── data/
  │    │    └── ( audio, img, json )
  │    ├── js/
- │    |    └── main.js ( concatenated scripts )
+ │    │    └── main.js ( concatenated scripts )
  │    ├── style/
  │    │    └── main.css ( compiled & concatenated sass files )
  │    └── index.html ( compiled index.jade )
- |
+ │
  ├── concept/
  │    └── ( sketches, notes, designs, etc... )
- |
+ │
  ├── src_app/ ( development directory )
  │    ├── .tmp/ (riot tags get compiled into here)
- │    ├── audio/
- │    │    └── ( audio files )
+ │    │
  │    ├── data/
- │    │    └── ( json / data )
- │    ├── img/
- │    │    └── ( image files )
- │    ├── modules/
+ │    │    └── ( audio, img, json / data )
+ │    │
+ │    ├── modules/ (pages/riot tags, js)
  │    │    ├── sample_module/
  │    │    │    ├── sample-module-model.js (model with logic)
  │    │    │    ├── sample-module-service.js (object with service functions, e.g. fetch data)
  │    │    │    └── sample-module.tag ( riot.js tag, template + controller )
- │    │    ├── app.js ( root script file )
- │    │    └── routes.js
+ │    │    ├── app.js ( root js file )
+ │    │    └── routes.js (manage url/page states)
+ │    │
  │    ├── style/
  │    │    ├── _sample-module.sass
  │    │    └── main.sass
+ │    │
  │    ├── favicon.ico
- │    └── index.jade
- |
+ │    └── index.jade ... (renamed to .pug)
+ │
  ├── ( some config files )
  ├── gulpfile.js ( config for the build tasks )
  ├── package.json ( metadata for the app )

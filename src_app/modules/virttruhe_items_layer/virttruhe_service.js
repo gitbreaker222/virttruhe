@@ -31,7 +31,9 @@ app.services.virttruhe = {
     return true;
   },
   getCurrentLayer: function () {
-    return this.currentLayer || 'default';
+    var currentLayer = this.currentLayer || 'default';
+    window.console.info('current layer is ', currentLayer);
+    return currentLayer;
   },
   setCurrentLayer: function (layer) {
     //validation
