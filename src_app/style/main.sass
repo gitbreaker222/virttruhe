@@ -24,15 +24,15 @@ $light: #ddd
 $blue: #2196f3
 
 $primary-color: $dark
-$seconsary-color: $light
+$secondary-color: $light
 $highlight-color: $blue
 
 
 body
-  background-color: #222
+  background-color: $dark
 
 a
-  background-color: white
+  color: $highlight-color
 
 input
   background-color: inherit
@@ -54,14 +54,27 @@ button, .button
 .hide
   display: none
 
+.center-x
+  position: absolute
+  left: 50%
+  transform: translate(-50%)
+
+.center-block
+  display: block
+  margin-left: auto
+  margin-right: auto
+
 .fade-out
   opacity: 0
   transition: 400ms
 
-.icon
-  display: block
-  background-size: contain
-  background-repeat: no-repeat
+.cover
+  position: absolute
+  top: 4vh
+  left: 50%
+  transform: translateX(-50%)
+
+
 
 /* LAYOUT */
 #container

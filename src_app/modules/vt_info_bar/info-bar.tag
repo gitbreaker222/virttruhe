@@ -1,7 +1,7 @@
-<info-bar>
+<app-info-bar>
   <header>
     <span name="infoText">
-      this is a header from riot.js
+      current layer: {getLayer()}
     </span>
 
     <span class="marbles">
@@ -13,12 +13,15 @@
 
 
     <script>
+      var tag = this;
       // tag properties have data binding, so transfer the  attribute to it
-      this.marbles = this.opts.marbles;
+      tag.marbles = tag.opts.marbles;
 
-      this.updateLabel = function (){
-        this.marbles = this.inputMarbles.value;
-        this.inputMarbles.value = "";
+      tag.getLayer = app.services.virttruhe.getCurrentLayer;
+
+      tag.updateLabel = function (){
+        tag.marbles = tag.inputMarbles.value;
+        tag.inputMarbles.value = "";
       };
     </script>
-</info-bar>
+</app-info-bar>

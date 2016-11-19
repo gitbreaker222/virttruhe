@@ -1,6 +1,19 @@
 <app-inventory>
-  <div if="{!hasItems()}">
-    Your inventory is empty. Use the scanner function <i class="scan"></i> , to find items in VIRTTRUHE Codes.
+  <div if="{!hasItems()}"
+       class="cover">
+    <h2>
+      Your inventory is empty.
+    </h2>
+    <p>
+      Use the scanner on VIRTTRUHE artefacts to find items.
+    </p>
+    <button onclick="{scan}"
+            class="center-block">
+      <i class="icon scan"></i>
+    </button>
+    <p>
+      <a href="data/img/cards_1_-_9.png" download>Get example VIRTTRUHE qr-codes here.</a>
+    </p>
   </div>
 
   <ul class="items">
@@ -27,6 +40,7 @@
     // private functions
     var update = function () {
       tag.update();
+      tag.updateButtonStates();
     };
 
     // public functions
@@ -92,13 +106,11 @@
       if (item.id === inventory.getSelected()) {
         return tag.resetSelection();
       }
-      inventory.trigger('select', item.id);
-      tag.updateButtonStates();
+      inventory.select(item.id);
     };
 
     tag.resetSelection = function () {
-      inventory.trigger('select');
-      tag.updateButtonStates();
+      inventory.select(null);
     };
 
     tag.updateButtonStates = function () {
@@ -150,17 +162,20 @@
       dialogService.newDialog(message, 'confirm', reAddItem)
     };
 
+    tag.scan = function () {
+      riot.route('scanner')
+    };
+
+
     // Listen to own events
     tag.on('show', update);
-    tag.on('scan', function(){
-      riot.route('scanner')
-    });
+    tag.on('scan', tag.scan);
     tag.on('info use share remove', function(type){
       tag[type](inventory.getSelected());
     });
 
     // Listen to external events
-    inventory.on('addItem deleteItem', update);
+    inventory.on('change', update);
 
     tag.updateButtonStates();
 

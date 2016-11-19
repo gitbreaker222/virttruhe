@@ -3316,7 +3316,7 @@ body {
   background-color: #222; }
 
 a {
-  background-color: white; }
+  color: #2196f3; }
 
 input {
   background-color: inherit; }
@@ -3335,14 +3335,25 @@ button, .button {
 .hide {
   display: none; }
 
+.center-x {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%); }
+
+.center-block {
+  display: block;
+  margin-left: auto;
+  margin-right: auto; }
+
 .fade-out {
   opacity: 0;
   transition: 400ms; }
 
-.icon {
-  display: block;
-  background-size: contain;
-  background-repeat: no-repeat; }
+.cover {
+  position: absolute;
+  top: 4vh;
+  left: 50%;
+  transform: translateX(-50%); }
 
 /* LAYOUT */
 #container {
@@ -3369,13 +3380,19 @@ i {
   display: inline-block;
   width: 1rem;
   height: 1rem;
-  transform: scale(1.4);
+  transform: scale(1.2);
   transform-origin: center;
   background-size: contain;
-  background-color: white;
   background-repeat: repeat; }
   i.scan, i.qr-code {
     background-image: url("../data/img/qr-code.svg"); }
+
+button i {
+  width: 3rem;
+  height: 3rem;
+  background-color: #2196f3;
+  border-radius: 50%;
+  border: 0.5rem solid #2196f3; }
 
 app-info-bar {
   width: 100%; }
