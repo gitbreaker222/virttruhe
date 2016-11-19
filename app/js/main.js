@@ -2661,7 +2661,7 @@ riot.tag2('vt-button-bar', '<div each="{buttons}" class="{button: true,         
     tag.buttons = normalizeButtons();
 
     tag.imagePathFor = function (imageName) {
-        return '../data/img/'+imageName+'.svg';
+        return 'data/img/'+imageName+'.svg';
     };
     tag.triggerAction = function (event) {
       if (event.item.disabled) {
