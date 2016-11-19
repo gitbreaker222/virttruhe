@@ -95,8 +95,8 @@ gulp.task('delete:data', function () {
 });
 
 var data = {
-  img: './src_app/img/**/*.*',
-  audio: './src_app/audio/**/*.*',
+  img: './src_app/data/img/**/*.*',
+  audio: './src_app/data/audio/**/*.*',
   items: './src_app/data/items/**/*.{jpg,png}'
 };
 
