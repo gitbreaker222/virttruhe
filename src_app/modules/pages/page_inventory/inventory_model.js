@@ -13,15 +13,6 @@ app.models.Inventory = function () {
   };
   
   // Private methods
-  var select = function (item) {
-    if (!item) {
-      return data.selected = null;
-    } else if (typeof(item) !== 'string') {
-      throw new TypeError('expected "string". Instead got ' + typeof(item));
-    }
-    return data.selected = item || null;
-  };
-  
   var use = function (itemId) {
     var item = itemsService.getItem(itemId);
     if (item && item.action) {
@@ -46,7 +37,7 @@ app.models.Inventory = function () {
     }
     
     data.items.push(item);
-    this.trigger('addItem', item.id);
+    this.trigger('change itemAdded', item.id);
     return data.items;
   };
   
@@ -54,8 +45,21 @@ app.models.Inventory = function () {
     data.items = data.items.filter(function (item) {
       return item.id !== itemId;
     });
-    this.trigger('deleteItem', itemId);
+    this.trigger('change itemDeleted', itemId);
+    this.select(null);
     return data.items;
+  };
+  
+  this.select = function (item) {
+    if (!item) {
+      data.selected = null;
+    } else if (typeof(item) !== 'string') {
+      throw new TypeError('expected "string". Instead got ' + typeof(item));
+    } else {
+      data.selected = item || null;
+    }
+    this.trigger('change');
+    return data.selected;
   };
   
   this.getItems = function () {
@@ -80,7 +84,6 @@ app.models.Inventory = function () {
   
   // Listen to events
   this.on('loadItems', loadAllItems);
-  this.on('select', select);
   this.on('use', use);
   app.on('initInstances', init);
   

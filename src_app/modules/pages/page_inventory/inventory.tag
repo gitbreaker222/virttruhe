@@ -27,6 +27,7 @@
     // private functions
     var update = function () {
       tag.update();
+      tag.updateButtonStates();
     };
 
     // public functions
@@ -92,13 +93,11 @@
       if (item.id === inventory.getSelected()) {
         return tag.resetSelection();
       }
-      inventory.trigger('select', item.id);
-      tag.updateButtonStates();
+      inventory.select(item.id);
     };
 
     tag.resetSelection = function () {
-      inventory.trigger('select');
-      tag.updateButtonStates();
+      inventory.select(null);
     };
 
     tag.updateButtonStates = function () {
@@ -160,7 +159,7 @@
     });
 
     // Listen to external events
-    inventory.on('addItem deleteItem', update);
+    inventory.on('change', update);
 
     tag.updateButtonStates();
 
