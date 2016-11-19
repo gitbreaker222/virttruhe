@@ -1,6 +1,16 @@
 <app-inventory>
-  <div if="{!hasItems()}">
-    Your inventory is empty. Use the scanner function <i class="scan"></i> , to find items in VIRTTRUHE Codes.
+  <div if="{!hasItems()}"
+       class="cover">
+    <h2>
+      Your inventory is empty.
+    </h2>
+    <p>
+      Use the scanner on VIRTTRUHE artefacts to find items.
+    </p>
+    <button onclick="{scan}"
+            class="centerX">
+      <i class="icon scan"></i>
+    </button>
   </div>
 
   <ul class="items">
@@ -149,11 +159,14 @@
       dialogService.newDialog(message, 'confirm', reAddItem)
     };
 
+    tag.scan = function () {
+      riot.route('scanner')
+    };
+
+
     // Listen to own events
     tag.on('show', update);
-    tag.on('scan', function(){
-      riot.route('scanner')
-    });
+    tag.on('scan', tag.scan);
     tag.on('info use share remove', function(type){
       tag[type](inventory.getSelected());
     });

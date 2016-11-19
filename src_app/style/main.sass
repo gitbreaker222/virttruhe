@@ -24,7 +24,7 @@ $light: #ddd
 $blue: #2196f3
 
 $primary-color: $dark
-$seconsary-color: $light
+$secondary-color: $light
 $highlight-color: $blue
 
 
@@ -54,14 +54,20 @@ button, .button
 .hide
   display: none
 
+.centerX
+  position: absolute
+  left: 50%
+  transform: translate(-50%)
+
 .fade-out
   opacity: 0
   transition: 400ms
 
-.icon
-  display: block
-  background-size: contain
-  background-repeat: no-repeat
+.cover
+  position: absolute
+  top: 34%
+  left: 50%
+  transform: translateX(-50%)
 
 /* LAYOUT */
 #container
