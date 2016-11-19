@@ -3365,7 +3365,19 @@ button, .button {
 .vex.vex-theme-default.error {
   background-color: rgba(255, 120, 123, 0.53); }
 
-info-bar {
+i {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  transform: scale(1.4);
+  transform-origin: center;
+  background-size: contain;
+  background-color: white;
+  background-repeat: repeat; }
+  i.scan, i.qr-code {
+    background-image: url("../data/img/qr-code.svg"); }
+
+app-info-bar {
   width: 100%; }
 
 header {
@@ -3425,23 +3437,23 @@ header {
     max-width: 4rem;
     white-space: nowrap; }
 
-inventory ul {
+app-inventory ul {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 6rem; }
 
-inventory li {
+app-inventory li {
   margin: 0.5rem;
   width: 6rem;
   height: 6rem;
   background-color: #34b989;
   list-style: none;
   box-shadow: 0 0 0 transparent; }
-  inventory li img {
+  app-inventory li img {
     width: 100%; }
 
-inventory .selected {
+app-inventory .selected {
   box-shadow: 0 0 2rem blue; }
 
 video {
