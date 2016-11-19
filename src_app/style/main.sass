@@ -29,10 +29,10 @@ $highlight-color: $blue
 
 
 body
-  background-color: #222
+  background-color: $dark
 
 a
-  background-color: white
+  color: $highlight-color
 
 input
   background-color: inherit
@@ -54,10 +54,15 @@ button, .button
 .hide
   display: none
 
-.centerX
+.center-x
   position: absolute
   left: 50%
   transform: translate(-50%)
+
+.center-block
+  display: block
+  margin-left: auto
+  margin-right: auto
 
 .fade-out
   opacity: 0
@@ -65,9 +70,11 @@ button, .button
 
 .cover
   position: absolute
-  top: 34%
+  top: 4vh
   left: 50%
   transform: translateX(-50%)
+
+
 
 /* LAYOUT */
 #container

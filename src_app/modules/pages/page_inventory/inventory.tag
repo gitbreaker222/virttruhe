@@ -8,9 +8,12 @@
       Use the scanner on VIRTTRUHE artefacts to find items.
     </p>
     <button onclick="{scan}"
-            class="centerX">
+            class="center-block">
       <i class="icon scan"></i>
     </button>
+    <p>
+      <a href="data/img/cards_1_-_9.png" download>Get example VIRTTRUHE qr-codes here.</a>
+    </p>
   </div>
 
   <ul class="items">
