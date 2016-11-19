@@ -57,7 +57,7 @@ gulp.task('compile_riot_tags', function () {
   return gulp.src('src_app/**/*.tag')
     .pipe(riot())
     .pipe(concat('compiled-tags.tag.js'))
-    .pipe(gulp.dest('src_app/.tmp/'));
+    .pipe(gulp.dest('src_app/modules/.tmp/'));
 });
 
 /**********************
@@ -71,8 +71,8 @@ var scripts = [
   'bower_components/webrtc-adapter/release/adapter.js',
   'bower_components/vex/dist/js/vex.combined.min.js',
   'lib/qr-decoder.js',
-  'src_app/.tmp/**/*.js',
-  'src_app/**/*.js'
+  'src_app/**/*.js',
+  'src_app/modules/.tmp/**/*.js'
 ];
 
 gulp.task('delete:js', function () {
