@@ -60,7 +60,7 @@
     /***/
 
     tag.imagePathFor = function (imageName) {
-        return '../data/img/'+imageName+'.svg';
+        return 'data/img/'+imageName+'.svg';
     };
     tag.triggerAction = function (event) {
       if (event.item.disabled) {
