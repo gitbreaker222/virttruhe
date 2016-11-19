@@ -3,16 +3,16 @@
     <video id="cameraOutput"
            autoplay>
     </video>
-    <span if={canVideoScan()}
+    <span if={!canVideoScan()}
           style="
       min-width: 1rem;
       height: 1rem;
       font-size: 7pt;
       padding: 0 0.2rem;
-      background-color: green;
+      background-color: #ce4a55;
       border: 0 transparent;
       border-radius: 1rem;
-    "> has webcam
+    "> this device cannot video scan
     </span>
     <hr>
   </div>
@@ -141,8 +141,6 @@
         return;
       }
       if (!tag.canVideoScan()) {
-        var message = 'this device cannot use the video scanner';
-        Dialog.newDialog(message, 'error');
         return;
       }
       console.log('starting scan');
