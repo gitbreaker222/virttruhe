@@ -3474,9 +3474,13 @@ app-inventory li {
 app-inventory .selected {
   box-shadow: 0 0 2rem blue; }
 
-video {
+app-scanner video {
   background-color: #666;
   width: 100%;
   max-width: 44rem;
   box-sizing: border-box;
   border: solid black 1rem; }
+
+app-scanner input[title=scanText] {
+  font-size: 26pt;
+  max-width: 99vh; }
