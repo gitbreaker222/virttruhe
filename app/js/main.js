@@ -3637,7 +3637,7 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
 
 });
 
-riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput" autoplay> </video> <span if="{canVideoScan()}" style=" min-width: 1rem; height: 1rem; font-size: 7pt; padding: 0 0.2rem; background-color: green; border: 0 transparent; border-radius: 1rem; "> has webcam </span> <hr> </div> <div if={showImageScanner}"> <input type="file" accept="image"> <img src="./-data/img/10000000 - visit virttruhe.tumblr.com.png" id="img"> <hr> </div> <div if="{showTextScanner}"> <input title="scanText" type="text" placeholder="#0000FFFF" class="{invalid:isInvalid}" oninput="{scanInput}"> <hr> </div> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
+riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput" autoplay> </video> <span if="{!canVideoScan()}" style=" min-width: 1rem; height: 1rem; font-size: 7pt; padding: 0 0.2rem; background-color: #ce4a55; border: 0 transparent; border-radius: 1rem; "> this device cannot video scan </span> <hr> </div> <div if={showImageScanner}"> <input type="file" accept="image"> <img src="./-data/img/10000000 - visit virttruhe.tumblr.com.png" id="img"> <hr> </div> <div if="{showTextScanner}"> <input title="scanText" type="text" placeholder="#0000FFFF" class="{invalid:isInvalid}" oninput="{scanInput}"> <hr> </div> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
     var tag = this;
 
     var Scanner = app.scanner;
@@ -3722,8 +3722,6 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
         return;
       }
       if (!tag.canVideoScan()) {
-        var message = 'this device cannot use the video scanner';
-        Dialog.newDialog(message, 'error');
         return;
       }
       console.log('starting scan');
