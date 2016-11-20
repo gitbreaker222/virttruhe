@@ -3350,11 +3350,8 @@ button, .button {
   transition: 400ms; }
 
 .cover {
-  position: absolute;
-  top: 4vh;
-  left: 50%;
-  transform: translateX(-50%);
-  -webkit-transform: translateX(-50%); }
+  max-width: 20em;
+  margin: 4vh auto 3rem; }
 
 /* LAYOUT */
 #container {
