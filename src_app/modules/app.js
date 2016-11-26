@@ -12,8 +12,8 @@ var app = {
 
 window.onload = function () {
   // helper functions
-  var constructInstances = function () {
-    // make a new Inventory instance
+  var instantiate = function () {
+    app.state = new app.models.State();
     app.inventory = new app.models.Inventory();
     app.scanner = new app.models.Scanner();
     app.trigger('initInstances');
@@ -23,8 +23,10 @@ window.onload = function () {
   riot.observable(app);
   app.services.utility.detectRTC();
   vex.defaultOptions.className = 'vex-theme-default';
-  constructInstances();
-  //app.inventory.trigger('loadItems');
+  instantiate();
+  
+  //*app.inventory.trigger('loadItems');
+  app.inventory.addItem('beer');
   
   // mount all riot tags and start the router
   riot.mount('*');
