@@ -24,7 +24,7 @@ gulp.task('delete:index.html', function () {
 });
 
 gulp.task('compile_pug', ['delete:index.html'], function () {
-  gulp.src('./src_app/*.pug')
+  gulp.src('./src_app/index.pug')
     .pipe(pug({
       locals: {
         title: packageJson.name
@@ -134,7 +134,7 @@ gulp.task('serve', function () {
  * * * * *
  **********************/
 gulp.task('watch', function () {
-  gulp.watch('./src_app/**/*.pug', ['compile_pug']);
+  gulp.watch('./src_app/index.pug', ['compile_pug']);
   gulp.watch('./src_app/**/*.sass', ['compile_sass']);
   gulp.watch('src_app/**/*.tag', ['compile_riot_tags']);
   gulp.watch('./src_app/{modules/.tmp,**}/*.js', ['concat_scripts']);
@@ -149,11 +149,11 @@ gulp.task('watch', function () {
 gulp.task('default', function (callback) {
   runSequence(
     [
+      'copy_data',
       'compile_pug',
       'compile_sass',
       'compile_riot_tags',
-      'concat_scripts',
-      'copy_data'
+      'concat_scripts'
     ],
     'watch',
     callback
