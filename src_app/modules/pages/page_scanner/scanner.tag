@@ -20,8 +20,6 @@
   <div if={showImageScanner}">
     <input type="file" accept="image">
 
-    <img src="./-data/img/10000000 - visit virttruhe.tumblr.com.png"
-         id="img">
     <hr>
   </div>
 
