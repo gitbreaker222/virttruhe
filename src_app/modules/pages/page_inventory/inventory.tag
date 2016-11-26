@@ -12,6 +12,11 @@
       <i class="icon scan"></i>
     </button>
     <p>
+      <a href="{sampleQrCodes}"
+         type=""
+         download>
+        Get example VIRTTRUHE qr-codes here.
+      </a>
       <a href="data/img/cards_1_-_9.png" download>Get example VIRTTRUHE qr-codes here.</a>
     </p>
   </div>
@@ -42,6 +47,8 @@
       tag.update();
       tag.updateButtonStates();
     };
+
+    tag.sampleQrCodes = app.constants.sampleQrCodes;
 
     // public functions
     tag.items = inventory.getItems;
