@@ -11,17 +11,18 @@ app.models.State = function () {
       imageScanner: null, //boolean
       textScanner:  null  //boolean
     },
-    currentPage: null  //string
+    currentPage: null     //string
   };
   
-  this.getCurrentPage = function () {
-    return this.data.currentPageTag;
+  this.getCurrentPageName = function () {
+    return this.data.currentPage;
   };
-  this.setCurrentPage = function (value) {
-    if (typeof(value) !== 'string') {
-      throw new TypeError('Expected tagobject. Got: '+typeof(value));
+  this.setCurrentPage = function (pageName) {
+    if (typeof(pageName) !== 'string') {
+      throw new TypeError('Please provide a string as argument');
     }
-    this.data.currentPageTag = value;
+    this.data.currentPage = pageName;
+    app.trigger('showPage', pageName);
   };
 };
 /*
