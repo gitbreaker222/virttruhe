@@ -31,6 +31,19 @@ window.onload = function () {
   // mount all riot tags and start the router
   riot.mount('*');
   riot.route.start(true);
+  
+  
+  
+  var dialog1 = {
+    message: 'long text long text long long long',
+    okLabel: 'ok',
+    okAction: function(){alert("you DIDN'T...")}
+  };
+  var dialog2 = {
+    message: ''
+  };
+  app.trigger('showDialog', dialog1);
+  app.trigger('showDialog', dialog2);
 };
 /*
  APP.JS END

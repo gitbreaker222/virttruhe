@@ -35,5 +35,8 @@ app.services.dialog = {
           callback: callback
         });
     }
+  },
+  show: function (dialogObject) {
+    app.trigger('showDialog', dialogObject);
   }
 };

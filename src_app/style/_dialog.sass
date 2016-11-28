@@ -1,3 +1,31 @@
 //customized vex dialogs
 .vex.vex-theme-default.error
   background-color: rgba(255, 120, 123, 0.53)
+
+app-dialog
+  @include center
+  position: fixed
+  z-index: 99
+  min-width: 10rem
+  display: flex
+  flex-flow: row-reverse wrap
+  align-items: flex-start
+  padding: 1em
+  background-color: $primary-color
+  color: $secondary-color
+  border: solid 0.5rem #ddd
+  border-radius: 1rem
+
+  p
+    width: 100%
+
+  button
+    margin: 0.3rem
+    min-width: 4rem
+    padding: 1rem 1rem
+
+  button:first-of-type
+    background-color: $highlight-color
+
+  button:nth-of-type(2)
+    background-color: #999
