@@ -7,19 +7,25 @@
 
   <app-scanner class="page {show: isVisible('scanner')}"></app-scanner>
 
-  <app-dialogs-container
+  <app-dialogs-div
       eventemitter="app"
       eventname="showDialog">
-  </app-dialogs-container>
+  </app-dialogs-div>
 
   <script>
     var tag = this;
+
+    function showPage (page) {
+      if (!page) return;
+      tag.tags['app-'+page].trigger('show');
+      tag.update();
+    }
 
     tag.isVisible = function (pageName) {
       var currentPageName = app.state.getCurrentPageName();
       return pageName === currentPageName;
     };
 
-    app.on('showPage', tag.update)
+    app.on('showPage', showPage);
   </script>
 </app>
