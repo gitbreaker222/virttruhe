@@ -2,11 +2,12 @@
 
   <app-dialog each="{dialog in dialogs}"
               message="{dialog.message}"
-              okLabel="{dialog.okLabel}"
-              okAction="{dialog.okAction}"
-              cancelLabel="{dialog.cancelLabel}"
-              cancelAction="{dialog.cancelAction}"
-              typeClass="{dialog.typeClass}">
+              ok-label="{dialog.okLabel}"
+              ok-action="{dialog.okAction}"
+              cancel-label="{dialog.cancelLabel}"
+              cancel-action="{dialog.cancelAction}"
+              type-class="{dialog.typeClass}"
+              dialog-id="{dialog.id}">
   </app-dialog>
 
   <script>
@@ -20,18 +21,24 @@
     // TAG ATTRIBUTES
     /*-------------------------------------*/
     tag.dialogs = [];
+    tag.counter = 0;
 
     // TAG METHODS
     /*-------------------------------------*/
     tag.show = function (dialog) {
       if (tag.dialogs.length > 20) {
-        return window.console.log('too many dialogs')
+        return window.console.error('too many dialogs')
       }
+      dialog.id = tag.counter;
+      tag.counter++;
       tag.dialogs.push(dialog);
       tag.update();
     };
-    tag.close = function (node) {
-      tag.dialogs.pop();
+    tag.close = function (id) {
+      function outWhereTheIdIsIn (dialog) {
+        return dialog.id !== id;
+      }
+      tag.dialogs = tag.dialogs.filter(outWhereTheIdIsIn);
       tag.update();
     };
     tag.clear = function () {
@@ -70,7 +77,7 @@
     tag.type = tag.opts.typeclass || '';
 
     var close = function () {
-      tag.parent.trigger('closeDialog', tag);
+      tag.parent.trigger('closeDialog', tag.opts.dialogId);
     };
 
     tag.showSecondButton = function () {
