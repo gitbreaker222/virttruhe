@@ -99,6 +99,8 @@ To run it locally and as long as there is no distributed app or extra run script
 
 
  ## License
+ 
+ (chances are, that license will be changed to http://www.wtfpl.net/about/ in near future)
 
  ### MIT License
 
