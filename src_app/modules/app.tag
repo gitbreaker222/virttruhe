@@ -7,9 +7,7 @@
 
   <app-scanner class="page {show: isVisible('scanner')}"></app-scanner>
 
-  <app-dialogs-div
-      eventemitter="app"
-      eventname="showDialog">
+  <app-dialogs-div event-emitter="app">
   </app-dialogs-div>
 
   <script>

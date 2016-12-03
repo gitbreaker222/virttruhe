@@ -17,7 +17,6 @@
          download>
         Get example VIRTTRUHE qr-codes here.
       </a>
-      <a href="data/img/cards_1_-_9.png" download>Get example VIRTTRUHE qr-codes here.</a>
     </p>
   </div>
 
@@ -59,37 +58,37 @@
 
     tag.data = {
       buttonList: [
-      {
-        label: 'scan',
-        icon: 'qr-code',
-        action: 'scan',
-        disabled: null
-      },
-      {
-        label: 'info',
-        icon: 'info',
-        action: 'info',
-        disabled: null
-      },
-      {
-        label: 'use',
-        icon: 'use',
-        action: 'use',
-        disabled: null
-      },
-      {
-        label: 'share',
-        icon: 'share',
-        action: 'share',
-        disabled: null
-      },
-      {
-        label: 'delete',
-        icon: 'delete',
-        action: 'remove',
-        disabled: null
-      }
-    ]
+        {
+          label: 'scan',
+          icon: 'qr-code',
+          action: 'scan',
+          disabled: null
+        },
+        {
+          label: 'info',
+          icon: 'info',
+          action: 'info',
+          disabled: null
+        },
+        {
+          label: 'use',
+          icon: 'use',
+          action: 'use',
+          disabled: null
+        },
+        {
+          label: 'share',
+          icon: 'share',
+          action: 'share',
+          disabled: null
+        },
+        {
+          label: 'delete',
+          icon: 'delete',
+          action: 'remove',
+          disabled: null
+        }
+      ]
     };
 
     tag.getItemImageSrc = function (item) {
@@ -122,7 +121,7 @@
 
     tag.updateButtonStates = function () {
       var selected = inventory.getSelected();
-      tag.data.buttonList.forEach(function(button){
+      tag.data.buttonList.forEach(function (button) {
         switch (button.label) {
           case 'scan':
             button.disabled = false;
@@ -153,20 +152,23 @@
     };
 
     tag.share = function (itemId) {
-        var message = '(preview) show QR Code for this item.';
-        dialogService.newDialog(message);
+      var message = '(preview) show QR Code for this item.';
+      dialogService.newDialog(message);
     };
 
     tag.remove = function (itemId) {
       var item = itemsService.getItem(itemId);
-      var message = 'Deleted "'+item.name+'" from the inventory. Undo?';
-      var reAddItem = function (choice) {
-        if (choice) {
-          inventory.addItem(itemId);
-        }
+      var message = 'Deleted "' + item.name;
+      var reAddItem = function () {
+        inventory.addItem(itemId);
       };
       inventory.deleteItem(itemId);
-      dialogService.newDialog(message, 'confirm', reAddItem)
+
+      dialogService.show({
+        message: message,
+        primaryLabel: 'undo',
+        primaryAction: reAddItem
+      });
     };
 
     tag.scan = function () {
@@ -177,7 +179,7 @@
     // Listen to own events
     tag.on('show', update);
     tag.on('scan', tag.scan);
-    tag.on('info use share remove', function(type){
+    tag.on('info use share remove', function (type) {
       tag[type](inventory.getSelected());
     });
 
@@ -185,12 +187,5 @@
     inventory.on('change', update);
 
     tag.updateButtonStates();
-
-    /*
-    share(itemId) {
-      message = 'To Do - show QR-Code for:\n'+ itemId;
-      dialogService.newDialog(message)
-    };
-    */
   </script>
 </app-inventory>

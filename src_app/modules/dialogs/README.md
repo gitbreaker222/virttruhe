@@ -1,10 +1,12 @@
 # dialog-div api
 
 attribute       | type      | description
-event-emitter   | string    | (optional. default = `app`) Global object that emitts the event with the dialog object
+event-emitter   | string    | (optional. default = `appDialog`) Global object that emits the event with the dialog object
 event-name      | string    | name of the event with the dialog object
 
 ## dialog object api
+
+To trigger a dialog, use `appDialog.trigger('showDialog', **<dialogObject>**)`, where **dialogObject** is a regular JS-object with following attributes:
 
 attribute       | type      | description
 message         | string    | (optional; default = '…') message to display.
