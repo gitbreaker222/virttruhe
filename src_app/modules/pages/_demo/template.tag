@@ -1,34 +1,26 @@
-<vt-template>
+<app-template>
 
 
   <script>
     var tag = this;
 
-    // private properties
-
-
-    // public properties
-
-
-    // private methods
-    var showFn = function () {
+    // PRIVATE VARS / FUNCTIONS
+    /*-------------------------------------*/
+    var fn = function () {
 
     };
 
-    var hideFn = function () {
-
-    };
-
-
-    // public methods
+    // TAG ATTRIBUTES
+    /*-------------------------------------*/
 
 
-    // listen to own events
-    tag.on('show', showFn);
-    tag.on('hide', hideFn);
+    // TAG METHODS
+    /*-------------------------------------*/
 
-    // listen to external events
 
+    // EVENT LISTENERS
+    /*-------------------------------------*/
+    app.on('', fn())
 
   </script>
-</vt-template>
+</app-template>
