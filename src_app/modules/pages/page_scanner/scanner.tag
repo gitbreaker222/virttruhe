@@ -65,6 +65,11 @@
     };
 
     // private methods
+    function hide (pageName) {
+      if (pageName !== 'scanner') return;
+      tag.stopScan();
+    }
+
     var normalizeInput = function (something) {
       if (typeof(something) === 'string') {
         return something;
@@ -76,11 +81,13 @@
     };
 
     var presentItem = function(item) {
-      callback = function (choice) {
-        console.log(choice, item.name);
+      callback = function () {
         riot.route('inventory');
       };
-      Dialog.newDialog('You have found: ' + item.name, '', callback);
+      Dialog.show({
+        message: 'You have found: ' + item.name,
+        primaryAction: callback
+      })
     };
 
     var presentNoSuccess = function () {
@@ -170,10 +177,10 @@
       tag.reset();
       tag.startScan();
     });
-    tag.on('hide', tag.stopScan);
     tag.on('toInventory', tag.goToInventory);
 
     // listen to external events
+    app.state.on('hidePage', hide);
     Scanner.on('success', presentItem);
     Scanner.on('noSucces', presentNoSuccess);
   </script>

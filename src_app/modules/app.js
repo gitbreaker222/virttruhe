@@ -25,8 +25,8 @@ window.onload = function () {
   vex.defaultOptions.className = 'vex-theme-default';
   instantiate();
   
-  //*app.inventory.trigger('loadItems');
-  app.inventory.addItem('beer');
+  app.inventory.trigger('loadItems');
+  // app.inventory.addItem('beer');
   
   // mount all riot tags and start the router
   riot.mount('*');

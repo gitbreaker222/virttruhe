@@ -7,8 +7,7 @@
 
   <app-scanner class="page {show: isVisible('scanner')}"></app-scanner>
 
-  <app-dialogs-div event-emitter="app">
-  </app-dialogs-div>
+  <app-dialogs-div event-emitter="app"></app-dialogs-div>
 
   <script>
     var tag = this;

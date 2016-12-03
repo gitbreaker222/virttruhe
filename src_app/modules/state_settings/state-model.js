@@ -5,23 +5,25 @@ app.models.State = function () {
   // Make instances observable
   riot.observable(this);
   
+  var currentPage = null;
+  
   this.data = {
     settings: {
       videoScanner: null, //boolean
       imageScanner: null, //boolean
       textScanner:  null  //boolean
-    },
-    currentPage: null     //string
+    }
   };
   
   this.getCurrentPageName = function () {
-    return this.data.currentPage;
+    return currentPage;
   };
   this.setCurrentPage = function (pageName) {
     if (typeof(pageName) !== 'string') {
       throw new TypeError('Please provide a string as argument');
     }
-    this.data.currentPage = pageName;
+    this.trigger('hidePage', currentPage);
+    currentPage = pageName;
     app.trigger('showPage', pageName);
   };
 };
