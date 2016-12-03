@@ -2,7 +2,18 @@
 .vex.vex-theme-default.error
   background-color: rgba(255, 120, 123, 0.53)
 
-app-dialog
+$base-duration: 200ms
+
+.backdrop
+  position: fixed
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  background-color: rgba(0, 0, 0, 0.5)
+  animation: fadeIn $base-duration
+
+app-dialog .content
   @include center
   position: fixed
   z-index: 99
@@ -13,8 +24,8 @@ app-dialog
   padding: 1em
   background-color: $primary-color
   color: $secondary-color
-  border: solid 0.5rem #ddd
-  border-radius: 1rem
+  box-shadow: #ddd 0 0 6em 1em
+  animation: downIn $base-duration
 
   p
     width: 100%
@@ -29,3 +40,12 @@ app-dialog
 
   button:nth-of-type(2)
     background-color: #999
+
+@keyframes downIn
+  0%
+    opacity: 0
+    @include center(0, -20)
+
+  100%
+    opacity: 1
+    @include center

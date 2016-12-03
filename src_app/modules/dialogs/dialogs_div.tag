@@ -2,10 +2,10 @@
 
   <app-dialog each="{dialog in dialogs}"
               message="{dialog.message}"
-              ok-label="{dialog.okLabel}"
-              ok-action="{dialog.okAction}"
-              cancel-label="{dialog.cancelLabel}"
-              cancel-action="{dialog.cancelAction}"
+              primary-label="{dialog.primaryLabel}"
+              primary-action="{dialog.primaryAction}"
+              secondary-label="{dialog.secondaryLabel}"
+              secondary-action="{dialog.secondaryAction}"
               type-class="{dialog.typeClass}"
               dialog-id="{dialog.id}">
   </app-dialog>
@@ -13,10 +13,10 @@
   <script>
     var tag = this;
 
-    // GIVEN ARGUMENTS/OPTS
+    // TAG OPTIONS
     /*-------------------------------------*/
-    var eventEmitter = window[tag.opts.eventemitter] || app;
-    var eventName = tag.opts.eventname;
+    var eventEmitter = window[tag.opts.eventEmitter] || window.appDialog;
+    var eventName = tag.opts.eventName || 'showDialog';
 
     // TAG ATTRIBUTES
     /*-------------------------------------*/
@@ -45,6 +45,9 @@
       tag.dialogs = [];
       tag.update();
     };
+    tag.hasDialog = function () {
+      return tag.dialogs.length > 0;
+    };
 
     // EVENT LISTENERS
     /*-------------------------------------*/
@@ -56,24 +59,28 @@
 
 
 <app-dialog class="{type}">
+  <div class="{backdrop: hasDialog()}"></div>
 
-  <p>{message}</p>
-  <button onclick="{action1}">
-    {okLabel}
-  </button>
-  <button if="{showSecondButton()}"
-          onclick="{action2}">
-    {cancelLabel}
-  </button>
+  <div class="content">
+    <p>{message}</p>
+    <button onclick="{action1}">
+      {primaryLabel}
+    </button>
+    <button if="{showSecondButton()}"
+            onclick="{action2}">
+      {secondaryLabel}
+    </button>
+  </div>
+
 
 
   <script>
     var tag = this;
 
     tag.message = tag.opts.message || '…';
-    tag.okLabel = tag.opts.oklabel  || 'ok';
-    tag.okAction = tag.opts.okaction || null;
-    tag.cancelLabel = tag.opts.cancellabel  || 'cancel';
+    tag.primaryLabel = tag.opts.primaryLabel  || 'ok';
+    tag.primaryAction = tag.opts.primaryAction || null;
+    tag.secondaryLabel = tag.opts.secondaryLabel  || 'cancel';
     tag.type = tag.opts.typeclass || '';
 
     var close = function () {
@@ -81,14 +88,14 @@
     };
 
     tag.showSecondButton = function () {
-      return !!tag.okAction;
+      return !!tag.primaryAction;
     };
-    tag.action1 = function (event) {
-      if (tag.okAction) tag.okAction();
+    tag.action1 = function () {
+      if (tag.primaryAction) tag.primaryAction();
       close();
     };
-    tag.action2 = function (event) {
-      //tag.opts.buttonAction2;
+    tag.action2 = function () {
+      if (tag.primaryAction) tag.primaryAction();
       close();
     };
 
