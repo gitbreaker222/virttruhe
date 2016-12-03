@@ -2645,8 +2645,8 @@ var app = {
 
 window.onload = function () {
   // helper functions
-  var constructInstances = function () {
-    // make a new Inventory instance
+  var instantiate = function () {
+    app.state = new app.models.State();
     app.inventory = new app.models.Inventory();
     app.scanner = new app.models.Scanner();
     app.trigger('initInstances');
@@ -2656,8 +2656,10 @@ window.onload = function () {
   riot.observable(app);
   app.services.utility.detectRTC();
   vex.defaultOptions.className = 'vex-theme-default';
-  constructInstances();
-  //app.inventory.trigger('loadItems');
+  instantiate();
+  
+  app.inventory.trigger('loadItems');
+  // app.inventory.addItem('beer');
   
   // mount all riot tags and start the router
   riot.mount('*');
@@ -2672,24 +2674,6 @@ window.onload = function () {
  */
 riot.route.stop(); //clear all route callbacks
 
-app.currentPageTag = null;
-
-app.goTo = function (pageName) {
-  var nextPageTag = riot.vdom.find(function (tag) {
-    return tag.root.localName === 'app-'+pageName;
-  });
-  
-  if (app.currentPageTag) {
-    app.currentPageTag.root.classList.remove('show');
-    app.currentPageTag.trigger('hide');
-  }
-  
-  app.currentPageTag = nextPageTag;
-  
-  app.currentPageTag.root.classList.add('show');
-  app.currentPageTag.trigger('show');
-};
-
 riot.route(function () {
   // page is not defined. Redirecting
   riot.route('/inventory', 'Inventory');
@@ -2701,15 +2685,15 @@ riot.route('/', function () {
 });
 
 riot.route('/intro', function () {
-  app.goTo('intro');
+  app.state.setCurrentPage('intro');
 });
 
 riot.route('/inventory', function () {
-  app.goTo('inventory');
+  app.state.setCurrentPage('inventory');
 });
 
 riot.route('/scanner', function () {
-  app.goTo('scanner');
+  app.state.setCurrentPage('scanner');
 });
 /*
  ROUTES.JS END
@@ -2727,6 +2711,7 @@ app.services.actions = {
   CONSTANTS
  */
 app.constants = {
+  sampleQrCodes: 'data/img/cards_1_-_9.png',
   itemImageSmallPath: 'data/items/img/small/',
   virttruheCodePattern: /#[\da-fA-F]{8}\b/ //http://regexr.com/3ehu3
 };
@@ -2734,42 +2719,8 @@ app.constants = {
   CONSTANTS END
  */
 app.services.dialog = {
-  newDialog: function (message, type, callback) {
-    //validation
-    type = type || '';
-    if (!message || message === '') {
-      throw new Error('please provide a message string. Got: '+ message);
-    }
-    if (typeof(type) !== 'string'){
-      throw new Error('second argument "type" must be a string. Got: ' + typeof(type));
-    }
-    if (!callback) {
-      callback = function () {};
-    }
-
-    switch (type) {
-      case 'confirm':
-        vex.dialog.confirm({
-          message: message,
-          callback: callback
-        });
-        break;
-      case 'error':
-        window.console.error(message);
-        vex.dialog.alert({
-          message: message,
-          className: 'vex-theme-default error'
-        });
-        break;
-      default:
-        if (type) {
-          window.console.info('No case for provided type: "', type, '". Using default');
-        }
-        vex.dialog.alert({
-          message: message,
-          callback: callback
-        });
-    }
+  show: function (dialogObject) {
+    app.trigger('showDialog', dialogObject);
   }
 };
 
@@ -2807,14 +2758,36 @@ if (
  POLYFILLS END
  */
 /*
- SETTINGS MODEL
+ STATE MODEL
  */
-app.models.Settings = function () {
+app.models.State = function () {
   // Make instances observable
   riot.observable(this);
+  
+  var currentPage = null;
+  
+  this.data = {
+    settings: {
+      videoScanner: null, //boolean
+      imageScanner: null, //boolean
+      textScanner:  null  //boolean
+    }
+  };
+  
+  this.getCurrentPageName = function () {
+    return currentPage;
+  };
+  this.setCurrentPage = function (pageName) {
+    if (typeof(pageName) !== 'string') {
+      throw new TypeError('Please provide a string as argument');
+    }
+    this.trigger('hidePage', currentPage);
+    currentPage = pageName;
+    app.trigger('showPage', pageName);
+  };
 };
 /*
- SETTINGS MODEL END
+ STATE MODEL END
  */
 app.services.utility = {
   isBB10: function () {
@@ -3139,7 +3112,10 @@ app.services.virttruhe = {
   layerExists: function (layer) {
     if (!this.map[layer]) {
       var txt = 'invalid layer name: ' + layer;
-      app.services.dialog.newDialog(txt, 'error');
+      app.services.dialog.show({
+        message: txt,
+        styleType: 'error'
+      });
       return false;
     }
     return true;
@@ -3176,7 +3152,11 @@ app.services.virttruhe = {
     var layerMap = this.getLayerMap(layer);
     if (!layerMap[virttruheKey]) {
       var txt = 'the virttruhe "'+virttruheKey+'" does not exist on layer "'+layer+'"';
-      app.services.dialog.newDialog(txt, 'error');
+      app.services.dialog.show({
+        message: txt,
+        styleType: 'error'
+      });
+      
       return null;
     }
     
@@ -3370,7 +3350,96 @@ app.models.Scanner = function () {
 /*
   SCANNER MODEL END
  */
-riot.tag2('vt-button-bar', '<div each="{buttons}" class="{button: true,           disabled: this.disabled}" onclick="{triggerAction}"> <div> <img if="{this.icon}" riot-src="{imagePathFor(this.icon)}" class="icon"> <label __disabled="{this.disabled}"> {this.label} </label> </div> </div>', '', '', function(opts) {
+riot.tag2('app', '<app-info-bar marbles="7"></app-info-bar> <app-intro class="page {show: isVisible(\'intro\')}"></app-intro> <app-inventory class="page {show: isVisible(\'inventory\')}"></app-inventory> <app-scanner class="page {show: isVisible(\'scanner\')}"></app-scanner> <app-dialogs-div event-emitter="app"></app-dialogs-div>', '', '', function(opts) {
+    var tag = this;
+
+    function showPage (page) {
+      if (!page) return;
+      tag.tags['app-'+page].trigger('show');
+      tag.update();
+    }
+
+    tag.isVisible = function (pageName) {
+      var currentPageName = app.state.getCurrentPageName();
+      return pageName === currentPageName;
+    };
+
+    app.on('showPage', showPage);
+});
+riot.tag2('app-dialogs-div', '<app-dialog each="{dialog in dialogs}" message="{dialog.message}" primary-label="{dialog.primaryLabel}" primary-action="{dialog.primaryAction}" secondary-label="{dialog.secondaryLabel}" secondary-action="{dialog.secondaryAction}" style-type="{dialog.styleType}" dialog-id="{dialog.id}"> </app-dialog>', '', '', function(opts) {
+    var tag = this;
+
+    var eventEmitter = window[tag.opts.eventEmitter] || window.appDialog;
+    var eventName = tag.opts.eventName || 'showDialog';
+
+    tag.dialogs = [];
+    tag.counter = 0;
+
+    tag.show = function (dialog) {
+      if (tag.dialogs.length > 20) {
+        return window.console.error('too many dialogs')
+      }
+      dialog.id = tag.counter;
+      tag.counter++;
+      tag.dialogs.push(dialog);
+      tag.update();
+    };
+    tag.close = function (id) {
+      function outWhereTheIdIsIn (dialog) {
+        return dialog.id !== id;
+      }
+      tag.dialogs = tag.dialogs.filter(outWhereTheIdIsIn);
+      tag.update();
+    };
+    tag.clear = function () {
+      tag.dialogs = [];
+      tag.update();
+    };
+    tag.hasDialog = function () {
+      return tag.dialogs.length > 0;
+    };
+
+    eventEmitter.on(eventName, tag.show);
+    this.on('closeDialog', tag.close)
+});
+
+
+
+riot.tag2('app-dialog', '<div class="{backdrop: hasDialog()}" onclick="{backgroundAction}"></div> <div class="content"> <p>{message}</p> <button onclick="{action1}"> {primaryLabel} </button> <button if="{isSecondButtonDefined()}" onclick="{action2}"> {secondaryLabel} </button> </div>', '', 'class="{type}"', function(opts) {
+    var tag = this;
+
+    tag.message = tag.opts.message || '…';
+    tag.primaryLabel = tag.opts.primaryLabel  || 'ok';
+    tag.primaryAction = tag.opts.primaryAction || null;
+    tag.secondaryLabel = tag.opts.secondaryLabel  || 'close';
+    tag.secondaryAction = tag.opts.secondaryAction || null;
+    tag.type = tag.opts.styleType || '';
+
+    tag.close = function () {
+      tag.parent.trigger('closeDialog', tag.opts.dialogId);
+    };
+
+    tag.isSecondButtonDefined = function () {
+      return !!tag.opts.secondaryLabel || !!tag.secondaryAction;
+    };
+    tag.action1 = function () {
+      if (tag.primaryAction) tag.primaryAction();
+      tag.close();
+    };
+    tag.action2 = function () {
+      if (tag.secondaryAction) tag.secondaryAction();
+      tag.close();
+    };
+    tag.backgroundAction = function () {
+      if (tag.isSecondButtonDefined()) {
+        tag.action2();
+      } else {
+        tag.action1();
+      }
+    }
+
+});
+riot.tag2('vt-button-bar', '<div each="{buttons}" class="{button: true,           disabled: this.disabled}" onclick="{triggerAction}"> <div> <img if="{this.icon}" riot-src="{imagePathFor(this)}" class="icon"> <label __disabled="{this.disabled}"> {this.label} </label> </div> </div>', '', '', function(opts) {
     var tag = this;
 
     var normalizeButtons = function () {
@@ -3399,8 +3468,12 @@ riot.tag2('vt-button-bar', '<div each="{buttons}" class="{button: true,         
 
     tag.buttons = normalizeButtons();
 
-    tag.imagePathFor = function (imageName) {
-        return 'data/img/'+imageName+'.svg';
+    tag.imagePathFor = function (button) {
+      if (!button.icon) {
+
+        return
+      }
+      return 'data/img/'+button.icon+'.svg';
     };
     tag.triggerAction = function (event) {
       if (event.item.disabled) {
@@ -3452,19 +3525,14 @@ riot.tag2('app-demo', '<div if="{demoMethod()}"> <input type="button" onclick="{
 
     app.demo.on('event', demo);
 });
-riot.tag2('vt-template', '', '', '', function(opts) {
+riot.tag2('app-template', '', '', '', function(opts) {
     var tag = this;
 
-    var showFn = function () {
+    var fn = function () {
 
     };
 
-    var hideFn = function () {
-
-    };
-
-    tag.on('show', showFn);
-    tag.on('hide', hideFn);
+    app.on('', fn())
 
 });
 riot.tag2('app-intro', '<div> scan the start card </div> <vt-button-bar buttons="{buttonList}"> </vt-button-bar>', '', '', function(opts) {
@@ -3491,7 +3559,7 @@ riot.tag2('app-intro', '<div> scan the start card </div> <vt-button-bar buttons=
     tag.on('hide', hideFn);
 
 });
-riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inventory is empty. </h2> <p> Use the scanner on VIRTTRUHE artefacts to find items. </p> <button onclick="{scan}" class="center-block"> <i class="icon scan"></i> </button> <p> <a href="data/img/cards_1_-_9.png" download>Get example VIRTTRUHE qr-codes here.</a> </p> </div> <ul class="items"> <li each="{items()}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getItemImageSrc(this)}"> </li> </ul> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
+riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inventory is empty. </h2> <p> Use the scanner on VIRTTRUHE artefacts to find items. </p> <button onclick="{scan}" class="center-block"> <i class="icon scan"></i> </button> <p> <a href="{sampleQrCodes}" type="" download> Get example VIRTTRUHE qr-codes here. </a> </p> </div> <ul class="items"> <li each="{items()}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getItemImageSrc(this)}"> </li> </ul> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
     var tag = this;
 
     var itemsService = app.services.items;
@@ -3503,6 +3571,8 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
       tag.updateButtonStates();
     };
 
+    tag.sampleQrCodes = app.constants.sampleQrCodes;
+
     tag.items = inventory.getItems;
 
     tag.hasItems = function () {
@@ -3511,37 +3581,37 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
 
     tag.data = {
       buttonList: [
-      {
-        label: 'scan',
-        icon: 'qr-code',
-        action: 'scan',
-        disabled: null
-      },
-      {
-        label: 'info',
-        icon: 'info',
-        action: 'info',
-        disabled: null
-      },
-      {
-        label: 'use',
-        icon: 'use',
-        action: 'use',
-        disabled: null
-      },
-      {
-        label: 'share',
-        icon: 'share',
-        action: 'share',
-        disabled: null
-      },
-      {
-        label: 'delete',
-        icon: 'delete',
-        action: 'remove',
-        disabled: null
-      }
-    ]
+        {
+          label: 'scan',
+          icon: 'qr-code',
+          action: 'scan',
+          disabled: null
+        },
+        {
+          label: 'info',
+          icon: 'info',
+          action: 'info',
+          disabled: null
+        },
+        {
+          label: 'use',
+          icon: 'use',
+          action: 'use',
+          disabled: null
+        },
+        {
+          label: 'share',
+          icon: 'share',
+          action: 'share',
+          disabled: null
+        },
+        {
+          label: 'delete',
+          icon: 'delete',
+          action: 'remove',
+          disabled: null
+        }
+      ]
     };
 
     tag.getItemImageSrc = function (item) {
@@ -3574,7 +3644,7 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
 
     tag.updateButtonStates = function () {
       var selected = inventory.getSelected();
-      tag.data.buttonList.forEach(function(button){
+      tag.data.buttonList.forEach(function (button) {
         switch (button.label) {
           case 'scan':
             button.disabled = false;
@@ -3589,36 +3659,43 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
     };
 
     tag.info = function (itemId) {
-      var message = inventory.getItemDescription(itemId);
-      dialogService.newDialog(message);
+      dialogService.show({
+        message: inventory.getItemDescription(itemId)
+      });
     };
 
     tag.use = function (itemId) {
       var item = itemsService.getItem(itemId);
       var message = '(Preview) Use ' + item.name + '?\n' + item.action;
-      var callback = function (choice) {
-        if (choice) {
-          inventory.trigger('use', itemId);
-        }
+      var callback = function () {
+        inventory.trigger('use', itemId);
       };
-      dialogService.newDialog(message, 'confirm', callback);
+      dialogService.show({
+        message: message,
+        primaryAction: callback
+      });
     };
 
     tag.share = function (itemId) {
-        var message = '(preview) show QR Code for this item.';
-        dialogService.newDialog(message);
+      var item = itemsService.getItem(itemId);
+      dialogService.show({
+        message: '(preview) show QR Code for '+ item.name +'.'
+      });
     };
 
     tag.remove = function (itemId) {
       var item = itemsService.getItem(itemId);
-      var message = 'Deleted "'+item.name+'" from the inventory. Undo?';
-      var reAddItem = function (choice) {
-        if (choice) {
-          inventory.addItem(itemId);
-        }
+      var message = 'Deleted "' + item.name;
+      var reAddItem = function () {
+        inventory.addItem(itemId);
       };
       inventory.deleteItem(itemId);
-      dialogService.newDialog(message, 'confirm', reAddItem)
+
+      dialogService.show({
+        message: message,
+        primaryLabel: 'undo',
+        primaryAction: reAddItem
+      });
     };
 
     tag.scan = function () {
@@ -3627,17 +3704,16 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
 
     tag.on('show', update);
     tag.on('scan', tag.scan);
-    tag.on('info use share remove', function(type){
+    tag.on('info use share remove', function (type) {
       tag[type](inventory.getSelected());
     });
 
     inventory.on('change', update);
 
     tag.updateButtonStates();
-
 });
 
-riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput" autoplay> </video> <span if="{!canVideoScan()}" style=" min-width: 1rem; height: 1rem; font-size: 7pt; padding: 0 0.2rem; background-color: #ce4a55; border: 0 transparent; border-radius: 1rem; "> this device cannot video scan </span> <hr> </div> <div if={showImageScanner}"> <input type="file" accept="image"> <img src="./-data/img/10000000 - visit virttruhe.tumblr.com.png" id="img"> <hr> </div> <div if="{showTextScanner}"> <input title="scanText" type="text" placeholder="#0000FFFF" class="{invalid:isInvalid}" oninput="{scanInput}"> <hr> </div> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
+riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput" autoplay> </video> <span if="{!canVideoScan()}" style=" min-width: 1rem; height: 1rem; font-size: 7pt; padding: 0 0.2rem; background-color: #ce4a55; border: 0 transparent; border-radius: 1rem; "> this device cannot video scan </span> <hr> </div> <div if={showImageScanner}"> <input type="file" accept="image"> <hr> </div> <div if="{showTextScanner}"> <input title="scanText" type="text" placeholder="#0000FFFF" class="{invalid:isInvalid}" oninput="{scanInput}"> <hr> </div> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
     var tag = this;
 
     var Scanner = app.scanner;
@@ -3661,6 +3737,11 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
       ]
     };
 
+    function hide (pageName) {
+      if (pageName !== 'scanner') return;
+      tag.stopScan();
+    }
+
     var normalizeInput = function (something) {
       if (typeof(something) === 'string') {
         return something;
@@ -3672,11 +3753,13 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
     };
 
     var presentItem = function(item) {
-      callback = function (choice) {
-        console.log(choice, item.name);
+      callback = function () {
         riot.route('inventory');
       };
-      Dialog.newDialog('You have found: ' + item.name, '', callback);
+      Dialog.show({
+        message: 'You have found: ' + item.name,
+        primaryAction: callback
+      })
     };
 
     var presentNoSuccess = function () {
@@ -3749,9 +3832,9 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
       tag.reset();
       tag.startScan();
     });
-    tag.on('hide', tag.stopScan);
     tag.on('toInventory', tag.goToInventory);
 
+    app.state.on('hidePage', hide);
     Scanner.on('success', presentItem);
     Scanner.on('noSucces', presentNoSuccess);
 });
