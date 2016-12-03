@@ -59,14 +59,14 @@
 
 
 <app-dialog class="{type}">
-  <div class="{backdrop: hasDialog()}" onclick="{close}"></div>
+  <div class="{backdrop: hasDialog()}" onclick="{backgroundAction}"></div>
 
   <div class="content">
     <p>{message}</p>
     <button onclick="{action1}">
       {primaryLabel}
     </button>
-    <button if="{showSecondButton()}"
+    <button if="{isSecondButtonDefined()}"
             onclick="{action2}">
       {secondaryLabel}
     </button>
@@ -81,14 +81,15 @@
     tag.primaryLabel = tag.opts.primaryLabel  || 'ok';
     tag.primaryAction = tag.opts.primaryAction || null;
     tag.secondaryLabel = tag.opts.secondaryLabel  || 'close';
+    tag.secondaryAction = tag.opts.secondaryAction || null;
     tag.type = tag.opts.typeclass || '';
 
     tag.close = function () {
       tag.parent.trigger('closeDialog', tag.opts.dialogId);
     };
 
-    tag.showSecondButton = function () {
-      return !!tag.primaryAction || !!tag.secondaryAction;
+    tag.isSecondButtonDefined = function () {
+      return !!tag.opts.secondaryLabel || !!tag.secondaryAction;
     };
     tag.action1 = function () {
       if (tag.primaryAction) tag.primaryAction();
@@ -98,6 +99,13 @@
       if (tag.secondaryAction) tag.secondaryAction();
       tag.close();
     };
+    tag.backgroundAction = function () {
+      if (tag.isSecondButtonDefined()) {
+        tag.action2();
+      } else {
+        tag.action1();
+      }
+    }
 
   </script>
 </app-dialog>
