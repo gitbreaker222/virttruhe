@@ -136,24 +136,28 @@
     };
 
     tag.info = function (itemId) {
-      var message = inventory.getItemDescription(itemId);
-      dialogService.newDialog(message);
+      dialogService.show({
+        message: inventory.getItemDescription(itemId)
+      });
     };
 
     tag.use = function (itemId) {
       var item = itemsService.getItem(itemId);
       var message = '(Preview) Use ' + item.name + '?\n' + item.action;
-      var callback = function (choice) {
-        if (choice) {
-          inventory.trigger('use', itemId);
-        }
+      var callback = function () {
+        inventory.trigger('use', itemId);
       };
-      dialogService.newDialog(message, 'confirm', callback);
+      dialogService.show({
+        message: message,
+        primaryAction: callback
+      });
     };
 
     tag.share = function (itemId) {
-      var message = '(preview) show QR Code for this item.';
-      dialogService.newDialog(message);
+      var item = itemsService.getItem(itemId);
+      dialogService.show({
+        message: '(preview) show QR Code for '+ item.name +'.'
+      });
     };
 
     tag.remove = function (itemId) {

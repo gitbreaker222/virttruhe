@@ -6,7 +6,7 @@
               primary-action="{dialog.primaryAction}"
               secondary-label="{dialog.secondaryLabel}"
               secondary-action="{dialog.secondaryAction}"
-              type-class="{dialog.typeClass}"
+              style-type="{dialog.styleType}"
               dialog-id="{dialog.id}">
   </app-dialog>
 
@@ -82,7 +82,7 @@
     tag.primaryAction = tag.opts.primaryAction || null;
     tag.secondaryLabel = tag.opts.secondaryLabel  || 'close';
     tag.secondaryAction = tag.opts.secondaryAction || null;
-    tag.type = tag.opts.typeclass || '';
+    tag.type = tag.opts.styleType || '';
 
     tag.close = function () {
       tag.parent.trigger('closeDialog', tag.opts.dialogId);

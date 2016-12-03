@@ -36,7 +36,7 @@ primaryLabel    | string    | (optional; default = 'ok') label for primary butto
 primaryAction   | function  | (optional) callback function
 secondaryLabel  | string    | (optional; default = 'close') label for the secondary button. Shows the secondary button if used.
 secondaryAction | function  | (optional) callback function. Shows the secondary button if used.
-typeClass       | string    | (optional) custom style classes for e.g. `warning` dialogs. Selector: `app-dialog .<your-class-name>`
+styleType       | string    | (optional) custom style classes for e.g. `warning` dialogs. Selector: `app-dialog .<your-class-name>`
 
 ## notes
 
