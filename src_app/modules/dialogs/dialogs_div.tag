@@ -59,7 +59,7 @@
 
 
 <app-dialog class="{type}">
-  <div class="{backdrop: hasDialog()}"></div>
+  <div class="{backdrop: hasDialog()}" onclick="{close}"></div>
 
   <div class="content">
     <p>{message}</p>
@@ -80,23 +80,23 @@
     tag.message = tag.opts.message || '…';
     tag.primaryLabel = tag.opts.primaryLabel  || 'ok';
     tag.primaryAction = tag.opts.primaryAction || null;
-    tag.secondaryLabel = tag.opts.secondaryLabel  || 'cancel';
+    tag.secondaryLabel = tag.opts.secondaryLabel  || 'close';
     tag.type = tag.opts.typeclass || '';
 
-    var close = function () {
+    tag.close = function () {
       tag.parent.trigger('closeDialog', tag.opts.dialogId);
     };
 
     tag.showSecondButton = function () {
-      return !!tag.primaryAction;
+      return !!tag.primaryAction || !!tag.secondaryAction;
     };
     tag.action1 = function () {
       if (tag.primaryAction) tag.primaryAction();
-      close();
+      tag.close();
     };
     tag.action2 = function () {
-      if (tag.primaryAction) tag.primaryAction();
-      close();
+      if (tag.secondaryAction) tag.secondaryAction();
+      tag.close();
     };
 
   </script>
