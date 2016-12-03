@@ -7,7 +7,7 @@
        onclick="{triggerAction}">
     <div>
       <img if={this.icon}
-           src="{imagePathFor(this.icon)}"
+           src="{imagePathFor(this)}"
            class="icon">
       <label disabled="{this.disabled}">
         {this.label}
@@ -28,6 +28,8 @@
       disabled:  boolean (default: false)
 
     */
+
+    /**************************************/
 
     var normalizeButtons = function () {
       var buttons = tag.opts.buttons;
@@ -53,14 +55,18 @@
       return buttons;
     };
 
-    /***/
+    /******************************************/
 
     tag.buttons = normalizeButtons();
 
-    /***/
+    /******************************************/
 
-    tag.imagePathFor = function (imageName) {
-        return 'data/img/'+imageName+'.svg';
+    tag.imagePathFor = function (button) {
+      if (!button.icon) {
+        //placeholder buttons can be ignored
+        return
+      }
+      return 'data/img/'+button.icon+'.svg';
     };
     tag.triggerAction = function (event) {
       if (event.item.disabled) {
