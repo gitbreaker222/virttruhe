@@ -4,10 +4,22 @@
   <script>
     var tag = this;
 
+    // API
+    var apiTypes = {
+      text: 'string'
+    };
+
+    app.services.utility.validate(tag.opts, apiTypes);
+
     // PRIVATE VARS / FUNCTIONS
     /*-------------------------------------*/
-    var fn = function () {
-
+    var toggleView = function (eventName, pageName) {
+      switch (eventName){
+        case 'show':
+          break;
+        case 'hide':
+          break;
+      }
     };
 
     // TAG ATTRIBUTES
@@ -20,7 +32,7 @@
 
     // EVENT LISTENERS
     /*-------------------------------------*/
-    app.on('', fn())
+    app.state.on('show hide', toggleView)
 
   </script>
 </app-template>

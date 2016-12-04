@@ -1,7 +1,16 @@
 app.services.utility = {
+  validate: function (opts, types) {
+    var names = Object.keys(opts);
+    names.forEach(function (name) {
+      var expectedType = types[name];
+      var actualType = typeof opts[name];
+      if (!expectedType.includes(actualType)) {
+        throw new TypeError('Expected ' + expectedType + '. Instead got: ' + actualType);
+      }
+    });
+  },
   isBB10: function () {
-    var pos = 0;
-    return window.navigator.userAgent.indexOf('BB10') >= pos;
+    return window.navigator.userAgent.includes('BB10');
   },
   detectRTC: function () {
     if (!this.isBB10()) {
