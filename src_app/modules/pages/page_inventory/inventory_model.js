@@ -37,7 +37,8 @@ app.models.Inventory = function () {
     }
     
     data.items.push(item);
-    this.trigger('change itemAdded', item.id);
+    this.trigger('itemAdded', item.id);
+    riot.update();
     return data.items;
   };
   
@@ -45,7 +46,7 @@ app.models.Inventory = function () {
     data.items = data.items.filter(function (item) {
       return item.id !== itemId;
     });
-    this.trigger('change itemDeleted', itemId);
+    this.trigger('itemDeleted', itemId);
     this.select(null);
     return data.items;
   };
@@ -58,14 +59,17 @@ app.models.Inventory = function () {
     } else {
       data.selected = item || null;
     }
-    this.trigger('change');
+    riot.update();
     return data.selected;
   };
   
   this.getItems = function () {
     return data.items;
   };
-  this.getSelected = function () {
+  this.getSelected = function (returnWholeObject) {
+    if (returnWholeObject) {
+      return itemsService.getItem(data.selected);
+    }
     return data.selected;
   };
   this.getItemDescription = function (itemId) {

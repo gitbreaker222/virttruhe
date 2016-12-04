@@ -27,9 +27,14 @@ $primary-color: $dark
 $secondary-color: $light
 $highlight-color: $blue
 
+$bar-height: 3rem
+$icon-width: $bar-height * 0.7
+
+@import mixins
 
 body
   background-color: $dark
+  color: $light
 
 a
   color: $highlight-color
@@ -69,11 +74,8 @@ button, .button
   transition: 400ms
 
 .cover
-  position: absolute
-  top: 4vh
-  left: 50%
-  transform: translateX(-50%)
-
+  max-width: 20em
+  margin: 4vh auto $bar-height
 
 
 /* LAYOUT */

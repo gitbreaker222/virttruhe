@@ -12,7 +12,11 @@
       <i class="icon scan"></i>
     </button>
     <p>
-      <a href="data/img/cards_1_-_9.png" download>Get example VIRTTRUHE qr-codes here.</a>
+      <a href="{sampleQrCodes}"
+         type=""
+         download>
+        Get example VIRTTRUHE qr-codes here.
+      </a>
     </p>
   </div>
 
@@ -39,9 +43,10 @@
 
     // private functions
     var update = function () {
-      tag.update();
       tag.updateButtonStates();
     };
+
+    tag.sampleQrCodes = app.constants.sampleQrCodes;
 
     // public functions
     tag.items = inventory.getItems;
@@ -52,37 +57,37 @@
 
     tag.data = {
       buttonList: [
-      {
-        label: 'scan',
-        icon: 'qr-code',
-        action: 'scan',
-        disabled: null
-      },
-      {
-        label: 'info',
-        icon: 'info',
-        action: 'info',
-        disabled: null
-      },
-      {
-        label: 'use',
-        icon: 'use',
-        action: 'use',
-        disabled: null
-      },
-      {
-        label: 'share',
-        icon: 'share',
-        action: 'share',
-        disabled: null
-      },
-      {
-        label: 'delete',
-        icon: 'delete',
-        action: 'remove',
-        disabled: null
-      }
-    ]
+        {
+          label: 'scan',
+          icon: 'qr-code',
+          action: 'scan',
+          disabled: null
+        },
+        {
+          label: 'info',
+          icon: 'info',
+          action: 'info',
+          disabled: null
+        },
+        {
+          label: 'use',
+          icon: 'use',
+          action: 'use',
+          disabled: null
+        },
+        {
+          label: 'share',
+          icon: 'share',
+          action: 'share',
+          disabled: null
+        },
+        {
+          label: 'delete',
+          icon: 'delete',
+          action: 'remove',
+          disabled: null
+        }
+      ]
     };
 
     tag.getItemImageSrc = function (item) {
@@ -115,7 +120,7 @@
 
     tag.updateButtonStates = function () {
       var selected = inventory.getSelected();
-      tag.data.buttonList.forEach(function(button){
+      tag.data.buttonList.forEach(function (button) {
         switch (button.label) {
           case 'scan':
             button.disabled = false;
@@ -130,36 +135,44 @@
     };
 
     tag.info = function (itemId) {
-      var message = inventory.getItemDescription(itemId);
-      dialogService.newDialog(message);
+      dialogService.show({
+        message: inventory.getItemDescription(itemId)
+      });
     };
 
     tag.use = function (itemId) {
       var item = itemsService.getItem(itemId);
       var message = '(Preview) Use ' + item.name + '?\n' + item.action;
-      var callback = function (choice) {
-        if (choice) {
-          inventory.trigger('use', itemId);
-        }
+      var callback = function () {
+        inventory.trigger('use', itemId);
       };
-      dialogService.newDialog(message, 'confirm', callback);
+      dialogService.show({
+        message: message,
+        primaryAction: callback
+      });
     };
 
     tag.share = function (itemId) {
-        var message = '(preview) show QR Code for this item.';
-        dialogService.newDialog(message);
+      var item = itemsService.getItem(itemId);
+      dialogService.show({
+        message: '(preview) show QR Code for '+ item.name +'.'
+      });
     };
 
     tag.remove = function (itemId) {
       var item = itemsService.getItem(itemId);
-      var message = 'Deleted "'+item.name+'" from the inventory. Undo?';
-      var reAddItem = function (choice) {
-        if (choice) {
-          inventory.addItem(itemId);
-        }
+      var message = 'Deleted "' + item.name;
+      var reAddItem = function () {
+        inventory.addItem(itemId);
       };
       inventory.deleteItem(itemId);
-      dialogService.newDialog(message, 'confirm', reAddItem)
+
+      dialogService.show({
+        message: message,
+        primaryLabel: 'undo',
+        primaryAction: reAddItem,
+        secondaryLabel: 'close'
+      });
     };
 
     tag.scan = function () {
@@ -168,22 +181,13 @@
 
 
     // Listen to own events
+    tag.on('update', update);
     tag.on('show', update);
     tag.on('scan', tag.scan);
-    tag.on('info use share remove', function(type){
+    tag.on('info use share remove', function (type) {
       tag[type](inventory.getSelected());
     });
 
-    // Listen to external events
-    inventory.on('change', update);
-
     tag.updateButtonStates();
-
-    /*
-    share(itemId) {
-      message = 'To Do - show QR-Code for:\n'+ itemId;
-      dialogService.newDialog(message)
-    };
-    */
   </script>
 </app-inventory>

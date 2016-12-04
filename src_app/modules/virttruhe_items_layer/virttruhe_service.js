@@ -25,7 +25,10 @@ app.services.virttruhe = {
   layerExists: function (layer) {
     if (!this.map[layer]) {
       var txt = 'invalid layer name: ' + layer;
-      app.services.dialog.newDialog(txt, 'error');
+      app.services.dialog.show({
+        message: txt,
+        styleType: 'error'
+      });
       return false;
     }
     return true;
@@ -62,7 +65,11 @@ app.services.virttruhe = {
     var layerMap = this.getLayerMap(layer);
     if (!layerMap[virttruheKey]) {
       var txt = 'the virttruhe "'+virttruheKey+'" does not exist on layer "'+layer+'"';
-      app.services.dialog.newDialog(txt, 'error');
+      app.services.dialog.show({
+        message: txt,
+        styleType: 'error'
+      });
+      
       return null;
     }
     

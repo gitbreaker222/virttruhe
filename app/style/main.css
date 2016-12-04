@@ -3313,7 +3313,8 @@ ul {
 /* --------======== CUSTOM STYLE ========-------- */
 /*   --------========          ========-------- */
 body {
-  background-color: #222; }
+  background-color: #222;
+  color: #ddd; }
 
 a {
   color: #2196f3; }
@@ -3350,10 +3351,8 @@ button, .button {
   transition: 400ms; }
 
 .cover {
-  position: absolute;
-  top: 4vh;
-  left: 50%;
-  transform: translateX(-50%); }
+  max-width: 20em;
+  margin: 4vh auto 3rem; }
 
 /* LAYOUT */
 #container {
@@ -3373,8 +3372,61 @@ button, .button {
     display: initial; }
 
 /* MODULES / IMPORTS */
-.vex.vex-theme-default.error {
-  background-color: rgba(255, 120, 123, 0.53); }
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 200ms; }
+
+app-dialog .content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  position: fixed;
+  z-index: 99;
+  min-width: 10rem;
+  display: flex;
+  flex-flow: row-reverse wrap;
+  align-items: flex-start;
+  padding: 1em;
+  background-color: #222;
+  color: #ddd;
+  box-shadow: #ddd 0 0 6em 1em;
+  animation: downIn 200ms; }
+  app-dialog .content p {
+    width: 100%; }
+  app-dialog .content button {
+    margin: 0.3rem;
+    min-width: 4rem;
+    padding: 1rem 1rem; }
+  app-dialog .content button:first-of-type {
+    background-color: #2196f3; }
+  app-dialog .content button:nth-of-type(2) {
+    background-color: #999; }
+
+app-dialog.error .content {
+  border-top: 4px solid brown; }
+
+@keyframes downIn {
+  0% {
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -70%);
+    transform: translate(-50%, -70%); }
+  100% {
+    opacity: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); } }
 
 i {
   display: inline-block;
@@ -3473,9 +3525,13 @@ app-inventory li {
 app-inventory .selected {
   box-shadow: 0 0 2rem blue; }
 
-video {
+app-scanner video {
   background-color: #666;
   width: 100%;
   max-width: 44rem;
   box-sizing: border-box;
   border: solid black 1rem; }
+
+app-scanner input[title=scanText] {
+  font-size: 26pt;
+  max-width: 99vh; }

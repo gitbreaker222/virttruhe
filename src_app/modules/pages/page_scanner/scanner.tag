@@ -3,16 +3,16 @@
     <video id="cameraOutput"
            autoplay>
     </video>
-    <span if={canVideoScan()}
+    <span if={!canVideoScan()}
           style="
       min-width: 1rem;
       height: 1rem;
       font-size: 7pt;
       padding: 0 0.2rem;
-      background-color: green;
+      background-color: #ce4a55;
       border: 0 transparent;
       border-radius: 1rem;
-    "> has webcam
+    "> this device cannot video scan
     </span>
     <hr>
   </div>
@@ -20,8 +20,6 @@
   <div if={showImageScanner}">
     <input type="file" accept="image">
 
-    <img src="./-data/img/10000000 - visit virttruhe.tumblr.com.png"
-         id="img">
     <hr>
   </div>
 
@@ -67,6 +65,11 @@
     };
 
     // private methods
+    function hide (pageName) {
+      if (pageName !== 'scanner') return;
+      tag.stopScan();
+    }
+
     var normalizeInput = function (something) {
       if (typeof(something) === 'string') {
         return something;
@@ -78,11 +81,13 @@
     };
 
     var presentItem = function(item) {
-      callback = function (choice) {
-        console.log(choice, item.name);
+      callback = function () {
         riot.route('inventory');
       };
-      Dialog.newDialog('You have found: ' + item.name, '', callback);
+      Dialog.show({
+        message: 'You have found: ' + item.name,
+        primaryAction: callback
+      })
     };
 
     var presentNoSuccess = function () {
@@ -141,8 +146,6 @@
         return;
       }
       if (!tag.canVideoScan()) {
-        var message = 'this device cannot use the video scanner';
-        Dialog.newDialog(message, 'error');
         return;
       }
       console.log('starting scan');
@@ -174,10 +177,10 @@
       tag.reset();
       tag.startScan();
     });
-    tag.on('hide', tag.stopScan);
     tag.on('toInventory', tag.goToInventory);
 
     // listen to external events
+    app.state.on('hidePage', hide);
     Scanner.on('success', presentItem);
     Scanner.on('noSucces', presentNoSuccess);
   </script>

@@ -1,3 +1,54 @@
-//customized vex dialogs
-.vex.vex-theme-default.error
-  background-color: rgba(255, 120, 123, 0.53)
+$base-duration: 200ms
+
+.backdrop
+  position: fixed
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  background-color: rgba(0, 0, 0, 0.5)
+  animation: fadeIn $base-duration
+
+app-dialog
+
+  .content
+    @include center
+    position: fixed
+    z-index: 99
+    min-width: 10rem
+    display: flex
+    flex-flow: row-reverse wrap
+    align-items: flex-start
+    padding: 1em
+    background-color: $primary-color
+    color: $secondary-color
+    box-shadow: #ddd 0 0 6em 1em
+    animation: downIn $base-duration
+
+    p
+      width: 100%
+
+    button
+      margin: 0.3rem
+      min-width: 4rem
+      padding: 1rem 1rem
+
+    button:first-of-type
+      background-color: $highlight-color
+
+    button:nth-of-type(2)
+      background-color: #999
+
+  &.error
+    .content
+      border-top: 4px solid brown
+
+
+@keyframes downIn
+  0%
+    opacity: 0
+    @include center(0, -20)
+
+  100%
+    opacity: 1
+    @include center
