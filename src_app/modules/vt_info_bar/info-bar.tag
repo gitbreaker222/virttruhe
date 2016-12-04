@@ -3,6 +3,10 @@
     <span name="infoText">
       current layer: {getLayer()}
     </span>
+    <span name="selectedItem"
+          if="{selectedItem()}">
+      {selectedItem(true).name}
+    </span>
 
     <span class="marbles">
       <img src="data/img/marble-icon.png">
@@ -14,10 +18,14 @@
 
     <script>
       var tag = this;
-      // tag properties have data binding, so transfer the  attribute to it
+
       tag.marbles = tag.opts.marbles;
 
       tag.getLayer = app.services.virttruhe.getCurrentLayer;
+
+      tag.selectedItem = function (getObject) {
+        return app.inventory.getSelected(getObject);
+      };
 
       tag.updateLabel = function (){
         tag.marbles = tag.inputMarbles.value;

@@ -43,7 +43,6 @@
 
     // private functions
     var update = function () {
-      tag.update();
       tag.updateButtonStates();
     };
 
@@ -171,7 +170,8 @@
       dialogService.show({
         message: message,
         primaryLabel: 'undo',
-        primaryAction: reAddItem
+        primaryAction: reAddItem,
+        secondaryLabel: 'close'
       });
     };
 
@@ -181,14 +181,12 @@
 
 
     // Listen to own events
+    tag.on('update', update);
     tag.on('show', update);
     tag.on('scan', tag.scan);
     tag.on('info use share remove', function (type) {
       tag[type](inventory.getSelected());
     });
-
-    // Listen to external events
-    inventory.on('change', update);
 
     tag.updateButtonStates();
   </script>
