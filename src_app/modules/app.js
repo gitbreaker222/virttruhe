@@ -22,7 +22,6 @@ window.onload = function () {
   // start initialization
   riot.observable(app);
   app.services.utility.detectRTC();
-  vex.defaultOptions.className = 'vex-theme-default';
   instantiate();
   
   app.inventory.trigger('loadItems');
