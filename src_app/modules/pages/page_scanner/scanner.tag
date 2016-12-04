@@ -49,7 +49,7 @@
     // public properties
     tag.showTextScanner = true;
     tag.showImageScanner = true;
-    tag.showVideoScanner = true;
+    tag.showVideoScanner = app.services.utility.canVideoScan();
 
     tag.isInvalid = true;
     tag.data = {
@@ -158,7 +158,6 @@
       if (!tag.data.isScanning){
         return;
       }
-      console.log('stopping scan');
       tag.data.isScanning = false;
       qr.stop();
       tag.cameraOutput.pause();
