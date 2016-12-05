@@ -13,14 +13,14 @@ app.services.utility = {
     return window.navigator.userAgent.includes('BB10');
   },
   detectRTC: function () {
-    var callback = function () {
-      app.trigger('finishedPreparing');
-    };
+    function finished () {
+      this.trigger('finished')
+    }
     if (!this.isBB10()) {
-      DetectRTC.load(callback);
+      DetectRTC.load(finished);
     } else {
       DetectRTC.hasWebcam = true;
-      callback();
+      finished();
     }
   },
   canVideoScan: function () {
