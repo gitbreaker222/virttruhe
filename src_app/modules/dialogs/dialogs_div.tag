@@ -2,7 +2,9 @@
 
   <div each={dialog, i in dialogs}
        class="dialog {dialog.styleType}">
-    <div class="backdrop" onclick="{backgroundAction}"></div>
+    <div class="backdrop"
+         data-index="{i}"
+         onclick="{backgroundAction}"></div>
     <div class="content">
       <yield/>
 
@@ -54,6 +56,14 @@
       var i = event.target.dataset.index;
       if (tag.dialogs[i].secondaryAction) tag.dialogs[i].secondaryAction();
       tag.close(i);
+    };
+    tag.backgroundAction = function (event) {
+      var i = event.target.dataset.index;
+      if (tag.isSecondButtonDefined(i)) {
+        tag.action2(event);
+      } else {
+        tag.action1(event);
+      }
     };
 
     eventEmitter.on(eventName, tag.show);
