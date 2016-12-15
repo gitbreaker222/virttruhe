@@ -1,111 +1,61 @@
-<app-dialogs-div>
+<app-dialogs>
 
-  <app-dialog each="{dialog in dialogs}"
-              message="{dialog.message}"
-              primary-label="{dialog.primaryLabel}"
-              primary-action="{dialog.primaryAction}"
-              secondary-label="{dialog.secondaryLabel}"
-              secondary-action="{dialog.secondaryAction}"
-              style-type="{dialog.styleType}"
-              dialog-id="{dialog.id}">
-  </app-dialog>
+  <div each={dialog, i in dialogs}
+       class="dialog {dialog.styleType}">
+    <div class="backdrop" onclick="{backgroundAction}"></div>
+    <div class="content">
+      <yield/>
 
-  <script>
-    var tag = this;
+      <p>{dialog.message}</p>
 
-    // TAG OPTIONS
-    /*-------------------------------------*/
-    var eventEmitter = window[tag.opts.eventEmitter] || window.appDialog;
-    var eventName = tag.opts.eventName || 'showDialog';
-
-    // TAG ATTRIBUTES
-    /*-------------------------------------*/
-    tag.dialogs = [];
-    tag.counter = 0;
-
-    // TAG METHODS
-    /*-------------------------------------*/
-    tag.show = function (dialog) {
-      if (tag.dialogs.length > 20) {
-        return window.console.error('too many dialogs')
-      }
-      dialog.id = tag.counter;
-      tag.counter++;
-      tag.dialogs.push(dialog);
-      tag.update();
-    };
-    tag.close = function (id) {
-      function outWhereTheIdIsIn (dialog) {
-        return dialog.id !== id;
-      }
-      tag.dialogs = tag.dialogs.filter(outWhereTheIdIsIn);
-      tag.update();
-    };
-    tag.clear = function () {
-      tag.dialogs = [];
-      tag.update();
-    };
-    tag.hasDialog = function () {
-      return tag.dialogs.length > 0;
-    };
-
-    // EVENT LISTENERS
-    /*-------------------------------------*/
-    eventEmitter.on(eventName, tag.show);
-    this.on('closeDialog', tag.close)
-  </script>
-</app-dialogs-div>
-
-
-
-<app-dialog class="{type}">
-  <div class="{backdrop: hasDialog()}" onclick="{backgroundAction}"></div>
-
-  <div class="content">
-    <p>{message}</p>
-    <button onclick="{action1}">
-      {primaryLabel}
-    </button>
-    <button if="{isSecondButtonDefined()}"
-            onclick="{action2}">
-      {secondaryLabel}
-    </button>
+      <button data-index="{i}"
+              onclick="{action1}">
+        {dialog.primaryLabel}
+      </button>
+      <button if="{isSecondButtonDefined(i)}"
+              data-index="{i}"
+              onclick="{action2}">
+        {dialog.secondaryLabel}
+      </button>
+    </div>
   </div>
 
-
-
   <script>
     var tag = this;
+    var eventEmitter = tag.opts.eventEmitter || app;
+    var eventName = tag.opts.eventName || 'showDialog';
+    tag.dialogs = [];
 
-    tag.message = tag.opts.message || '…';
-    tag.primaryLabel = tag.opts.primaryLabel  || 'ok';
-    tag.primaryAction = tag.opts.primaryAction || null;
-    tag.secondaryLabel = tag.opts.secondaryLabel  || 'close';
-    tag.secondaryAction = tag.opts.secondaryAction || null;
-    tag.type = tag.opts.styleType || '';
-
-    tag.close = function () {
-      tag.parent.trigger('closeDialog', tag.opts.dialogId);
-    };
-
-    tag.isSecondButtonDefined = function () {
-      return !!tag.opts.secondaryLabel || !!tag.secondaryAction;
-    };
-    tag.action1 = function () {
-      if (tag.primaryAction) tag.primaryAction();
-      tag.close();
-    };
-    tag.action2 = function () {
-      if (tag.secondaryAction) tag.secondaryAction();
-      tag.close();
-    };
-    tag.backgroundAction = function () {
-      if (tag.isSecondButtonDefined()) {
-        tag.action2();
-      } else {
-        tag.action1();
-      }
+    function setDefaults (data) {
+      data.primaryLabel = data.primaryLabel  || 'ok';
+      data.secondaryLabel = data.secondaryLabel  || 'close';
+      data.styleType = data.styleType || '';
+      return data;
     }
 
+    tag.show = function (data) {
+      data = data || {};
+      data = setDefaults(data);
+      tag.dialogs.push(data);
+      tag.update();
+    };
+    tag.close = function (i) {
+      tag.dialogs.splice(i, 1);
+    };
+    tag.isSecondButtonDefined = function (i) {
+      return !!tag.dialogs[i].secondaryAction;
+    };
+    tag.action1 = function (event) {
+      var i = event.target.dataset.index;
+      if (tag.dialogs[i].primaryAction) tag.dialogs[i].primaryAction();
+      tag.close(i);
+    };
+    tag.action2 = function (event) {
+      var i = event.target.dataset.index;
+      if (tag.dialogs[i].secondaryAction) tag.dialogs[i].secondaryAction();
+      tag.close(i);
+    };
+
+    eventEmitter.on(eventName, tag.show);
   </script>
-</app-dialog>
+</app-dialogs>

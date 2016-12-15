@@ -28,7 +28,7 @@ window.onload = function () {
   // app.inventory.addItem('beer');
   
   // mount all riot tags and start the router
-  riot.mount('*');
+  riot.mount('app');
   riot.route.start(true);
 };
 /*
