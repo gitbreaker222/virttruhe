@@ -28,6 +28,11 @@
     </li>
   </ul>
 
+  <app-dialogs event-name="showQr">
+    {parent.getQrText()}
+    <app-qr-gen text="{parent.parent.getQrText()}"></app-qr-gen>
+  </app-dialogs>
+
   <vt-button-bar
       class="context-actions"
       buttons={data.buttonList}>
@@ -152,11 +157,15 @@
       });
     };
 
+    var qrText = '';
+    tag.getQrText = function () {
+      return qrText;
+    };
     tag.share = function (itemId) {
       var item = itemsService.getItem(itemId);
-      dialogService.show({
-        message: '(preview) show QR Code for '+ item.name +'.'
-      });
+      qrText = '##'+itemId;
+      app.trigger('showQr');
+      tag.update()
     };
 
     tag.remove = function (itemId) {

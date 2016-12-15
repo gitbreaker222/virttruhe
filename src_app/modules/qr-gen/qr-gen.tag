@@ -7,12 +7,10 @@
   <script>
     var tag = this;
 
-    // API
-    var apiTypes = {
+    var optsTypes = {
       text: 'string'
     };
-
-    app.services.utility.validate(tag.opts, apiTypes);
+    //app.services.utility.validate(tag.opts, optsTypes);
 
     tag.qrcode = new QRCode(tag.qrcontainer);
 
@@ -21,6 +19,7 @@
     };
 
     tag.makeCode = function () {
+      if(!tag.hasText()) return;
       tag.qrcode.makeCode(tag.opts.text)
     };
 
