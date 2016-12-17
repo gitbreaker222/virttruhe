@@ -153,7 +153,8 @@
       };
       dialogService.show({
         message: message,
-        primaryAction: callback
+        primaryAction: callback,
+        secondaryLabel: 'Cancel'
       });
     };
 
