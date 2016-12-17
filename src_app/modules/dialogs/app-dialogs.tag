@@ -9,16 +9,17 @@
       <yield/>
 
       <p>{dialog.message}</p>
-
-      <button data-index="{i}"
-              onclick="{action1}">
-        {dialog.primaryLabel}
-      </button>
-      <button if="{isSecondButtonDefined(i)}"
-              data-index="{i}"
-              onclick="{action2}">
-        {dialog.secondaryLabel}
-      </button>
+      <span>
+        <button data-index="{i}"
+                onclick="{action1}">
+          {dialog.primaryLabel || 'ok'}
+        </button>
+        <button if="{isSecondButtonDefined(i)}"
+                data-index="{i}"
+                onclick="{action2}">
+          {dialog.secondaryLabel || 'MISSING "secondaryLabel"'}
+        </button>
+      </span>
     </div>
   </div>
 
@@ -28,16 +29,8 @@
     var eventName = tag.opts.eventName || 'showDialog';
     tag.dialogs = [];
 
-    function setDefaults (data) {
-      data.primaryLabel = data.primaryLabel  || 'ok';
-      data.secondaryLabel = data.secondaryLabel  || 'close';
-      data.styleType = data.styleType || '';
-      return data;
-    }
-
     tag.show = function (data) {
       data = data || {};
-      data = setDefaults(data);
       tag.dialogs.push(data);
       tag.update();
     };
@@ -45,7 +38,8 @@
       tag.dialogs.splice(i, 1);
     };
     tag.isSecondButtonDefined = function (i) {
-      return !!tag.dialogs[i].secondaryAction;
+      return !!tag.dialogs[i].secondaryLabel
+        || !!tag.dialogs[i].secondaryAction;
     };
     tag.action1 = function (event) {
       var i = event.target.dataset.index;
