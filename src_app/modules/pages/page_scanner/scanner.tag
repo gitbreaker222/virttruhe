@@ -43,7 +43,6 @@
 
     // private properties
     var Scanner = app.scanner;
-    var Dialog = app.services.dialog;
     var qr = new QCodeDecoder();
 
     // public properties
@@ -75,6 +74,8 @@
         return something;
       } else if (something.constructor === Event) {
         return something.srcElement.value;
+      } else if (something.type === 'input'){
+        return something.target.value;
       } else {
         throw new Error('Exception: Cannot normalize this: ' + something)
       }
@@ -84,10 +85,10 @@
       callback = function () {
         riot.route('inventory');
       };
-      Dialog.show({
+      app.trigger('showDialog', {
         message: 'You have found: ' + item.name,
         primaryAction: callback
-      })
+      });
     };
 
     var presentNoSuccess = function () {
