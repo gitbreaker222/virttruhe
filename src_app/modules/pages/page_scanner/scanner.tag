@@ -53,6 +53,7 @@
     tag.isInvalid = true;
     tag.data = {
       isScanning: null,
+      isPresenting: false,
       buttonList: [
         {
           label: 'stop',
@@ -82,6 +83,7 @@
     };
 
     var presentItem = function(item) {
+      tag.data.isPresenting = true;
       callback = function () {
         riot.route('inventory');
       };
@@ -89,10 +91,6 @@
         message: 'You have found: ' + item.name,
         primaryAction: callback
       });
-    };
-
-    var presentNoSuccess = function () {
-      //can be deleted
     };
 
     var handleVideoError = function (e) {
@@ -112,6 +110,7 @@
     };
 
     tag.scanInput = function (input) {
+      if (tag.data.isPresenting) return;
       var text = normalizeInput(input);
       var result = Scanner.scan(text);
       if (result) {
@@ -182,6 +181,5 @@
     // listen to external events
     app.state.on('hidePage', hide);
     Scanner.on('success', presentItem);
-    Scanner.on('noSucces', presentNoSuccess);
   </script>
 </app-scanner>
