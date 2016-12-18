@@ -3,7 +3,7 @@ app.services.items = {
     {
       'id':'pine_(closed)',
       'name':'Pine (closed)',
-      'imageName':null,
+      'imageName':'pine_(closed).svg',
       'description':'A Pine. They are often put into fires for their cracking sounds',
       'stackable':'false',
       'action':'combine',

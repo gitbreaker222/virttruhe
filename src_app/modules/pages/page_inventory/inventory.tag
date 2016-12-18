@@ -96,15 +96,15 @@
     };
 
     tag.getItemImageSrc = function (item) {
-      var itemName;
+      var imageName;
       if (item.imageName && typeof(item.imageName) === 'string') {
-        itemName = item.imageName;
+        imageName = item.imageName;
       } else if (item.id && typeof(item.id) === 'string') {
-        itemName = item.id + '.jpg';
+        imageName = item.id + '.jpg';
       } else {
         throw new Error('Exception for itemName')
       }
-      return app.constants.itemImageSmallPath + itemName;
+      return app.constants.itemImageSmallPath + imageName;
     };
 
     tag.isSelected = function (item) {

@@ -97,7 +97,7 @@ gulp.task('delete:data', function () {
 var data = {
   img: './src_app/data/img/**/*.*',
   audio: './src_app/data/audio/**/*.*',
-  items: './src_app/data/items/**/*.{jpg,png}'
+  items: './src_app/data/items/**/*.{jpg,png,svg}'
 };
 
 gulp.task('copy_data', ['delete:data'], function () {
