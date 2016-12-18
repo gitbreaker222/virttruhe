@@ -1,5 +1,5 @@
 app.services.items = {
-  itemsData: [
+  items: [
     {
       'id':'pine_(closed)',
       'name':'Pine (closed)',
@@ -251,14 +251,17 @@ app.services.items = {
       'set':'crime'
     }
   ],
+  loadItems: function () {
+    // TODO xhr request, local storage and such
+  },
   getAllItems: function () {
-    return this.itemsData;
+    return this.items;
   },
   getItem: function (itemId) {
     if (!itemId) {
       return null;
     }
-    var item = this.itemsData.find(function (item) {
+    var item = this.items.find(function (item) {
       return item.id === itemId;
     });
     if (!item) {

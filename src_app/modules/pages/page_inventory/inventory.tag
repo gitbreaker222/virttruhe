@@ -29,7 +29,6 @@
   </ul>
 
   <app-dialogs event-name="showQr">
-    {parent.getQrText()}
     <app-qr-gen text="{parent.parent.getQrText()}"></app-qr-gen>
   </app-dialogs>
 
@@ -165,7 +164,7 @@
     tag.share = function (itemId) {
       var item = itemsService.getItem(itemId);
       qrText = '##'+itemId;
-      app.trigger('showQr');
+      app.trigger('showQr', {message: qrText});
       tag.update()
     };
 
