@@ -85,6 +85,7 @@
     var presentItem = function(item) {
       tag.data.isPresenting = true;
       callback = function () {
+        tag.data.isPresenting = false;
         riot.route('inventory');
       };
       app.trigger('showDialog', {
