@@ -3312,6 +3312,14 @@ riot.route('/scanner', function () {
  */
 
 /*
+  ACTIONS SERVICE
+ */
+app.services.actions = {
+  test: function () {
+    app.stats.marbles += 1;
+  }
+};
+/*
   CONSTANTS
  */
 app.constants = {
@@ -3996,23 +4004,36 @@ riot.tag2('app', '<app-info-bar marbles="7"></app-info-bar> <app-intro class="pa
 
     app.on('showPage', showPage);
 });
-riot.tag2('app-dialogs', '<div each="{dialog, i in dialogs}" class="dialog {dialog.styleType}"> <div class="backdrop" data-index="{i}" onclick="{backgroundAction}"></div> <div class="content"> <yield></yield> <p>{dialog.message}</p> <span> <button data-index="{i}" onclick="{action1}"> {dialog.primaryLabel || \'ok\'} </button> <button if="{isSecondButtonDefined(i)}" data-index="{i}" onclick="{action2}"> {dialog.secondaryLabel || \'MISSING ⁗secondaryLabel⁗\'} </button> </span> </div> </div>', '', '', function(opts) {
+riot.tag2('app-dialogs', '<div each="{dialog, i in dialogs}" class="dialog {dialog.styleType}"> <div class="backdrop" data-index="{i}" onclick="{backgroundAction}"></div> <div class="content" data-index="{i}" onmouseover="{stopTimeout}"> <yield></yield> <p>{dialog.message}</p> <span> <button data-index="{i}" onclick="{action1}"> {dialog.primaryLabel || \'ok\'} </button> <button if="{isSecondButtonDefined(i)}" data-index="{i}" onclick="{action2}"> {dialog.secondaryLabel || \'MISSING ⁗secondaryLabel⁗\'} </button> </span> </div> </div>', '', '', function(opts) {
     var tag = this;
     var eventEmitter = tag.opts.eventEmitter || app;
     var eventName = tag.opts.eventName || 'showDialog';
+    var timerID;
     tag.dialogs = [];
 
     tag.show = function (data) {
       data = data || {};
+      if (data.timeout) {
+        data.timerId = setTimeout(tag.close, data.timeout, tag.dialogs.length - 1);
+      }
       tag.dialogs.push(data);
       tag.update();
     };
     tag.close = function (i) {
       tag.dialogs.splice(i, 1);
+      tag.update();
     };
     tag.isSecondButtonDefined = function (i) {
       return !!tag.dialogs[i].secondaryLabel
         || !!tag.dialogs[i].secondaryAction;
+    };
+    tag.stopTimeout = function (event) {
+      var i = event.target.dataset.index;
+      var dialog = tag.dialogs[i];
+      if (dialog.timerId) {
+        clearTimeout(dialog.timerId);
+        tag.dialogs[i].timerId = null;
+      }
     };
     tag.action1 = function (event) {
       var i = event.target.dataset.index;
@@ -4326,11 +4347,12 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
       };
       inventory.deleteItem(itemId);
 
-      dialogService.show({
+      app.trigger('showDialog', {
         message: message,
         primaryLabel: 'undo',
         primaryAction: reAddItem,
-        secondaryLabel: 'close'
+        secondaryLabel: 'close',
+        timeout: 2000
       });
     };
 
