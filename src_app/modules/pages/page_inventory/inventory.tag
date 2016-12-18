@@ -176,11 +176,12 @@
       };
       inventory.deleteItem(itemId);
 
-      dialogService.show({
+      app.trigger('showDialog', {
         message: message,
         primaryLabel: 'undo',
         primaryAction: reAddItem,
-        secondaryLabel: 'close'
+        secondaryLabel: 'close',
+        timeout: 2000
       });
     };
 

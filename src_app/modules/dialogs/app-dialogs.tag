@@ -5,7 +5,9 @@
     <div class="backdrop"
          data-index="{i}"
          onclick="{backgroundAction}"></div>
-    <div class="content">
+    <div class="content"
+         data-index="{i}"
+         onmouseover="{stopTimeout}">
       <yield/>
 
       <p>{dialog.message}</p>
@@ -27,19 +29,32 @@
     var tag = this;
     var eventEmitter = tag.opts.eventEmitter || app;
     var eventName = tag.opts.eventName || 'showDialog';
+    var timerID;
     tag.dialogs = [];
 
     tag.show = function (data) {
       data = data || {};
+      if (data.timeout) {
+        data.timerId = setTimeout(tag.close, data.timeout, tag.dialogs.length - 1);
+      }
       tag.dialogs.push(data);
       tag.update();
     };
     tag.close = function (i) {
       tag.dialogs.splice(i, 1);
+      tag.update();
     };
     tag.isSecondButtonDefined = function (i) {
       return !!tag.dialogs[i].secondaryLabel
         || !!tag.dialogs[i].secondaryAction;
+    };
+    tag.stopTimeout = function (event) {
+      var i = event.target.dataset.index;
+      var dialog = tag.dialogs[i];
+      if (dialog.timerId) {
+        clearTimeout(dialog.timerId);
+        tag.dialogs[i].timerId = null;
+      }
     };
     tag.action1 = function (event) {
       var i = event.target.dataset.index;
