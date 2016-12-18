@@ -29,7 +29,6 @@
   </ul>
 
   <app-dialogs event-name="showQr">
-    {parent.getQrText()}
     <app-qr-gen text="{parent.parent.getQrText()}"></app-qr-gen>
   </app-dialogs>
 
@@ -96,15 +95,15 @@
     };
 
     tag.getItemImageSrc = function (item) {
-      var itemName;
+      var imageName;
       if (item.imageName && typeof(item.imageName) === 'string') {
-        itemName = item.imageName;
+        imageName = item.imageName;
       } else if (item.id && typeof(item.id) === 'string') {
-        itemName = item.id + '.jpg';
+        imageName = item.id + '.jpg';
       } else {
         throw new Error('Exception for itemName')
       }
-      return app.constants.itemImageSmallPath + itemName;
+      return app.constants.itemImageSmallPath + imageName;
     };
 
     tag.isSelected = function (item) {
@@ -165,7 +164,7 @@
     tag.share = function (itemId) {
       var item = itemsService.getItem(itemId);
       qrText = '##'+itemId;
-      app.trigger('showQr');
+      app.trigger('showQr', {message: qrText});
       tag.update()
     };
 

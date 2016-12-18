@@ -5,15 +5,21 @@ app.models.Scanner = function () {
   // Make Inventory instances observable
   riot.observable(this);
   
+  // declare used services / components
+  var Constants = app.constants;
+  var Items = app.services.items;
+  var Virttruhe = app.services.virttruhe;
+  
   // public methods
   this.scan = function (string) {
-    //validation
+    // validation
     if (typeof(string) !== 'string') {
       var message = 'expected string, but got ' + typeof(string);
       return window.console.error(new TypeError(message));
     }
     
-    var listOfMatchesInString;
+    var virttruheCodePattern = Constants.virttruheCodePattern;
+    var itemCodePattern = Constants.itemCodePattern;
     var virttruheKey;
     var item;
     
@@ -23,13 +29,16 @@ app.models.Scanner = function () {
       return null;
     }.bind(this);
     
-    //logic
-    listOfMatchesInString = string.match(app.constants.virttruheCodePattern);
-    if (!listOfMatchesInString){
-      return noSuccess();
+    // main part
+    if (string.match(virttruheCodePattern)) {
+      virttruheKey = string.match(virttruheCodePattern)[0];
+      item = Virttruhe.open(virttruheKey);
+    } else if (string.match(itemCodePattern)) {
+      var cutOffDoubleHash = 2;
+      var itemId = string.match(itemCodePattern)[0].slice(cutOffDoubleHash);
+      item = Items.getItem(itemId);
     }
-    virttruheKey = listOfMatchesInString[0];
-    item = app.services.virttruhe.open(virttruheKey);
+    
     if (!item) {
       return noSuccess();
     }
