@@ -69,7 +69,7 @@ var scripts = [
   'bower_components/detectrtc/DetectRTC.min.js',
   'bower_components/riot/riot.min.js',
   'bower_components/webrtc-adapter/release/adapter.js',
-  'bower_components/vex/dist/js/vex.combined.min.js',
+  'bower_components/qrcode.js/qrcode.js',
   'lib/qr-decoder.js',
   'src_app/**/*.js',
   'src_app/modules/.tmp/**/*.js'
@@ -97,7 +97,7 @@ gulp.task('delete:data', function () {
 var data = {
   img: './src_app/data/img/**/*.*',
   audio: './src_app/data/audio/**/*.*',
-  items: './src_app/data/items/**/*.{jpg,png}'
+  items: './src_app/data/items/**/*.{jpg,png,svg}'
 };
 
 gulp.task('copy_data', ['delete:data'], function () {

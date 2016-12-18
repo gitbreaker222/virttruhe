@@ -28,6 +28,10 @@
     </li>
   </ul>
 
+  <app-dialogs event-name="showQr">
+    <app-qr-gen text="{parent.parent.getQrText()}"></app-qr-gen>
+  </app-dialogs>
+
   <vt-button-bar
       class="context-actions"
       buttons={data.buttonList}>
@@ -91,15 +95,15 @@
     };
 
     tag.getItemImageSrc = function (item) {
-      var itemName;
+      var imageName;
       if (item.imageName && typeof(item.imageName) === 'string') {
-        itemName = item.imageName;
+        imageName = item.imageName;
       } else if (item.id && typeof(item.id) === 'string') {
-        itemName = item.id + '.jpg';
+        imageName = item.id + '.jpg';
       } else {
         throw new Error('Exception for itemName')
       }
-      return app.constants.itemImageSmallPath + itemName;
+      return app.constants.itemImageSmallPath + imageName;
     };
 
     tag.isSelected = function (item) {
@@ -148,15 +152,20 @@
       };
       dialogService.show({
         message: message,
-        primaryAction: callback
+        primaryAction: callback,
+        secondaryLabel: 'Cancel'
       });
     };
 
+    var qrText = '';
+    tag.getQrText = function () {
+      return qrText;
+    };
     tag.share = function (itemId) {
       var item = itemsService.getItem(itemId);
-      dialogService.show({
-        message: '(preview) show QR Code for '+ item.name +'.'
-      });
+      qrText = '##'+itemId;
+      app.trigger('showQr', {message: qrText});
+      tag.update()
     };
 
     tag.remove = function (itemId) {

@@ -9,7 +9,7 @@ $base-duration: 200ms
   background-color: rgba(0, 0, 0, 0.5)
   animation: fadeIn $base-duration
 
-app-dialog
+app-dialogs
 
   .content
     @include center
@@ -17,8 +17,8 @@ app-dialog
     z-index: 99
     min-width: 10rem
     display: flex
-    flex-flow: row-reverse wrap
-    align-items: flex-start
+    flex-flow: column
+    align-items: flex-end
     padding: 1em
     background-color: $primary-color
     color: $secondary-color
@@ -29,6 +29,7 @@ app-dialog
       width: 100%
 
     button
+      float: right
       margin: 0.3rem
       min-width: 4rem
       padding: 1rem 1rem

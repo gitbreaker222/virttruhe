@@ -43,17 +43,17 @@
 
     // private properties
     var Scanner = app.scanner;
-    var Dialog = app.services.dialog;
     var qr = new QCodeDecoder();
 
     // public properties
     tag.showTextScanner = true;
     tag.showImageScanner = true;
-    tag.showVideoScanner = true;
+    tag.showVideoScanner = app.services.utility.canVideoScan();
 
     tag.isInvalid = true;
     tag.data = {
       isScanning: null,
+      isPresenting: false,
       buttonList: [
         {
           label: 'stop',
@@ -75,23 +75,23 @@
         return something;
       } else if (something.constructor === Event) {
         return something.srcElement.value;
+      } else if (something.type === 'input'){
+        return something.target.value;
       } else {
         throw new Error('Exception: Cannot normalize this: ' + something)
       }
     };
 
     var presentItem = function(item) {
+      tag.data.isPresenting = true;
       callback = function () {
+        tag.data.isPresenting = false;
         riot.route('inventory');
       };
-      Dialog.show({
+      app.trigger('showDialog', {
         message: 'You have found: ' + item.name,
         primaryAction: callback
-      })
-    };
-
-    var presentNoSuccess = function () {
-      //can be deleted
+      });
     };
 
     var handleVideoError = function (e) {
@@ -111,6 +111,7 @@
     };
 
     tag.scanInput = function (input) {
+      if (tag.data.isPresenting) return;
       var text = normalizeInput(input);
       var result = Scanner.scan(text);
       if (result) {
@@ -158,7 +159,6 @@
       if (!tag.data.isScanning){
         return;
       }
-      console.log('stopping scan');
       tag.data.isScanning = false;
       qr.stop();
       tag.cameraOutput.pause();
@@ -182,6 +182,5 @@
     // listen to external events
     app.state.on('hidePage', hide);
     Scanner.on('success', presentItem);
-    Scanner.on('noSucces', presentNoSuccess);
   </script>
 </app-scanner>

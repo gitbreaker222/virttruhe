@@ -22,14 +22,13 @@ window.onload = function () {
   // start initialization
   riot.observable(app);
   app.services.utility.detectRTC();
-  vex.defaultOptions.className = 'vex-theme-default';
   instantiate();
   
   app.inventory.trigger('loadItems');
   // app.inventory.addItem('beer');
   
   // mount all riot tags and start the router
-  riot.mount('*');
+  riot.mount('app');
   riot.route.start(true);
 };
 /*
