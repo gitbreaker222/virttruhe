@@ -3312,20 +3312,13 @@ riot.route('/scanner', function () {
  */
 
 /*
-  ACTIONS SERVICE
- */
-app.services.actions = {
-  test: function () {
-    app.stats.marbles += 1;
-  }
-};
-/*
   CONSTANTS
  */
 app.constants = {
   sampleQrCodes: 'data/img/cards_1_-_9.png',
   itemImageSmallPath: 'data/items/img/small/',
-  virttruheCodePattern: /#[\da-fA-F]{8}\b/ //http://regexr.com/3ehu3
+  virttruheCodePattern: /#[\da-fA-F]{8}\b/, //http://regexr.com/3ehu3
+  itemCodePattern: /##.[\S]+/
 };
 /*
   CONSTANTS END
@@ -3431,11 +3424,11 @@ app.services.utility = {
 ;
 
 app.services.items = {
-  itemsData: [
+  items: [
     {
       'id':'pine_(closed)',
       'name':'Pine (closed)',
-      'imageName':null,
+      'imageName':'pine_(closed).svg',
       'description':'A Pine. They are often put into fires for their cracking sounds',
       'stackable':'false',
       'action':'combine',
@@ -3683,14 +3676,17 @@ app.services.items = {
       'set':'crime'
     }
   ],
+  loadItems: function () {
+    // TODO xhr request, local storage and such
+  },
   getAllItems: function () {
-    return this.itemsData;
+    return this.items;
   },
   getItem: function (itemId) {
     if (!itemId) {
       return null;
     }
-    var item = this.itemsData.find(function (item) {
+    var item = this.items.find(function (item) {
       return item.id === itemId;
     });
     if (!item) {
@@ -3933,15 +3929,21 @@ app.models.Scanner = function () {
   // Make Inventory instances observable
   riot.observable(this);
   
+  // declare used services / components
+  var Constants = app.constants;
+  var Items = app.services.items;
+  var Virttruhe = app.services.virttruhe;
+  
   // public methods
   this.scan = function (string) {
-    //validation
+    // validation
     if (typeof(string) !== 'string') {
       var message = 'expected string, but got ' + typeof(string);
       return window.console.error(new TypeError(message));
     }
     
-    var listOfMatchesInString;
+    var virttruheCodePattern = Constants.virttruheCodePattern;
+    var itemCodePattern = Constants.itemCodePattern;
     var virttruheKey;
     var item;
     
@@ -3951,13 +3953,16 @@ app.models.Scanner = function () {
       return null;
     }.bind(this);
     
-    //logic
-    listOfMatchesInString = string.match(app.constants.virttruheCodePattern);
-    if (!listOfMatchesInString){
-      return noSuccess();
+    // main part
+    if (string.match(virttruheCodePattern)) {
+      virttruheKey = string.match(virttruheCodePattern)[0];
+      item = Virttruhe.open(virttruheKey);
+    } else if (string.match(itemCodePattern)) {
+      var cutOffDoubleHash = 2;
+      var itemId = string.match(itemCodePattern)[0].slice(cutOffDoubleHash);
+      item = Items.getItem(itemId);
     }
-    virttruheKey = listOfMatchesInString[0];
-    item = app.services.virttruhe.open(virttruheKey);
+    
     if (!item) {
       return noSuccess();
     }
@@ -3991,22 +3996,14 @@ riot.tag2('app', '<app-info-bar marbles="7"></app-info-bar> <app-intro class="pa
 
     app.on('showPage', showPage);
 });
-riot.tag2('app-dialogs', '<div each="{dialog, i in dialogs}" class="dialog {dialog.styleType}"> <div class="backdrop" onclick="{backgroundAction}"></div> <div class="content"> <yield></yield> <p>{dialog.message}</p> <button data-index="{i}" onclick="{action1}"> {dialog.primaryLabel} </button> <button if="{isSecondButtonDefined(i)}" data-index="{i}" onclick="{action2}"> {dialog.secondaryLabel} </button> </div> </div>', '', '', function(opts) {
+riot.tag2('app-dialogs', '<div each="{dialog, i in dialogs}" class="dialog {dialog.styleType}"> <div class="backdrop" data-index="{i}" onclick="{backgroundAction}"></div> <div class="content"> <yield></yield> <p>{dialog.message}</p> <span> <button data-index="{i}" onclick="{action1}"> {dialog.primaryLabel || \'ok\'} </button> <button if="{isSecondButtonDefined(i)}" data-index="{i}" onclick="{action2}"> {dialog.secondaryLabel || \'MISSING ⁗secondaryLabel⁗\'} </button> </span> </div> </div>', '', '', function(opts) {
     var tag = this;
     var eventEmitter = tag.opts.eventEmitter || app;
     var eventName = tag.opts.eventName || 'showDialog';
     tag.dialogs = [];
 
-    function setDefaults (data) {
-      data.primaryLabel = data.primaryLabel  || 'ok';
-      data.secondaryLabel = data.secondaryLabel  || 'close';
-      data.styleType = data.styleType || '';
-      return data;
-    }
-
     tag.show = function (data) {
       data = data || {};
-      data = setDefaults(data);
       tag.dialogs.push(data);
       tag.update();
     };
@@ -4014,7 +4011,8 @@ riot.tag2('app-dialogs', '<div each="{dialog, i in dialogs}" class="dialog {dial
       tag.dialogs.splice(i, 1);
     };
     tag.isSecondButtonDefined = function (i) {
-      return !!tag.dialogs[i].secondaryAction;
+      return !!tag.dialogs[i].secondaryLabel
+        || !!tag.dialogs[i].secondaryAction;
     };
     tag.action1 = function (event) {
       var i = event.target.dataset.index;
@@ -4025,6 +4023,14 @@ riot.tag2('app-dialogs', '<div each="{dialog, i in dialogs}" class="dialog {dial
       var i = event.target.dataset.index;
       if (tag.dialogs[i].secondaryAction) tag.dialogs[i].secondaryAction();
       tag.close(i);
+    };
+    tag.backgroundAction = function (event) {
+      var i = event.target.dataset.index;
+      if (tag.isSecondButtonDefined(i)) {
+        tag.action2(event);
+      } else {
+        tag.action1(event);
+      }
     };
 
     eventEmitter.on(eventName, tag.show);
@@ -4184,7 +4190,7 @@ riot.tag2('app-intro', '<div> scan the start card </div> <vt-button-bar buttons=
     tag.on('hide', hideFn);
 
 });
-riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inventory is empty. </h2> <p> Use the scanner on VIRTTRUHE artefacts to find items. </p> <button onclick="{scan}" class="center-block"> <i class="icon scan"></i> </button> <p> <a href="{sampleQrCodes}" type="" download> Get example VIRTTRUHE qr-codes here. </a> </p> </div> <ul class="items"> <li each="{items()}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getItemImageSrc(this)}"> </li> </ul> <app-dialogs event-name="showQr"> {parent.getQrText()} <app-qr-gen text="{parent.parent.getQrText()}"></app-qr-gen> </app-dialogs> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
+riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inventory is empty. </h2> <p> Use the scanner on VIRTTRUHE artefacts to find items. </p> <button onclick="{scan}" class="center-block"> <i class="icon scan"></i> </button> <p> <a href="{sampleQrCodes}" type="" download> Get example VIRTTRUHE qr-codes here. </a> </p> </div> <ul class="items"> <li each="{items()}" class="{selected:isSelected(this)}" onclick="{select}"> <img riot-src="{getItemImageSrc(this)}"> </li> </ul> <app-dialogs event-name="showQr"> <app-qr-gen text="{parent.parent.getQrText()}"></app-qr-gen> </app-dialogs> <vt-button-bar class="context-actions" buttons="{data.buttonList}"> </vt-button-bar>', '', '', function(opts) {
     var tag = this;
 
     var itemsService = app.services.items;
@@ -4239,15 +4245,15 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
     };
 
     tag.getItemImageSrc = function (item) {
-      var itemName;
+      var imageName;
       if (item.imageName && typeof(item.imageName) === 'string') {
-        itemName = item.imageName;
+        imageName = item.imageName;
       } else if (item.id && typeof(item.id) === 'string') {
-        itemName = item.id + '.jpg';
+        imageName = item.id + '.jpg';
       } else {
         throw new Error('Exception for itemName')
       }
-      return app.constants.itemImageSmallPath + itemName;
+      return app.constants.itemImageSmallPath + imageName;
     };
 
     tag.isSelected = function (item) {
@@ -4296,7 +4302,8 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
       };
       dialogService.show({
         message: message,
-        primaryAction: callback
+        primaryAction: callback,
+        secondaryLabel: 'Cancel'
       });
     };
 
@@ -4307,7 +4314,7 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
     tag.share = function (itemId) {
       var item = itemsService.getItem(itemId);
       qrText = '##'+itemId;
-      app.trigger('showQr');
+      app.trigger('showQr', {message: qrText});
       tag.update()
     };
 
@@ -4345,7 +4352,6 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
     var tag = this;
 
     var Scanner = app.scanner;
-    var Dialog = app.services.dialog;
     var qr = new QCodeDecoder();
 
     tag.showTextScanner = true;
@@ -4355,6 +4361,7 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
     tag.isInvalid = true;
     tag.data = {
       isScanning: null,
+      isPresenting: false,
       buttonList: [
         {
           label: 'stop',
@@ -4375,23 +4382,23 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
         return something;
       } else if (something.constructor === Event) {
         return something.srcElement.value;
+      } else if (something.type === 'input'){
+        return something.target.value;
       } else {
         throw new Error('Exception: Cannot normalize this: ' + something)
       }
     };
 
     var presentItem = function(item) {
+      tag.data.isPresenting = true;
       callback = function () {
+        tag.data.isPresenting = false;
         riot.route('inventory');
       };
-      Dialog.show({
+      app.trigger('showDialog', {
         message: 'You have found: ' + item.name,
         primaryAction: callback
-      })
-    };
-
-    var presentNoSuccess = function () {
-
+      });
     };
 
     var handleVideoError = function (e) {
@@ -4409,6 +4416,7 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
     };
 
     tag.scanInput = function (input) {
+      if (tag.data.isPresenting) return;
       var text = normalizeInput(input);
       var result = Scanner.scan(text);
       if (result) {
@@ -4463,5 +4471,4 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
 
     app.state.on('hidePage', hide);
     Scanner.on('success', presentItem);
-    Scanner.on('noSucces', presentNoSuccess);
 });

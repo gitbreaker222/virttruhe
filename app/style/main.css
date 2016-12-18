@@ -2784,14 +2784,14 @@ app-dialogs .content {
   position: absolute;
   top: 50%;
   left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+  -webkit-transform: translate3d(-50%, -50%, 0);
+  transform: translate3d(-50%, -50%, 0);
   position: fixed;
   z-index: 99;
   min-width: 10rem;
   display: flex;
-  flex-flow: row-reverse wrap;
-  align-items: flex-start;
+  flex-flow: column;
+  align-items: flex-end;
   padding: 1em;
   background-color: #222;
   color: #ddd;
@@ -2800,6 +2800,7 @@ app-dialogs .content {
   app-dialogs .content p {
     width: 100%; }
   app-dialogs .content button {
+    float: right;
     margin: 0.3rem;
     min-width: 4rem;
     padding: 1rem 1rem; }
@@ -2817,15 +2818,15 @@ app-dialogs.error .content {
     position: absolute;
     top: 50%;
     left: 50%;
-    -webkit-transform: translate(-50%, -70%);
-    transform: translate(-50%, -70%); }
+    -webkit-transform: translate3d(-50%, -70%, 0);
+    transform: translate3d(-50%, -70%, 0); }
   100% {
     opacity: 1;
     position: absolute;
     top: 50%;
     left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%); } }
+    -webkit-transform: translate3d(-50%, -50%, 0);
+    transform: translate3d(-50%, -50%, 0); } }
 
 app-qr-gen #qrcontainer {
   border: 1em white solid;
