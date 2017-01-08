@@ -13,48 +13,53 @@ To run it locally and as long as there is no distributed app or extra run script
 
 ## Contributing: Getting started
 
- - install the development dependencies (1)
- - run the the build task (2)
- - run the app (3)
+ 1. install the development dependencies
+ 1. run the the build task
+ 1. run the app
 
- ### 1: installing dependecies
+### 1: installing dependecies
 
- First please make sure you have [git](https://git-scm.com) for version commits installed and [nodeJS](https://nodejs.org/en/), to run "serverside javascrip" programs on your machine. They are used for the build tasks.
+First please make sure you have [git](https://git-scm.com) for version commits installed and [nodeJS](https://nodejs.org/en/), to run "serverside javascrip" programs on your machine. They are used for the build tasks.
 
- When you have this, you can use your favourite [git client](https://git-scm.com/downloads/guis) to _clone_ from `https://github.com/gitbreaker222/virttruhe.git` into your development folder. A folder _virttruhe_ will be created.
+When you have this, you can use your favourite [git client](https://git-scm.com/downloads/guis) to _clone_ from `https://github.com/gitbreaker222/virttruhe.git` into your development folder. A folder _virttruhe_ will be created.
 
- Next you install the development dependencies into this folder. Therefor you need to open a terminal window and enter the enter the nodeJS command:
- ```
- npm install --only=dev
- ```
- It automatically downloads all packages listed in the file _package.json_ into a new folder _node_modules_.
+Next you install the development dependencies into this folder. Therefor you need to open a terminal window and enter the enter the nodeJS command:
 
- ### 2: run the build task
+```
+npm i && bower i
+```
 
- NodeJS has now installed the task runner _gulp_ from the _node package manager (npm)_ for you.
+It automatically downloads all packages listed in the file _package.json_ into a new folder _node_modules_ (needed to build the app) and then downloads all packages listed in _bower.json_ into a new folder _bower components_ (needed by the app itself).
 
- Run
- ```
- gulp
- ``` 
- in the terminal to trigger the _gulp default_ task. An IDE like Webstorm shows these tasks usually on the left. You can also run the _default_ task from there.
+### 2: run the build task
 
-  The folder **app** will be created/overridden with all compiled files from **src_app**.
+NodeJS has now installed the task runner _gulp_ from the _node package manager (npm)_ for you.
 
- ### 3: run the app`
- 
- Run the web server with the _gulp serve_ task. To start it from terminal, type:
- ```
- gulp serve
- ```
- 
- This will open `app/index.html` in your browser on localhost:3000`.
+Run
+
+```
+gulp
+```
+
+in the terminal to trigger the _gulp default_ task. An IDE like Webstorm shows these tasks usually on the left. You can also run the _default_ task from there.
+
+The folder **app** will be created/overridden. It contains now the compiled (to html/js) and concatenated (all js) files from **src_app, bower_components and lib**.
+
+### 3: run the app
+
+Run the web server with the _serve_ task. To start it from terminal, type:
+
+```
+gulp serve
+```
+
+This will serve `app/index.html`. You can access the app in your browser now on `localhost:3000`.
 
 ---
 
- Congratulation! You are now familiar with the technology to work on modern web applications :)
+Congratulation! You are now familiar with the technology to work on modern web applications :) (Says me in 2016. Maybe outdated after 2 years)
 
- ## App Architechture
+## App Architechture
  
  ```
  virttruhe/
