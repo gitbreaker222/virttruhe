@@ -150,7 +150,7 @@
       var callback = function () {
         inventory.trigger('use', itemId);
       };
-      dialogService.show({
+      app.trigger('showDialog', {
         message: message,
         primaryAction: callback,
         secondaryLabel: 'Cancel'
