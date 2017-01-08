@@ -93,6 +93,10 @@
         primaryAction: callback
       });
     };
+    var noItem = function(itemName) {
+      //TODO show unsuccess dialog
+      riot.route('inventory');
+    };
 
     var handleVideoError = function (e) {
       window.console.error(e);
@@ -182,5 +186,6 @@
     // listen to external events
     app.state.on('hidePage', hide);
     Scanner.on('success', presentItem);
+    Scanner.on('noSuccess', noItem);
   </script>
 </app-scanner>
