@@ -6,6 +6,7 @@ app.models.Inventory = function () {
   riot.observable(this);
   
   var itemsService = app.services.items;
+  var actions = app.services.actions;
   
   var data = {
     items: [],
@@ -15,9 +16,10 @@ app.models.Inventory = function () {
   // Private methods
   var use = function (itemId) {
     var item = itemsService.getItem(itemId);
+    var name;
     if (item && item.action) {
-      //need to pass action name to the actions service
-      item.action();
+      name = item.action.name;
+      actions[name](item.action);
     }
   };
   
