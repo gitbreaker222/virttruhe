@@ -51,9 +51,9 @@
     tag.showVideoScanner = app.services.utility.canVideoScan();
 
     tag.isInvalid = true;
+    tag.isPresenting = false;
     tag.data = {
       isScanning: null,
-      isPresenting: false,
       buttonList: [
         {
           label: 'stop',
@@ -83,9 +83,9 @@
     };
 
     var presentItem = function(item) {
-      tag.data.isPresenting = true;
+      tag.isPresenting = true;
       callback = function () {
-        tag.data.isPresenting = false;
+        tag.isPresenting = false;
         riot.route('inventory');
       };
       app.trigger('showDialog', {
@@ -95,7 +95,6 @@
     };
     var noItem = function(itemName) {
       //TODO show unsuccess dialog
-      riot.route('inventory');
     };
 
     var handleVideoError = function (e) {
@@ -115,7 +114,7 @@
     };
 
     tag.scanInput = function (input) {
-      if (tag.data.isPresenting) return;
+      if (tag.isPresenting) return;
       var text = normalizeInput(input);
       var result = Scanner.scan(text);
       if (result) {
