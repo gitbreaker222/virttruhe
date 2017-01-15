@@ -49,7 +49,7 @@
         || !!tag.dialogs[i].secondaryAction;
     };
     tag.stopTimeout = function (event) {
-      var i = event.target.dataset.index;
+      var i = event.currentTarget.dataset.index;
       var dialog = tag.dialogs[i];
       if (dialog.timerId) {
         clearTimeout(dialog.timerId);
