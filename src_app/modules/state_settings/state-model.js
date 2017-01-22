@@ -14,6 +14,9 @@ app.models.State = function () {
       textScanner:  null  //boolean
     }
   };
+  this.game = {
+    marbels: 0
+  };
   
   this.getCurrentPageName = function () {
     return currentPage;

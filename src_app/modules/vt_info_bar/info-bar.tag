@@ -19,7 +19,7 @@
     <script>
       var tag = this;
 
-      tag.marbles = tag.opts.marbles;
+      tag.marbles = app.state.game.marbles;
 
       tag.getLayer = app.services.virttruhe.getCurrentLayer;
 
