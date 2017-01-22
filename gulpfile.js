@@ -97,7 +97,8 @@ gulp.task('delete:data', function () {
 var data = {
   img: './src_app/data/img/**/*.*',
   audio: './src_app/data/audio/**/*.*',
-  items: './src_app/data/items/**/*.{jpg,png,svg}'
+  items: './src_app/data/items/**/*.{jpg,png,svg}',
+  itemsData: './src_app/data/items/**/*.yaml'
 };
 
 gulp.task('copy_data', ['delete:data'], function () {
@@ -106,6 +107,8 @@ gulp.task('copy_data', ['delete:data'], function () {
   gulp.src(data.audio)
     .pipe(gulp.dest('./app/data/audio'));
   gulp.src(data.items)
+    .pipe(gulp.dest('./app/data/items'));
+  gulp.src(data.itemsData)
     .pipe(gulp.dest('./app/data/items'));
 });
 

@@ -9,27 +9,46 @@ var app = {
   services: {},
   models: {}
 };
+riot.observable(app);
 
 window.onload = function () {
   // helper functions
-  var instantiate = function () {
+  function loadItemData () {
+    var url = app.constants.itemDataUrl;
+    app.services.loading.one('ready'+url, function (result) {
+      //TODO result = parseToJson(result);
+      //app.services.items = result;
+    });
+    app.services.loading.loadFile(url);
+  }
+  function instantiate () {
     app.state = new app.models.State();
     app.inventory = new app.models.Inventory();
     app.scanner = new app.models.Scanner();
     app.trigger('initInstances');
-  };
+  }
+  function mountTagsStartRouter () {
+    riot.mount('app');
+    riot.route.start(true);
+  }
+  function init () {
+    app.services.utility.detectRTC();
+    instantiate();
+    
+    app.inventory.trigger('loadItems');
+    //app.inventory.addItem('beer');
+    
+    mountTagsStartRouter();
+  }
   
-  // start initialization
-  riot.observable(app);
-  app.services.utility.detectRTC();
-  instantiate();
-  
-  app.inventory.trigger('loadItems');
-  // app.inventory.addItem('beer');
-  
-  // mount all riot tags and start the router
-  riot.mount('app');
-  riot.route.start(true);
+  // main part
+  loadItemData();
+  //TODO loadRTCDetection here, not in init
+  if (!app.services.loading.isLoading()) {
+    init();
+  } else {
+    app.services.loading.one('ready', init);
+  }
 };
 /*
  APP.JS END
