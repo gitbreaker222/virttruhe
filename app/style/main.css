@@ -2784,8 +2784,8 @@ app-dialogs .content {
   position: absolute;
   top: 50%;
   left: 50%;
-  -webkit-transform: translate3d(-50%, -50%, 0);
-  transform: translate3d(-50%, -50%, 0);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   position: fixed;
   z-index: 99;
   min-width: 10rem;
@@ -2818,15 +2818,15 @@ app-dialogs.error .content {
     position: absolute;
     top: 50%;
     left: 50%;
-    -webkit-transform: translate3d(-50%, -70%, 0);
-    transform: translate3d(-50%, -70%, 0); }
+    -webkit-transform: translate(-50%, -70%);
+    transform: translate(-50%, -70%); }
   100% {
     opacity: 1;
     position: absolute;
     top: 50%;
     left: 50%;
-    -webkit-transform: translate3d(-50%, -50%, 0);
-    transform: translate3d(-50%, -50%, 0); } }
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); } }
 
 app-qr-gen #qrcontainer {
   border: 1em white solid;

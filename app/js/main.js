@@ -833,12 +833,17 @@ var chromeShim = {
           };
         });
 
-    // support for addIceCandidate(null)
+    // support for addIceCandidate(null or undefined)
     var nativeAddIceCandidate =
         RTCPeerConnection.prototype.addIceCandidate;
     RTCPeerConnection.prototype.addIceCandidate = function() {
-      return arguments[0] === null ? Promise.resolve()
-          : nativeAddIceCandidate.apply(this, arguments);
+      if (!arguments[0]) {
+        if (arguments[1]) {
+          arguments[1].apply(null);
+        }
+        return Promise.resolve();
+      }
+      return nativeAddIceCandidate.apply(this, arguments);
     };
   }
 };
@@ -1023,7 +1028,16 @@ module.exports = function() {
         bind(navigator.mediaDevices);
     navigator.mediaDevices.getUserMedia = function(cs) {
       return shimConstraints_(cs, function(c) {
-        return origGetUserMedia(c).catch(function(e) {
+        return origGetUserMedia(c).then(function(stream) {
+          if (c.audio && !stream.getAudioTracks().length ||
+              c.video && !stream.getVideoTracks().length) {
+            stream.getTracks().forEach(function(track) {
+              track.stop();
+            });
+            throw new DOMException('', 'NotFoundError');
+          }
+          return stream;
+        }, function(e) {
           return Promise.reject(shimError_(e));
         });
       });
@@ -1076,6 +1090,18 @@ var edgeShim = {
           return args;
         };
       }
+      // this adds an additional event listener to MediaStrackTrack that signals
+      // when a tracks enabled property was changed.
+      var origMSTEnabled = Object.getOwnPropertyDescriptor(
+          MediaStreamTrack.prototype, 'enabled');
+      Object.defineProperty(MediaStreamTrack.prototype, 'enabled', {
+        set: function(value) {
+          origMSTEnabled.set.call(this, value);
+          var ev = new Event('enabled');
+          ev.enabled = value;
+          this.dispatchEvent(ev);
+        }
+      });
     }
 
     window.RTCPeerConnection = function(config) {
@@ -1161,6 +1187,7 @@ var edgeShim = {
           return false;
         });
       }
+      this._config = config;
 
       // per-track iceGathers, iceTransports, dtlsTransports, rtpSenders, ...
       // everything that is needed to describe a SDP m-line.
@@ -1208,10 +1235,21 @@ var edgeShim = {
       this._localIceCandidatesBuffer = [];
     };
 
+    window.RTCPeerConnection.prototype.getConfiguration = function() {
+      return this._config;
+    };
+
     window.RTCPeerConnection.prototype.addStream = function(stream) {
       // Clone is necessary for local demos mostly, attaching directly
       // to two different senders does not work (build 10547).
-      this.localStreams.push(stream.clone());
+      var clonedStream = stream.clone();
+      stream.getTracks().forEach(function(track, idx) {
+        var clonedTrack = clonedStream.getTracks()[idx];
+        track.addEventListener('enabled', function(event) {
+          clonedTrack.enabled = event.enabled;
+        });
+      });
+      this.localStreams.push(clonedStream);
       this._maybeFireNegotiationNeeded();
     };
 
@@ -1253,8 +1291,10 @@ var edgeShim = {
             for (var i = 0; i < remoteCapabilities.codecs.length; i++) {
               var rCodec = remoteCapabilities.codecs[i];
               if (lCodec.name.toLowerCase() === rCodec.name.toLowerCase() &&
-                  lCodec.clockRate === rCodec.clockRate &&
-                  lCodec.numChannels === rCodec.numChannels) {
+                  lCodec.clockRate === rCodec.clockRate) {
+                // number of channels is the highest common number of channels
+                rCodec.numChannels = Math.min(lCodec.numChannels,
+                    rCodec.numChannels);
                 // push rCodec so we reply with offerer payload type
                 commonCapabilities.codecs.push(rCodec);
 
@@ -1409,6 +1449,13 @@ var edgeShim = {
         transceiver.rtpSender.send(params);
       }
       if (recv && transceiver.rtpReceiver) {
+        // remove RTX field in Edge 14942
+        if (transceiver.kind === 'video'
+            && transceiver.recvEncodingParameters) {
+          transceiver.recvEncodingParameters.forEach(function(p) {
+            delete p.rtx;
+          });
+        }
         params.encodings = transceiver.recvEncodingParameters;
         params.rtcp = {
           cname: transceiver.cname
@@ -1638,6 +1685,14 @@ var edgeShim = {
               }
 
               localCapabilities = RTCRtpReceiver.getCapabilities(kind);
+
+              // filter RTX until additional stuff needed for RTX is implemented
+              // in adapter.js
+              localCapabilities.codecs = localCapabilities.codecs.filter(
+                  function(codec) {
+                    return codec.name !== 'rtx';
+                  });
+
               sendEncodingParameters = [{
                 ssrc: (2 * sdpMLineIndex + 2) * 1001
               }];
@@ -1947,6 +2002,21 @@ var edgeShim = {
         } : self._createIceAndDtlsTransports(mid, sdpMLineIndex);
 
         var localCapabilities = RTCRtpSender.getCapabilities(kind);
+        // filter RTX until additional stuff needed for RTX is implemented
+        // in adapter.js
+        localCapabilities.codecs = localCapabilities.codecs.filter(
+            function(codec) {
+              return codec.name !== 'rtx';
+            });
+        localCapabilities.codecs.forEach(function(codec) {
+          // work around https://bugs.chromium.org/p/webrtc/issues/detail?id=6552
+          // by adding level-asymmetry-allowed=1
+          if (codec.name === 'H264' &&
+              codec.parameters['level-asymmetry-allowed'] === undefined) {
+            codec.parameters['level-asymmetry-allowed'] = '1';
+          }
+        });
+
         var rtpSender;
         var rtpReceiver;
 
@@ -2034,7 +2104,7 @@ var edgeShim = {
     };
 
     window.RTCPeerConnection.prototype.addIceCandidate = function(candidate) {
-      if (candidate === null) {
+      if (!candidate) {
         this.transceivers.forEach(function(transceiver) {
           transceiver.iceTransport.addRemoteCandidate({});
         });
@@ -2271,32 +2341,39 @@ var firefoxShim = {
           };
         });
 
-    // support for addIceCandidate(null)
+    // support for addIceCandidate(null or undefined)
     var nativeAddIceCandidate =
         RTCPeerConnection.prototype.addIceCandidate;
     RTCPeerConnection.prototype.addIceCandidate = function() {
-      return arguments[0] === null ? Promise.resolve()
-          : nativeAddIceCandidate.apply(this, arguments);
+      if (!arguments[0]) {
+        if (arguments[1]) {
+          arguments[1].apply(null);
+        }
+        return Promise.resolve();
+      }
+      return nativeAddIceCandidate.apply(this, arguments);
     };
 
-    // shim getStats with maplike support
-    var makeMapStats = function(stats) {
-      var map = new Map();
-      Object.keys(stats).forEach(function(key) {
-        map.set(key, stats[key]);
-        map[key] = stats[key];
-      });
-      return map;
-    };
+    if (browserDetails.version < 48) {
+      // shim getStats with maplike support
+      var makeMapStats = function(stats) {
+        var map = new Map();
+        Object.keys(stats).forEach(function(key) {
+          map.set(key, stats[key]);
+          map[key] = stats[key];
+        });
+        return map;
+      };
 
-    var nativeGetStats = RTCPeerConnection.prototype.getStats;
-    RTCPeerConnection.prototype.getStats = function(selector, onSucc, onErr) {
-      return nativeGetStats.apply(this, [selector || null])
-        .then(function(stats) {
-          return makeMapStats(stats);
-        })
-        .then(onSucc, onErr);
-    };
+      var nativeGetStats = RTCPeerConnection.prototype.getStats;
+      RTCPeerConnection.prototype.getStats = function(selector, onSucc, onErr) {
+        return nativeGetStats.apply(this, [selector || null])
+          .then(function(stats) {
+            return makeMapStats(stats);
+          })
+          .then(onSucc, onErr);
+      };
+    }
   }
 };
 
@@ -2444,7 +2521,18 @@ module.exports = function() {
     var origGetUserMedia = navigator.mediaDevices.getUserMedia.
         bind(navigator.mediaDevices);
     navigator.mediaDevices.getUserMedia = function(c) {
-      return origGetUserMedia(c).catch(function(e) {
+      return origGetUserMedia(c).then(function(stream) {
+        // Work around https://bugzil.la/802326
+        if (c.audio && !stream.getAudioTracks().length ||
+            c.video && !stream.getVideoTracks().length) {
+          stream.getTracks().forEach(function(track) {
+            track.stop();
+          });
+          throw new DOMException('The object can not be found here.',
+                                 'NotFoundError');
+        }
+        return stream;
+      }, function(e) {
         return Promise.reject(shimError_(e));
       });
     };
@@ -3255,27 +3343,46 @@ var app = {
   services: {},
   models: {}
 };
+riot.observable(app);
 
 window.onload = function () {
   // helper functions
-  var instantiate = function () {
+  function loadItemData () {
+    var url = app.constants.itemDataUrl;
+    app.services.loading.one('ready'+url, function (result) {
+      //TODO result = parseToJson(result);
+      //app.services.items = result;
+    });
+    app.services.loading.loadFile(url);
+  }
+  function instantiate () {
     app.state = new app.models.State();
     app.inventory = new app.models.Inventory();
     app.scanner = new app.models.Scanner();
     app.trigger('initInstances');
-  };
+  }
+  function mountTagsStartRouter () {
+    riot.mount('app');
+    riot.route.start(true);
+  }
+  function init () {
+    app.services.utility.detectRTC();
+    instantiate();
+    
+    app.inventory.trigger('loadItems');
+    //app.inventory.addItem('beer');
+    
+    mountTagsStartRouter();
+  }
   
-  // start initialization
-  riot.observable(app);
-  app.services.utility.detectRTC();
-  instantiate();
-  
-  app.inventory.trigger('loadItems');
-  // app.inventory.addItem('beer');
-  
-  // mount all riot tags and start the router
-  riot.mount('app');
-  riot.route.start(true);
+  // main part
+  loadItemData();
+  //TODO loadRTCDetection here, not in init
+  if (!app.services.loading.isLoading()) {
+    init();
+  } else {
+    app.services.loading.one('ready', init);
+  }
 };
 /*
  APP.JS END
@@ -3315,8 +3422,9 @@ riot.route('/scanner', function () {
   ACTIONS SERVICE
  */
 app.services.actions = {
-  test: function () {
-    app.stats.marbles += 1;
+  test: function (param) {
+    console.log('test',param)
+    app.state.game.marbles += 1;
   }
 };
 /*
@@ -3324,6 +3432,7 @@ app.services.actions = {
  */
 app.constants = {
   sampleQrCodes: 'data/img/cards_1_-_9.png',
+  itemDataUrl: '/data/items/items.yaml',
   itemImageSmallPath: 'data/items/img/small/',
   virttruheCodePattern: /#[\da-fA-F]{8}\b/, //http://regexr.com/3ehu3
   itemCodePattern: /##.[\S]+/
@@ -3371,6 +3480,42 @@ if (
  POLYFILLS END
  */
 /*
+  LOADING SERVICE
+ */
+app.services.loading = {
+  isLoading: function () {return this.loaders.length;},
+  loaders: [],
+  loadFile: function (url) {
+    //based on http://stackoverflow.com/questions/196498/how-do-i-load-the-contents-of-a-text-file-into-a-javascript-variable#196510
+    var client = new XMLHttpRequest();
+    var loaderIndex;
+    
+    client.open('GET', url);
+    client.onloadend = function () {
+      //remove from loaders
+      this.loaders.splice(loaderIndex, 1);
+      //trigger ready events
+      this.trigger('ready'+url, client.responseText);
+      if (!this.loaders.length) {
+        this.trigger('ready');
+      }
+    }.bind(this);
+    
+    //push to loaders
+    loaderIndex = this.loaders.length;
+    this.loaders.push({
+      id: url,
+      startTime: Date.now()
+    });
+    
+    client.send();
+  }
+};
+riot.observable(app.services.loading);
+/*
+ LOADING SERVICE END
+ */
+/*
  STATE MODEL
  */
 app.models.State = function () {
@@ -3385,6 +3530,9 @@ app.models.State = function () {
       imageScanner: null, //boolean
       textScanner:  null  //boolean
     }
+  };
+  this.game = {
+    marbels: 0
   };
   
   this.getCurrentPageName = function () {
@@ -3519,7 +3667,10 @@ app.services.items = {
       'imageName':null,
       'description':'A bottle of cool beer',
       'stackable':'true',
-      'action':'drink',
+      'action': {
+        "name": "test",
+        "amount": 10
+      },
       'type':'alcohol',
       'set':'general'
     },
@@ -3831,6 +3982,7 @@ app.models.Inventory = function () {
   riot.observable(this);
   
   var itemsService = app.services.items;
+  var actions = app.services.actions;
   
   var data = {
     items: [],
@@ -3840,9 +3992,10 @@ app.models.Inventory = function () {
   // Private methods
   var use = function (itemId) {
     var item = itemsService.getItem(itemId);
+    var name;
     if (item && item.action) {
-      //need to pass action name to the actions service
-      item.action();
+      name = item.action.name;
+      actions[name](item.action);
     }
   };
   
@@ -4028,7 +4181,7 @@ riot.tag2('app-dialogs', '<div each="{dialog, i in dialogs}" class="dialog {dial
         || !!tag.dialogs[i].secondaryAction;
     };
     tag.stopTimeout = function (event) {
-      var i = event.target.dataset.index;
+      var i = event.currentTarget.dataset.index;
       var dialog = tag.dialogs[i];
       if (dialog.timerId) {
         clearTimeout(dialog.timerId);
@@ -4125,7 +4278,7 @@ riot.tag2('vt-button-bar', '<div each="{buttons}" class="{button: true,         
 riot.tag2('app-info-bar', '<header> <span name="infoText"> current layer: {getLayer()} </span> <span name="selectedItem" if="{selectedItem()}"> {selectedItem(true).name} </span> <span class="marbles"> <img src="data/img/marble-icon.png"> {this.marbles} </span> </header>', '', '', function(opts) {
       var tag = this;
 
-      tag.marbles = tag.opts.marbles;
+      tag.marbles = app.state.game.marbles;
 
       tag.getLayer = app.services.virttruhe.getCurrentLayer;
 
@@ -4321,7 +4474,7 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
       var callback = function () {
         inventory.trigger('use', itemId);
       };
-      dialogService.show({
+      app.trigger('showDialog', {
         message: message,
         primaryAction: callback,
         secondaryLabel: 'Cancel'
@@ -4381,9 +4534,9 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
     tag.showVideoScanner = app.services.utility.canVideoScan();
 
     tag.isInvalid = true;
+    tag.isPresenting = false;
     tag.data = {
       isScanning: null,
-      isPresenting: false,
       buttonList: [
         {
           label: 'stop',
@@ -4412,15 +4565,18 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
     };
 
     var presentItem = function(item) {
-      tag.data.isPresenting = true;
+      tag.isPresenting = true;
       callback = function () {
-        tag.data.isPresenting = false;
+        tag.isPresenting = false;
         riot.route('inventory');
       };
       app.trigger('showDialog', {
         message: 'You have found: ' + item.name,
         primaryAction: callback
       });
+    };
+    var noItem = function(itemName) {
+
     };
 
     var handleVideoError = function (e) {
@@ -4438,7 +4594,7 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
     };
 
     tag.scanInput = function (input) {
-      if (tag.data.isPresenting) return;
+      if (tag.isPresenting) return;
       var text = normalizeInput(input);
       var result = Scanner.scan(text);
       if (result) {
@@ -4493,4 +4649,5 @@ riot.tag2('app-scanner', '<div if="{showVideoScanner}"> <video id="cameraOutput"
 
     app.state.on('hidePage', hide);
     Scanner.on('success', presentItem);
+    Scanner.on('noSuccess', noItem);
 });
