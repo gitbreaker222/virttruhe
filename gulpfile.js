@@ -70,6 +70,7 @@ var scripts = [
   'bower_components/riot/riot.min.js',
   'bower_components/webrtc-adapter/release/adapter.js',
   'bower_components/qrcode.js/qrcode.js',
+  'bower_components/js-yaml/dist/js-yaml.min.js',
   'lib/qr-decoder.js',
   'src_app/**/*.js',
   'src_app/modules/.tmp/**/*.js'
