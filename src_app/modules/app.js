@@ -16,8 +16,8 @@ window.onload = function () {
   function loadItemData () {
     var url = app.constants.itemDataUrl;
     app.services.loading.one('ready'+url, function (result) {
-      //TODO result = parseToJson(result);
-      //app.services.items = result;
+      result = jsyaml.load(result);
+      app.services.items.items = result.items;
     });
     app.services.loading.loadFile(url);
   }
