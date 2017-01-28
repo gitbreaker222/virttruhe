@@ -5,7 +5,7 @@ globals:
   riot: false
   DetectRTC: false
   QCodeDecoder: false
-  vex: false
+  jsyaml: false
   process: false
   app: true
 extends: 'eslint:recommended'
