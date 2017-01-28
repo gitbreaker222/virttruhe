@@ -1,6 +1,6 @@
 items:
   -
-  pid:  pine_(closed)
+    id:  pine_(closed)
     name:  Pine (closed)
     imageName:  pine_(closed).svg
     description:  A Pine. They are often put into fires for their cracking sounds
