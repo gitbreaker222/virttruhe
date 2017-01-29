@@ -31,5 +31,5 @@ rules:
     - always
     - singleValue: false
   no-magic-numbers:
-    - error
+    - warn
     - ignoreArrayIndexes: true
