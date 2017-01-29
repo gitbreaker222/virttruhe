@@ -2,8 +2,18 @@
   ACTIONS SERVICE
  */
 app.services.actions = {
-  test: function (param) {
-    console.log('test',param)
-    app.state.game.marbles += 1;
+  addMarbles: function (attributes) {
+    var amount = attributes.amount;
+    if (!app.services.utility.validate(amount, 'number') || amount < 0){
+      return;
+    }
+    app.state.marbles(amount);
+  },
+  removeMarbles: function (attributes) {
+    var amount = attributes.amount;
+    if (!app.services.utility.validate(amount, 'number') || amount < 0){
+      return;
+    }
+    app.state.marbles(-amount);
   }
 };

@@ -35,6 +35,7 @@ app.models.Inventory = function () {
     }
   
     item = itemsService.getItem(item);
+    //TODO check if stackable, else app gets unstable when adding an item twice
     data.items.push(item);
     this.trigger('itemAdded', item.id);
     riot.update();

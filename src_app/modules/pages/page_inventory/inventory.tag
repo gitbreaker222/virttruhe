@@ -146,13 +146,15 @@
 
     tag.use = function (itemId) {
       var item = itemsService.getItem(itemId);
-      var message = '(Preview) Use ' + item.name + '?\n' + item.action;
+      var actionName = item.action.name || item.action;
+      var message = 'Use ' + item.name + '?';
       var callback = function () {
         inventory.trigger('use', itemId);
       };
       app.trigger('showDialog', {
         message: message,
         primaryAction: callback,
+        primaryLabel: actionName,
         secondaryLabel: 'Cancel'
       });
     };

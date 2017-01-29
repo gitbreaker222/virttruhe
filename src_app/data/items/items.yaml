@@ -86,7 +86,7 @@ items:
     description: A bottle of cool beer
     stackable: true
     action:
-      name: test
+      name: addMarbles
       amount: 10
     set: general
 
@@ -96,7 +96,9 @@ items:
     imageName: null
     description: A bottle of cheap wine
     stackable: true
-    action: drink
+    action:
+      name: removeMarbles
+      amount: 10
     type: alcohol
     set: general
 
