@@ -140,8 +140,9 @@ gulp.task('serve', function () {
 gulp.task('watch', function () {
   gulp.watch('./src_app/index.pug', ['compile_pug']);
   gulp.watch('./src_app/**/*.sass', ['compile_sass']);
-  gulp.watch('src_app/**/*.tag', ['compile_riot_tags']);
+  gulp.watch('./src_app/**/*.tag', ['compile_riot_tags']);
   gulp.watch('./src_app/{modules/.tmp,**}/*.js', ['concat_scripts']);
+  gulp.watch('./src_app/data/items/**/*.yaml', ['copy_data']);
 });
 
 
