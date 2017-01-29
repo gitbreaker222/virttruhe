@@ -29,15 +29,12 @@ app.models.Inventory = function () {
   
   // public methods
   this.addItem = function (item) {
-    //validation
-    if (typeof(item) === 'string') {
-      item = itemsService.getItem(item);
-    }
-    if (!item) {
-      window.console.Error('No item passed. Please provide an item object to this function.');
+    if (!app.services.utility.validate(item, 'string')){
+      window.console.error('No item passed. Please provide an item object to this function.');
       return;
     }
-    
+  
+    item = itemsService.getItem(item);
     data.items.push(item);
     this.trigger('itemAdded', item.id);
     riot.update();

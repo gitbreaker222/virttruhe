@@ -1,8 +1,5 @@
 app.services.items = {
   items: [], //todo rename this to data
-  loadItems: function () {
-    // TODO xhr request, local storage and such
-  },
   getAllItems: function () {
     return this.items;
   },

@@ -7,11 +7,6 @@
   <script>
     var tag = this;
 
-    var optsTypes = {
-      text: 'string'
-    };
-    //app.services.utility.validate(tag.opts, optsTypes);
-
     tag.qrcode = new QRCode(tag.qrcontainer);
 
     tag.hasText = function () {

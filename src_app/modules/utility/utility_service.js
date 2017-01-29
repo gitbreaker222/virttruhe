@@ -1,13 +1,10 @@
 app.services.utility = {
-  validate: function (opts, types) {
-    var names = Object.keys(opts);
-    names.forEach(function (name) {
-      var expectedType = types[name];
-      var actualType = typeof opts[name];
-      if (!expectedType.includes(actualType)) {
-        throw new TypeError('Expected ' + expectedType + '. Instead got: ' + actualType);
-      }
-    });
+  validate: function (attribute, type) {
+    if (typeof attribute !== type) {
+      var actualType = typeof attribute;
+      window.console.error('Expected ' + type + '. Instead got: ' + actualType);
+    }
+    return typeof attribute === type;
   },
   isBB10: function () {
     return window.navigator.userAgent.includes('BB10');

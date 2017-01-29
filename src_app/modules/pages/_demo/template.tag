@@ -4,12 +4,6 @@
   <script>
     var tag = this;
 
-    // API
-    var apiTypes = {
-      text: 'string'
-    };
-
-    app.services.utility.validate(tag.opts, apiTypes);
 
     // PRIVATE VARS / FUNCTIONS
     /*-------------------------------------*/
