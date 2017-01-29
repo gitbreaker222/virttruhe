@@ -3426,9 +3426,19 @@ riot.route('/scanner', function () {
   ACTIONS SERVICE
  */
 app.services.actions = {
-  test: function (param) {
-    console.log('test',param)
-    app.state.game.marbles += 1;
+  addMarbles: function (attributes) {
+    var amount = attributes.amount;
+    if (!app.services.utility.validate(amount, 'number') || amount < 0){
+      return;
+    }
+    app.state.marbles(amount);
+  },
+  removeMarbles: function (attributes) {
+    var amount = attributes.amount;
+    if (!app.services.utility.validate(amount, 'number') || amount < 0){
+      return;
+    }
+    app.state.marbles(-amount);
   }
 };
 /*
@@ -3528,16 +3538,17 @@ app.models.State = function () {
   
   var currentPage = null;
   
-  this.data = {
+  var data = {
     settings: {
       videoScanner: null, //boolean
       imageScanner: null, //boolean
       textScanner:  null  //boolean
+    },
+    game: {
+      marbles: 0
     }
   };
-  this.game = {
-    marbels: 0
-  };
+  this.data = data; // TODO: all data access from outside via methods
   
   this.getCurrentPageName = function () {
     return currentPage;
@@ -3550,20 +3561,36 @@ app.models.State = function () {
     currentPage = pageName;
     app.trigger('showPage', pageName);
   };
+  
+  this.marbles = function (amount) {//amount[optional] positive or negative number
+    if (amount === undefined) return data.game.marbles;
+    
+    var marbles = data.game.marbles;
+    if (!app.services.utility.validate(amount, 'number')) {
+      return marbles;
+    } else if (amount >= 0) {
+      data.game.marbles += amount;
+      riot.update();
+    } else if (amount < 0 && marbles + amount >= 0) {
+      data.game.marbles += amount;
+      riot.update();
+    } else if (amount < 0 && marbles + amount < 0) {
+      window.console.info('cannot take more marbles than available')
+      this.trigger('notEnoughMarbles');
+    }
+    return data.game.marbles;
+  };
 };
 /*
  STATE MODEL END
  */
 app.services.utility = {
-  validate: function (opts, types) {
-    var names = Object.keys(opts);
-    names.forEach(function (name) {
-      var expectedType = types[name];
-      var actualType = typeof opts[name];
-      if (!expectedType.includes(actualType)) {
-        throw new TypeError('Expected ' + expectedType + '. Instead got: ' + actualType);
-      }
-    });
+  validate: function (attribute, type) {
+    if (typeof attribute !== type) {
+      var actualType = typeof attribute;
+      window.console.error('Expected ' + type + '. Instead got: ' + actualType);
+    }
+    return typeof attribute === type;
   },
   isBB10: function () {
     return window.navigator.userAgent.includes('BB10');
@@ -3585,9 +3612,6 @@ app.services.utility = {
 
 app.services.items = {
   items: [], //todo rename this to data
-  loadItems: function () {
-    // TODO xhr request, local storage and such
-  },
   getAllItems: function () {
     return this.items;
   },
@@ -3725,16 +3749,6 @@ app.models.Demo = function () {
  DEMO MODEL END
  */
 /*
-  OPTIONS MODEL
- */
-app.models.Options = function () {
-  // Make instances observable
-  riot.observable(this);
-};
-/*
-  OPTIONS MODEL END
- */
-/*
   INVENTORY MODEL
  */
 app.models.Inventory = function () {
@@ -3765,15 +3779,13 @@ app.models.Inventory = function () {
   
   // public methods
   this.addItem = function (item) {
-    //validation
-    if (typeof(item) === 'string') {
-      item = itemsService.getItem(item);
-    }
-    if (!item) {
-      window.console.Error('No item passed. Please provide an item object to this function.');
+    if (!app.services.utility.validate(item, 'string')){
+      window.console.error('No item passed. Please provide an item object to this function.');
       return;
     }
-    
+  
+    item = itemsService.getItem(item);
+    //TODO check if stackable, else app gets unstable when adding an item twice
     data.items.push(item);
     this.trigger('itemAdded', item.id);
     riot.update();
@@ -3832,6 +3844,16 @@ app.models.Inventory = function () {
 };
 /*
   INVENTORY MODEL END
+ */
+/*
+  OPTIONS MODEL
+ */
+app.models.Options = function () {
+  // Make instances observable
+  riot.observable(this);
+};
+/*
+  OPTIONS MODEL END
  */
 /*
   SCANNER MODEL
@@ -3962,10 +3984,6 @@ riot.tag2('app-dialogs', '<div each="{dialog, i in dialogs}" class="dialog {dial
 riot.tag2('app-qr-gen', '<div id="qrcontainer" if="{hasText()}"> </div>', '', '', function(opts) {
     var tag = this;
 
-    var optsTypes = {
-      text: 'string'
-    };
-
     tag.qrcode = new QRCode(tag.qrcontainer);
 
     tag.hasText = function () {
@@ -4025,10 +4043,10 @@ riot.tag2('vt-button-bar', '<div each="{buttons}" class="{button: true,         
 });
 
 
-riot.tag2('app-info-bar', '<header> <span name="infoText"> current layer: {getLayer()} </span> <span name="selectedItem" if="{selectedItem()}"> {selectedItem(true).name} </span> <span class="marbles"> <img src="data/img/marble-icon.png"> {this.marbles} </span> </header>', '', '', function(opts) {
+riot.tag2('app-info-bar', '<header> <span name="infoText"> current layer: {getLayer()} </span> <span name="selectedItem" if="{selectedItem()}"> {selectedItem(true).name} </span> <span class="marbles"> <img src="data/img/marble-icon.png"> {marbles()} </span> </header>', '', '', function(opts) {
       var tag = this;
 
-      tag.marbles = app.state.game.marbles;
+      tag.marbles = app.state.marbles;
 
       tag.getLayer = app.services.virttruhe.getCurrentLayer;
 
@@ -4071,12 +4089,6 @@ riot.tag2('app-demo', '<div if="{demoMethod()}"> <input type="button" onclick="{
 });
 riot.tag2('app-template', '', '', '', function(opts) {
     var tag = this;
-
-    var apiTypes = {
-      text: 'string'
-    };
-
-    app.services.utility.validate(tag.opts, apiTypes);
 
     var toggleView = function (eventName, pageName) {
       switch (eventName){
@@ -4220,13 +4232,15 @@ riot.tag2('app-inventory', '<div if="{!hasItems()}" class="cover"> <h2> Your inv
 
     tag.use = function (itemId) {
       var item = itemsService.getItem(itemId);
-      var message = '(Preview) Use ' + item.name + '?\n' + item.action;
+      var actionName = item.action.name || item.action;
+      var message = 'Use ' + item.name + '?';
       var callback = function () {
         inventory.trigger('use', itemId);
       };
       app.trigger('showDialog', {
         message: message,
         primaryAction: callback,
+        primaryLabel: actionName,
         secondaryLabel: 'Cancel'
       });
     };
