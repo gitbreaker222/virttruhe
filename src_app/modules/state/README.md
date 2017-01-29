@@ -1,3 +1,23 @@
+# state
+
+## methods
+
+### `marbles([amount])`
+
+parameter | type | description
+--- | --- | ---
+amount | number | if positive, adds marbles. if negative and enough marbles, removes marbles
+
+**returns:** `marbles _number_`
+
+## events
+
+name | attributes | description
+--- | --- | ---
+`notEnoughMarbles` | _none_ | Tried to take marbles, but the amount would get negative.
+
+
+
 # loading service
 
 ## methods

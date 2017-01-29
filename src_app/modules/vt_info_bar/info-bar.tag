@@ -10,7 +10,7 @@
 
     <span class="marbles">
       <img src="data/img/marble-icon.png">
-      { this.marbles }
+      { marbles() }
     </span>
   </header>
 
@@ -19,7 +19,7 @@
     <script>
       var tag = this;
 
-      tag.marbles = app.state.game.marbles;
+      tag.marbles = app.state.marbles;
 
       tag.getLayer = app.services.virttruhe.getCurrentLayer;
 
