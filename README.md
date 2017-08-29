@@ -3,7 +3,7 @@
 
 ![Logo](https://github.com/gitbreaker222/virttruhe/blob/master/concept/logo/Icon.png?raw=true)
 
-This repository is in sequel to the old ["VIRTTRUHE HTML5 App"](https://github.com/gitbreaker222/virttruhe_html5_app), to give it a clean start and making it more scalable.
+This repository is in sequel to the old ["VIRTTRUHE HTML5 App"](https://github.com/gitbreaker222/virttruhe_html5_app), to give it a clean start and making it more scalable. **Still in alpha**
 
 ## Starting the app
 
