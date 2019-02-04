@@ -1,3 +1,5 @@
+*incomplete / discontinued*
+
 # VIRTTRUHE
 ## Experimental game to explore the border between physical and virtual space. A playground for augmented reality (or maybe augmented virtuality)
 
